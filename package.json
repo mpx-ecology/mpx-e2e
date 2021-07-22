@@ -1,13 +1,13 @@
 {
-  "name": "e2ex",
-  "version": "1.0.0",
+  "name": "@didi/e2e-extension",
+  "version": "0.0.1",
   "description": "",
   "main": "lib/e2e-expand.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "kf-fe",
   "license": "ISC",
   "dependencies": {
     "typescript": "^4.3.5"
