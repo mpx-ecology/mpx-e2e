@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 let esbuild = require('esbuild');
 
 esbuild.build({
