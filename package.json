@@ -5,8 +5,9 @@
   "main": "lib/e2ex.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/webpack",
-    "pub": "git add . && git commit -m'publist & version update' && npm version patch && git push origin master && npm publist"
+    "build": "npm run lint && ./by-esbuild.js",
+    "lint": "eslint . --ext .ts",
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "kf-fe",
@@ -15,6 +16,10 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "esbuild": "^0.12.15",
+    "eslint": "^7.31.0",
     "miniprogram-automator": "^0.10.0",
     "ts-loader": "^9.2.3",
     "webpack": "^5.46.0",
