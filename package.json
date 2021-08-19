@@ -13,6 +13,10 @@
   "author": "kf-fe",
   "license": "ISC",
   "dependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/node": "^16.6.1",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
