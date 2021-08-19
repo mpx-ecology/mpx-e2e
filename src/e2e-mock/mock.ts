@@ -1,5 +1,4 @@
-import * as path from 'path';
-import Application from "koa";
+import Application from 'koa';
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const staticMock = require('./static-middleware');
