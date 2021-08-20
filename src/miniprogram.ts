@@ -1,4 +1,6 @@
 import EPage from './page'
+import E2eMock, { E2eMockConfig } from './e2e-mock/mock';
+
 type MiniProgram = import('miniprogram-automator/out/MiniProgram').default
 type Element = import('miniprogram-automator/out/Element').default
 type Page = import('miniprogram-automator/out/Page').default
@@ -8,13 +10,19 @@ interface CurWaitType {
   resolve: any
 }
 
+interface EMiniProgramCfg {
+  options: MiniProgram,
+  mockCfg?: E2eMockConfig
+}
+
 export default class EMiniProgram {
   miniProgram: MiniProgram
   curWaitPage!: CurWaitType
   curWaitRequest!: CurWaitType
   curWaitResponse!: CurWaitType
   cachePageStack = new Set()
-  constructor (options: MiniProgram) {
+  mockHelper?: E2eMock
+  constructor ({ options, mockCfg }: EMiniProgramCfg) {
     const miniProgram = Object.create(options)
     // 重构返回page的方法，用Epage代替
 
@@ -41,7 +49,7 @@ export default class EMiniProgram {
     miniProgram.currentPagePath = () => this.currentPagePath.call(that)
     this.miniProgram = miniProgram
     // 初始化与appservice交互
-    this.init()
+    this.init(mockCfg)
     return miniProgram
   }
   /** 返回当前页面路径 */
@@ -96,7 +104,10 @@ export default class EMiniProgram {
     element && element.wxml().then((data:any) => console.log(data))
   }
   /** 初始化工作 */
-  async init(): Promise<void> {
+  async init(cfg: E2eMockConfig | undefined): Promise<void> {
+    if (cfg) {
+      this.mockHelper = new E2eMock(cfg)
+    }
     /** 监听页面渲染，需要ready搭配show生命周期 还有unload来完成页面等待 */
     await this.miniProgram.exposeFunction('onPageReady', (options: any) => {
       const { curWaitPage, cachePageStack } = this
@@ -143,5 +154,13 @@ export default class EMiniProgram {
         console.log('response===', url)
       }
     })
+  }
+
+  setMock (path:string, response:any) {
+    if (this.mockHelper) {
+      return this.mockHelper.setMock(path, response)
+    } else {
+      console.error('the Mock is disabled! set `mockCfg` property when init Automator')
+    }
   }
 }

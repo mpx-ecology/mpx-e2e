@@ -1,7 +1,7 @@
 const https = require('https');
 let querystring = require('querystring');
 import buffer, {Buffer} from 'buffer';
-module.exports = function (url:string, headers:any, data:Record<string, any>, method = 'GET') {
+const HttpsHelper = function (url:string, headers:any, data:Record<string, any>, method = 'GET') {
   let postData = method?.toUpperCase() === 'POST' ? querystring.stringify(data) : ''
 
   return new Promise((resolve, reject) => {
@@ -35,3 +35,5 @@ module.exports = function (url:string, headers:any, data:Record<string, any>, me
     client.end();
   })
 }
+
+export default HttpsHelper

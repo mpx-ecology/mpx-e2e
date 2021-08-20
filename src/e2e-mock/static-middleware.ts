@@ -5,6 +5,7 @@ import Application from 'koa';
 
 const NOT_FOUND_TIPS = 'e2e-static-mock-failed! check the json-filename and the static-dir provided!';
 const NOT_FOUND_STATUS = 404;
+
 const e2eMockStatic = (dirname:string) => {
   return async (ctx: Application.DefaultContext, next:Function) => {
     let { request: { url } } = ctx;
@@ -27,4 +28,6 @@ const e2eMockStatic = (dirname:string) => {
   }
 }
 
-module.exports = e2eMockStatic
+// module.exports = e2eMockStatic
+
+export default e2eMockStatic

@@ -1,9 +1,9 @@
-import Application from "koa";
+import Application from 'koa';
 
 const httpRequest = require('./https-helper');
 const urlGenerator = (u:string, p = 'https://') => p + u
 
-module.exports = function proxyMiddleware (mockMap: Map<string, any>) {
+function proxyMiddleware (mockMap: Map<string, any>) {
   return async (ctx:Application.DefaultContext, next:Function) => {
     let { request } = ctx;
     let { method, url, header } = request;
@@ -24,3 +24,5 @@ module.exports = function proxyMiddleware (mockMap: Map<string, any>) {
     next()
   }
 }
+
+export default proxyMiddleware

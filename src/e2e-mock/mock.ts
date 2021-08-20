@@ -4,7 +4,7 @@ const bodyParser = require('koa-bodyparser');
 const staticMock = require('./static-middleware');
 const proxyMiddle = require('./proxy-middleware');
 
-interface E2eMockConfig {
+export interface E2eMockConfig {
   useStatic: boolean,
   staticDir: string,
   debug: boolean
@@ -49,5 +49,7 @@ class E2eMock {
   }
 }
 
-module.exports = E2eMock
+// module.exports = E2eMock
+
+export default E2eMock
 

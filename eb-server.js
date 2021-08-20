@@ -1,12 +1,13 @@
 #!/usr/bin/env node
+// 调试 mock server 打包用的
 let esbuild = require('esbuild');
 
 esbuild.build({
-  entryPoints: ['./src/index.ts'],
+  entryPoints: ['./src/e2e-mock/mock.ts'],
   platform: 'node',
-  target: 'es2015',
+  target: 'es6',
   bundle: true,
-  outfile: './lib/e2ex.js',
+  outfile: './lib/e2e-mock-server.js',
   // minify: true
   // sourcemap: true,
 }).then(() => {
