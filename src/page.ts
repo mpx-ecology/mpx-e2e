@@ -26,6 +26,7 @@
 async function _getDOM(fn: (selector: string) => Promise<Element | null>, componetsNameArr: string[], clazz: string, joinArr = []) {
   const probeArray = [...componetsNameArr]
   async function getDOMItem ():Promise<Element | null> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
       joinArr.unshift(probeArray.pop() as never)
       let s = '.' + joinArr.join('-') + '--' + clazz
