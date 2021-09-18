@@ -7,7 +7,7 @@
  * @returns 返回Promise<元素>
  */
 
- async function $(fn: (selector: string) => Promise<Element | null>, className: string, componentsName?: string) {
+ async function $(fn: (selector: string) => Promise<any>, className: string, componentsName?: string) {
   if (!componentsName) {
     return await fn('.' + className)
   }
@@ -53,9 +53,12 @@ export default class Page {
       const element = await $(s => new$.call(page, s), className, componentsName)
       return element ? new Page(element) : element
     }
-    newPage.$$ = async (className: string, componentsName?: string): Promise<Element | any> => {
-      const element = await $(s => new$$.call(page, s), className, componentsName)
-      return element ? new Page(element) : element
+    newPage.$$ = async (className: string, componentsName?: string): Promise<Element[] | any[]> => {
+      const elements = await $(s => new$$.call(page, s), className, componentsName)
+      if (elements && elements.length) {
+        return elements.map((element:any) => new Page(element))
+      }
+      return elements
     }
     return newPage
   }

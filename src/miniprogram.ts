@@ -42,7 +42,6 @@ export default class EMiniProgram {
       const that = this
       miniProgram.wait = (...args:[any]) => this.wait.call(that, ...args)
       miniProgram.waitAll = (...args:[any]) => this.waitAll.call(that, ...args)
-      miniProgram.waitComponentUpdate = (...args:[any]) => this.waitComponentUpdate.call(that, ...args)
       miniProgram.currentPagePath = () => this.currentPagePath.call(that)
 
       miniProgram.init = () => this.init.call(that)
@@ -56,7 +55,7 @@ export default class EMiniProgram {
       const curPage = await this.miniProgram.currentPage()
       return curPage ? curPage.path : curPage
     }
-    /** 可以等待四种类型 页面 发请求 请求返回 组件 */
+    /** 可以等待五种种类型 页面 发请求 请求返回 组件渲染 组件更新 */
     wait (path: string, type = 'page', timeout = 8000): Promise<string | undefined> | void {
       if (!this.hasAbility) return console.log('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持')
       // eslint-disable-next-line no-async-promise-executor
@@ -111,21 +110,19 @@ export default class EMiniProgram {
               resolve
             }
             break
+          case 'componentUpdate': {
+            let timer: any
+            this.curWaitComponentUpdate = {
+              path,
+              resolve: (data:any) => {
+                clearTimeout(timer)
+                timer = setTimeout(() => resolve(data), timeout)
+              }
+            }
+          }
+            break
           default:
             break
-        }
-      })
-    }
-    waitComponentUpdate (path: string, timeout = 0): Promise<any> {
-      return new Promise(resolve => {
-        console.log('waitComponentUpdate===', path)
-        let timer: any
-        this.curWaitComponentUpdate = {
-          path,
-          resolve: (data:any) => {
-            clearTimeout(timer)
-            timer = setTimeout(() => resolve(data), timeout)
-          }
         }
       })
     }
