@@ -24,7 +24,7 @@ const e2eMockStatic = (dirname:string) => {
       // ctx.body = NOT_FOUND_TIPS;
       // console.log(`${url} does not match any file, will be transfer to its origin host!`)
     }
-    next()
+    await next()
   }
 }
 

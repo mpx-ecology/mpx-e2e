@@ -19,11 +19,10 @@ function proxyMiddleware (mockMap: Map<string, any>) {
         let res = await httpRequest(urlGenerator(originHost + url), header, request.body, method);
         ctx.body = res
       } catch (e) {
-        console.error(e);
         ctx.body = null
+        await next()
       }
     }
-    next()
   }
 }
 

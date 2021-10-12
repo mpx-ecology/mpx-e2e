@@ -8,20 +8,20 @@ const bodyParser = require('koa-bodyparser');
 
 export interface E2eMockConfig {
   // useStatic: boolean,
-  staticDir: string,
-  debug: boolean
+  staticDir: string
+  // debug: boolean
 }
 
 class E2eMock {
   // public useStatic: boolean
   public staticDir: string
-  public debug: boolean
+  // public debug: boolean
   public mockMap = new Map()
   public server: Application | null
-  constructor (cfg:E2eMockConfig = { staticDir: '', debug: false }) {
+  constructor (cfg:E2eMockConfig = { staticDir: '' }) {
     // this.useStatic = cfg.useStatic;
     this.staticDir = cfg.staticDir;
-    this.debug = cfg.debug;
+    // this.debug = cfg.debug;
     this.server = null
     this.engineStart();
   }

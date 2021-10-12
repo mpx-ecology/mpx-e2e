@@ -25,4 +25,11 @@ export default class Automator {
       console.error('the Mock is disabled! set `mockCfg` property when init Automator')
     }
   }
+  removeMockFromMap (path:string) {
+    if (this.mockHelper) {
+      return this.mockHelper.removeMockFromMap(path)
+    } else {
+      console.error('the Mock is disabled! set `mockCfg` property when init Automator')
+    }
+  }
 }

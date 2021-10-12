@@ -3,7 +3,6 @@ let querystring = require('querystring');
 import buffer, {Buffer} from 'buffer';
 const HttpsHelper = function (url:string, headers:any, data:Record<string, any>, method = 'GET') {
   let postData = method?.toUpperCase() === 'POST' ? querystring.stringify(data) : ''
-
   return new Promise((resolve, reject) => {
     let client = https.request(url, {
       method,

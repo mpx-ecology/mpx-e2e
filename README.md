@@ -4,37 +4,63 @@
 
 ## API
 
-## Automator
+## 1. Automator
 > Automator 模块提供了启动及连接开发者工具的方法。
 
 [继承微信自动化sdk](https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/automator.html)
 
 【新增方法】
-### initMock
+### 1.1 initMock
 
 > 初始化mock，提供mock需要的配置可实现本地mock或更改接口返回参数
 
 ```
 interface E2eMockConfig {
-  useStatic: boolean, // 使用本地文件
-  staticDir: string, // 本地文件目录
+  staticDir: string, // 本地文件目录：
   debug: boolean // debug模式
 }
 
 Automator.initMock(mockCfg: E2eMockConfig): Promise<MiniProgram>
 ```
 
-### setMock
+### 1.2 setMock
 
 > 设置需要mock的路径和返回结果
+```javascript
+Automator.setMock (path:string, response:any): () => void
+
+// 示例：
+let un = Automator.setMock('https://api.hongyibo.com.cn/gulfstream/pre-sale/v1/other/pGetIndexInfo', {
+  errno: 0,
+  errmsg: 'mock-index-info',
+  data: {
+    a: 1,
+    b: 2,
+    c: 3
+  }
+});
+
+// 需要取消时可以调用 un，注意这一步骤非必须！！
+un(); 
 ```
-Automator.setMock (path:string, response:any): void
+参数：
+1. path: 接口
+2. response: 该接口响应的 mock 数据
+
+返回值：取消函数，调用该函数即可从 mock map 中移除该 mock
+
+### 1.3 removeMockFromMap
+> 从 mock map 中移除指定 path 对应的的 mock 数据；
+
+```javascript
+Automator.removeMockFromMap (path:string): void
 ```
-## Miniprogram
+
+## 2. Miniprogram
 [继承微信自动化sdk](https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/miniprogram.html)
 
 【新增方法】
-### wait
+### 2.1 wait
 
 > 稳定等待['页面', '组件', '组件更新', '接口发起', '接口返回']，解决waitFor不能解决时间不确定的情况，发生报错。并且增加多种等待时机，更加掌控e2e流程
 
@@ -63,7 +89,7 @@ expect(data.status).toBe(1)
 
 ```
 
-### waitAll
+### 2.2 waitAll
 
 > 同时等待多个操作
 
@@ -74,7 +100,7 @@ const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaa
 
 ```
 
-### currentPagePath
+### 2.3 currentPagePath
 
 > 获取当前页面的路径
 
@@ -83,11 +109,11 @@ const curPath = await miniProgram.currentPagePath()
 expect(curPath).toBe('pages/index/index')
 ```
 
-## Page
+## 3 Page
 [继承微信自动化sdk](https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/page.html)
 
 【重写方法】重写page和element的$,$$方法
-### $
+### 3.1 $
 
 > 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题
 ```
@@ -96,7 +122,7 @@ $(className: string, componentsName?: string): Promise<Element | any>
 const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91faba/confirm')
 ```
 
-### $$
+### 3.2 $$
 > \$\$同$
 
 ```
