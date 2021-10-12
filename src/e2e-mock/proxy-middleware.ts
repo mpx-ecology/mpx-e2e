@@ -1,6 +1,7 @@
 import Application from 'koa';
 
-const httpRequest = require('./https-helper');
+import httpRequest from './https-helper';
+// const httpRequest = require('./https-helper');
 const urlGenerator = (u:string, p = 'https://') => p + u
 
 function proxyMiddleware (mockMap: Map<string, any>) {
@@ -10,6 +11,7 @@ function proxyMiddleware (mockMap: Map<string, any>) {
     let originHost = header.mpx_origin_host;
     let urlWithoutQuery = url.slice(0, url.indexOf('?'))
     if (mockMap.has(originHost + urlWithoutQuery)) {
+      console.log(`【mockMap】->`, originHost + urlWithoutQuery, mockMap.has(originHost + urlWithoutQuery));
       ctx.body = mockMap.get(originHost + urlWithoutQuery)
     } else {
       try {
