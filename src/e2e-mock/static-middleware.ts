@@ -7,7 +7,7 @@ import Application from 'koa';
 // const NOT_FOUND_STATUS = 404;
 
 const e2eMockStatic = (dirname:string) => {
-  return async (ctx: Application.DefaultContext, next:Function) => {
+  return async (ctx: Application.DefaultContext, next: Application.Next): Promise<any> => {
     let { request: { url } } = ctx;
     let urlWithoutQueryFirstSlash:string = utils.urlWithoutQuery(url).slice(1);
     let fileName:string = utils.toDashJoin(urlWithoutQueryFirstSlash);

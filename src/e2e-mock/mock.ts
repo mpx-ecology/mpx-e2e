@@ -11,6 +11,7 @@ export interface E2eMockConfig {
   staticDir: string
   // debug: boolean
 }
+type mockReturnType = void | (() => boolean)
 
 class E2eMock {
   // public useStatic: boolean
@@ -22,10 +23,10 @@ class E2eMock {
     // this.useStatic = cfg.useStatic;
     this.staticDir = cfg.staticDir;
     // this.debug = cfg.debug;
-    this.server = null
+    this.server = null;
     this.engineStart();
   }
-  engineStart (port = 8887) {
+  engineStart (port = 8887): void {
     if (this.server) {
       console.warn('the last server has been shutdown!!! a new server will start soon!!!');
       // this.server.close()
@@ -41,7 +42,7 @@ class E2eMock {
     app.listen(port, () => console.log('8887 has been running!!!'));
     this.server = app
   }
-  setMock (path: string, res: any) {
+  setMock (path: string, res: Record<string, any>): mockReturnType {
     let pathWithoutProtocol:string = path.slice(8);
     if (!this.mockMap.has(pathWithoutProtocol)) {
       this.mockMap.set(pathWithoutProtocol, res);
@@ -51,7 +52,7 @@ class E2eMock {
       console.log(`the ${path} has already existed in mock-map, please remove it before setting again!`)
     }
   }
-  removeMockFromMap (path:string) {
+  removeMockFromMap (path:string): boolean {
     let pathWithoutProtocol:string = path.slice(8);
     if (this.mockMap.has(pathWithoutProtocol)) {
       return this.mockMap.delete(pathWithoutProtocol)

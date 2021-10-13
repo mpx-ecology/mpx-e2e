@@ -5,7 +5,7 @@ import httpRequest from './https-helper';
 const urlGenerator = (u:string, p = 'https://') => p + u
 
 function proxyMiddleware (mockMap: Map<string, any>) {
-  return async (ctx:Application.DefaultContext, next:Function) => {
+  return async (ctx:Application.DefaultContext, next:Application.Next): Promise<any> => {
     let { request } = ctx;
     let { method, url, header } = request;
     let originHost = header.mpx_origin_host;

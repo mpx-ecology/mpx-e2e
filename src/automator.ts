@@ -18,7 +18,7 @@ export default class Automator {
       this.mockHelper = new E2eMock(mockCfg)
     }
   }
-  setMock (path:string, response:any) {
+  setMock (path:string, response:Record<any, any>) {
     if (this.mockHelper) {
       return this.mockHelper.setMock(path, response)
     } else {
