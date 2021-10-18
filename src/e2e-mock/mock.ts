@@ -1,6 +1,7 @@
 import Application from 'koa';
 import staticMock from './static-middleware';
 import proxyMiddle from './proxy-middleware';
+import { Server } from 'http';
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 // const staticMock = require('./static-middleware');
@@ -8,7 +9,8 @@ const bodyParser = require('koa-bodyparser');
 
 export interface E2eMockConfig {
   // useStatic: boolean,
-  staticDir: string
+  staticDir: string,
+  port?: number
   // debug: boolean
 }
 type mockReturnType = void | (() => boolean)
@@ -19,12 +21,13 @@ class E2eMock {
   // public debug: boolean
   public mockMap = new Map()
   public server: Application | null
-  constructor (cfg:E2eMockConfig = { staticDir: '' }) {
+  public connection: Server | undefined
+  constructor (cfg:E2eMockConfig = { staticDir: '', port: 8887 }) {
     // this.useStatic = cfg.useStatic;
     this.staticDir = cfg.staticDir;
     // this.debug = cfg.debug;
     this.server = null;
-    this.engineStart();
+    this.engineStart(cfg.port);
   }
   engineStart (port = 8887): void {
     if (this.server) {
@@ -39,8 +42,11 @@ class E2eMock {
 
     app.use(proxyMiddle(this.mockMap));
 
-    app.listen(port, () => console.log('8887 has been running!!!'));
+    this.connection = app.listen(port, () => console.log('8887 has been running!!!'));
     this.server = app
+  }
+  shutdown ():void {
+    this.connection?.close(console.log.bind(console, 'Mock Server has shutdown'))
   }
   setMock (path: string, res: Record<string, any>): mockReturnType {
     let pathWithoutProtocol:string = path.slice(8);
