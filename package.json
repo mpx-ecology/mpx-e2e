@@ -1,11 +1,11 @@
 {
   "name": "@didi/e2e-extension",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "",
   "main": "lib/e2ex.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run lint && ./by-esbuild.js",
+    "build": "npm run lint && tsc --emitDeclarationOnly && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
     "tsc": "tsc"
   },

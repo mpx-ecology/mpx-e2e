@@ -1,22 +1,22 @@
 import EPage from './page'
 
-type MiniProgram = import('miniprogram-automator/out/MiniProgram').default
-type Element = import('miniprogram-automator/out/Element').default
-type Page = import('miniprogram-automator/out/Page').default
+import MiniProgram from "miniprogram-automator/out/MiniProgram"
+import Element from "miniprogram-automator/out/Element"
+import Page from "miniprogram-automator/out/Page"
 interface CurWaitType {
   path: string
   resolve: any
 }
 
 export default class EMiniProgram {
-    miniProgram: MiniProgram
-    curWaitPage: CurWaitType | undefined
-    curWaitRequest: CurWaitType | undefined
-    curWaitResponse: CurWaitType | undefined
-    curWaitComponent: CurWaitType | undefined
-    curWaitComponentUpdate: CurWaitType | undefined
-    hasAbility = false
-    cachePageStack = new Set()
+    private miniProgram: MiniProgram
+    private curWaitPage: CurWaitType | undefined
+    private curWaitRequest: CurWaitType | undefined
+    private curWaitResponse: CurWaitType | undefined
+    private curWaitComponent: CurWaitType | undefined
+    private curWaitComponentUpdate: CurWaitType | undefined
+    private hasAbility = false
+    private cachePageStack = new Set()
     constructor (options: MiniProgram) {
       const miniProgram = Object.create(options)
       // 重构返回page的方法，用Epage代替
