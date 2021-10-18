@@ -7,7 +7,10 @@
  * @returns 返回Promise<元素>
  */
 
- async function $(fn: (selector: string) => Promise<any>, className: string, componentsName?: string) {
+import Element from "miniprogram-automator/out/Element"
+import Page from "miniprogram-automator/out/Page"
+
+async function $(fn: (selector: string) => Promise<any>, className: string, componentsName?: string) {
   if (!componentsName) {
     return await fn('.' + className)
   }
@@ -43,20 +46,20 @@ async function _getDOM(fn: (selector: string) => Promise<Element | null>, compon
   return await getDOMItem()
 }
 
-export default class Page {
-  constructor (page: any) {
+export default class EPage {
+  constructor (page: Page) {
     const new$ = page.$
     const new$$ = page.$$
     const newPage = Object.create(page)
     // 重写page和element的$,$$方法
     newPage.$ = async (className: string, componentsName?: string): Promise<Element | any> => {
       const element = await $(s => new$.call(page, s), className, componentsName)
-      return element ? new Page(element) : element
+      return element ? new EPage(element) : element
     }
     newPage.$$ = async (className: string, componentsName?: string): Promise<Element[] | any[]> => {
       const elements = await $(s => new$$.call(page, s), className, componentsName)
       if (elements && elements.length) {
-        return elements.map((element:any) => new Page(element))
+        return elements.map((element:any) => new EPage(element))
       }
       return elements
     }

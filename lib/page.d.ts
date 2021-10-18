@@ -5,6 +5,7 @@
  * @param componentsName 组件名拆分的数组
  * @returns 返回Promise<元素>
  */
-export default class Page {
-    constructor(page: any);
+import Page from "miniprogram-automator/out/Page";
+export default class EPage {
+    constructor(page: Page);
 }

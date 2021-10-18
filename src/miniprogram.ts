@@ -1,8 +1,8 @@
 import EPage from './page'
 
-type MiniProgram = import('miniprogram-automator/out/MiniProgram').default
-type Element = import('miniprogram-automator/out/Element').default
-type Page = import('miniprogram-automator/out/Page').default
+import MiniProgram from "miniprogram-automator/out/MiniProgram"
+import Element from "miniprogram-automator/out/Element"
+import Page from "miniprogram-automator/out/Page"
 interface CurWaitType {
   path: string
   resolve: any

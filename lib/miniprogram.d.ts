@@ -1,5 +1,5 @@
-declare type MiniProgram = import('miniprogram-automator/out/MiniProgram').default;
-declare type Element = import('miniprogram-automator/out/Element').default;
+import MiniProgram from "miniprogram-automator/out/MiniProgram";
+import Element from "miniprogram-automator/out/Element";
 export default class EMiniProgram {
     private miniProgram;
     private curWaitPage;
@@ -20,4 +20,3 @@ export default class EMiniProgram {
     /** 初始化工作 */
     init(): Promise<void>;
 }
-export {};
