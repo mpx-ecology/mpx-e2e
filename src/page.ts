@@ -23,12 +23,12 @@
  * @param joinArr 辅助数组
  * @returns 返回Promise<元素>
  */
-async function _getDOM(fn: (selector: string) => Promise<Element | null>, componetsNameArr: string[], clazz: string, joinArr = []) {
+async function _getDOM(fn: (selector: string) => Promise<Element | null>, componetsNameArr: string[], clazz: string, joinArr:any[] = []) {
   const probeArray = [...componetsNameArr]
   async function getDOMItem ():Promise<Element | null> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
-      joinArr.unshift(probeArray.pop() as never)
+      joinArr.unshift(probeArray.pop())
       let s = '.' + joinArr.join('-') + '--' + clazz
       let dom = await fn(s)
       // let dom = isSingle$ ? await ctx.$(s) : await ctx.$$(s)
