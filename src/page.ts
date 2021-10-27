@@ -35,7 +35,7 @@ async function _getDOM(fn: (selector: string) => Promise<Element | null>, compon
       let s = '.' + joinArr.join('-') + '--' + clazz
       let dom = await fn(s)
       // let dom = isSingle$ ? await ctx.$(s) : await ctx.$$(s)
-      console.log(s, dom)
+      // console.log(s, dom)
       const isEmptyArr = Array.isArray(dom) && !dom.length
       if ((!dom || isEmptyArr) && !probeArray.length) return resolve(null)
       // console.log(dom === null, Array.isArray(dom) && !dom.length, 'Array.isArray(dom) && !dom.length')

@@ -1,8 +1,11 @@
 import EPage from './page'
-
+import chalk from 'chalk'
 import MiniProgram from "miniprogram-automator/out/MiniProgram"
 import Element from "miniprogram-automator/out/Element"
 import Page from "miniprogram-automator/out/Page"
+
+const log = (...str: string[]) => console.log(chalk.blue.bgGreenBright.bold('【e2e-sdk】: '), ...str)
+
 interface CurWaitType {
   path: string
   resolve: any
@@ -57,10 +60,10 @@ export default class EMiniProgram {
     }
     /** 可以等待五种种类型 页面 发请求 请求返回 组件渲染 组件更新 */
     wait (path: string, type = 'page', timeout = 8000): Promise<string | undefined> | void {
-      if (!this.hasAbility) return console.log('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持')
+      if (!this.hasAbility) return log(chalk.red.bold('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持'))
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
-        console.log('当前wait===', path, ' type=== ', type)
+        log(chalk.yellow('当前wait=>' + path))
         if (type === 'page' && path.startsWith('https')) {
           type = 'response'
         }
@@ -72,7 +75,7 @@ export default class EMiniProgram {
         switch (type) {
           case 'page': {
             const curPath = await this.currentPagePath()
-            console.log('期望进入的path===', path, '当前===', curPath)
+            log(chalk.green('wait成功!=>' + path + '(page)'))
             // wait的是当前页面直接返回
             if (curPath === path) {
               return resolve(path)
@@ -80,9 +83,8 @@ export default class EMiniProgram {
             // 兜底
             doudiTimer = setTimeout(async () => {
               const curPath = await this.currentPagePath()
-              console.log(path + '触发兜底，鉴于两种可能情况，1: 生命周期执行在wait前。2: onShow未执行' + curPath)
               if (curPath === path) {
-                console.log(curPath, '兜底成功', path)
+                log(chalk.green('兜底成功!=>' + path + '(page)'))
                 return resolve(path)
               }
             }, timeout)
@@ -135,14 +137,14 @@ export default class EMiniProgram {
     }
     /** 初始化工作 */
     async init(): Promise<void> {
-      console.log('init start')
+      log(chalk.blue.bold('初始化开始'))
       /** 监听页面渲染，需要ready搭配show生命周期 还有unload来完成页面等待 */
       await this.miniProgram.exposeFunction('onPageReady', (options: any) => {
         const { curWaitPage, cachePageStack } = this
         if (curWaitPage && curWaitPage.path === options) {
           curWaitPage.path = ''
           curWaitPage.resolve(options)
-          console.log('wait成功！渲染完成===', options)
+          log(chalk.green('wait成功!=>' + options + '(page)'))
         }
         if (!cachePageStack.has(options)) {
           cachePageStack.add(options)
@@ -151,7 +153,7 @@ export default class EMiniProgram {
       await this.miniProgram.exposeFunction('onPageShow', (options: any) => {
         const { curWaitPage, cachePageStack } = this
         if (curWaitPage && curWaitPage.path === options && cachePageStack.has(options)) {
-          console.log('wait成功！页面展示===', options)
+          log(chalk.green('wait成功!=>' + options + '(page)'))
           curWaitPage.path = ''
           curWaitPage.resolve(options)
         }
@@ -160,7 +162,7 @@ export default class EMiniProgram {
         const { cachePageStack } = this
         if (cachePageStack.has(options)) {
           cachePageStack.delete(options)
-          console.log('卸载页面===', options)
+          log(chalk.gray('页面卸载=>' + options))
         }
       })
       /** 请求相关的等待实现 */
@@ -170,7 +172,7 @@ export default class EMiniProgram {
         if (curWaitRequest && curWaitRequest.path === url) {
           curWaitRequest.path = ''
           curWaitRequest.resolve({ url, options })
-          console.log('wait成功！request===', url)
+          log(chalk.green('wait成功!=>' + url + '(request)'))
         }
       })
       await this.miniProgram.exposeFunction('onXfetchResponse', (options: any) => {
@@ -179,7 +181,7 @@ export default class EMiniProgram {
         if (curWaitResponse && curWaitResponse.path === url) {
           curWaitResponse.path = ''
           curWaitResponse.resolve({ url, options })
-          console.log('wait成功！response===', url)
+          log(chalk.green('wait成功!=>' + url + '(response)'))
         }
       })
       await this.miniProgram.exposeFunction('onComponentUpdate', (options: any) => {
@@ -187,7 +189,7 @@ export default class EMiniProgram {
         if (curWaitComponentUpdate && curWaitComponentUpdate.path === options.path) {
           curWaitComponentUpdate.path = ''
           curWaitComponentUpdate.resolve(options.data)
-          console.log('waitComponentUpdate成功！Component===', options.path)
+          log(chalk.green('wait成功!=>' + options.path + '(componentUpdate)'))
         }
       })
 
@@ -196,7 +198,7 @@ export default class EMiniProgram {
         if (curWaitComponent && curWaitComponent.path === options) {
           curWaitComponent.path = ''
           curWaitComponent.resolve(options)
-          console.log('wait成功！Component===', options.path)
+          log(chalk.green('wait成功!=>' + options.path + '(component)'))
         }
       })
       await this.miniProgram.exposeFunction('onHasAbility', (options: boolean) => {
@@ -242,6 +244,6 @@ export default class EMiniProgram {
           return config
         })
       })
-      console.log('init done')
+      log(chalk.blue.bold('初始化结束'))
     }
 }
