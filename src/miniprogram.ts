@@ -75,9 +75,9 @@ export default class EMiniProgram {
         switch (type) {
           case 'page': {
             const curPath = await this.currentPagePath()
-            log(chalk.green('wait成功!=>' + path + '(page)'))
             // wait的是当前页面直接返回
             if (curPath === path) {
+              log(chalk.green('wait成功!=>' + path + '(page)'))
               return resolve(path)
             }
             // 兜底
