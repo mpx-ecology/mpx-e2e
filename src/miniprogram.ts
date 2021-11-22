@@ -201,7 +201,7 @@ export default class EMiniProgram {
       })
 
       await this.miniProgram.evaluate(() => {
-        const { xfetch, mixin } = getApp().getMpx()
+        const { xfetch, mixin } = getApp().getMpx() || getApp()
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
         }
