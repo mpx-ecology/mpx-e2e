@@ -13,7 +13,7 @@ export default class EMiniProgram {
     /** 返回当前页面路径 */
     currentPagePath(): Promise<string | undefined>;
     /** 可以等待五种种类型 页面 发请求 请求返回 组件渲染 组件更新 */
-    wait(path: string, type?: string, timeout?: number): Promise<string | undefined> | void;
+    wait(path: string, type?: string): Promise<string | undefined> | void;
     waitAll<T>(...args: [Promise<T>]): Promise<any>;
     /** 打印元素日志 */
     consoleWxml(element: Element): void;
