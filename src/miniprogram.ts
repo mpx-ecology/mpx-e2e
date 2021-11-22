@@ -234,7 +234,16 @@ export default class EMiniProgram {
 
         if (proxyCfg && proxyCfg.length) {
           let cfg = proxyCfg.map(({ test, proxy }: Record<any, any>) => {
-            let host = test.host || test.url.match(/https:\/\/([^/]+)/g)[1];
+            let host
+            if (test.url) {
+              let execR = (/https:\/\/([^/]+)/g).exec(test.url)
+              host = execR && execR[1] || ''
+            } else {
+              host = test.host
+            }
+            if (!host) {
+              console.error(`【e2e-setMoc-Error】the 'url' or 'host' is required when setProxy!!!!`)
+            }
             return {
               test,
               proxy: {
