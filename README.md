@@ -5,7 +5,8 @@
 ## 前置
 
 > mpx低版本需要在creatApp()上挂载xfetch, mixin(mpx@2.6.106版本以上则无需此步骤)
-```js
+
+```ts
   createApp({
     mixin: mpx.mixin.
     xfetch: mpx.xfetch
@@ -15,6 +16,7 @@
 ## API
 
 ## 1. Automator
+
 > Automator 模块提供了启动及连接开发者工具的方法。
 
 [继承微信自动化sdk](https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/automator.html)
@@ -25,34 +27,36 @@
 > 初始化mock，提供mock需要的配置可实现本地mock或更改接口返回参数
 
 ```ts
-interface E2eMockConfig {
-  staticDir: string, // 本地文件目录：
-  debug: boolean // debug模式
-}
+  interface E2eMockConfig {
+    staticDir: string, // 本地文件目录：
+    debug: boolean // debug模式
+  }
 
-Automator.initMock(mockCfg: E2eMockConfig): Promise<MiniProgram>
+  Automator.initMock(mockCfg: E2eMockConfig): Promise<MiniProgram>
 ```
 
 ### 1.2 setMock
 
 > 设置需要mock的路径和返回结果
-```javascript
-Automator.setMock (path:string, response:any): () => void
 
-// 示例：
-let un = Automator.setMock('https://api.hongyibo.com.cn/gulfstream/pre-sale/v1/other/pGetIndexInfo', {
-  errno: 0,
-  errmsg: 'mock-index-info',
-  data: {
-    a: 1,
-    b: 2,
-    c: 3
-  }
-});
+```ts
+  Automator.setMock (path:string, response:any): () => void
 
-// 需要取消时可以调用 un，注意这一步骤非必须！！
-un(); 
+  // 示例：
+  let un = Automator.setMock('https://api.hongyibo.com.cn/gulfstream/pre-sale/v1/other/pGetIndexInfo', {
+    errno: 0,
+    errmsg: 'mock-index-info',
+    data: {
+      a: 1,
+      b: 2,
+      c: 3
+    }
+  });
+
+  // 需要取消时可以调用 un，注意这一步骤非必须！！
+  un(); 
 ```
+
 参数：
 1. path: 接口
 2. response: 该接口响应的 mock 数据
@@ -60,10 +64,11 @@ un();
 返回值：取消函数，调用该函数即可从 mock map 中移除该 mock
 
 ### 1.3 removeMockFromMap
+
 > 从 mock map 中移除指定 path 对应的的 mock 数据；
 
-```javascript
-Automator.removeMockFromMap (path:string): void
+```ts
+  Automator.removeMockFromMap (path:string): void
 ```
 
 ## 2. Miniprogram
@@ -77,28 +82,28 @@ Automator.removeMockFromMap (path:string): void
 
 ```ts
 
-wait(path: string, type?: string): Promise<string | undefined> | void;
+  wait(path: string, type?: string): Promise<string | undefined> | void;
 
-const miniProgram = await Automator.launch({
-  projectPath: './dist/wx'
-})
-// 页面
-page = await miniProgram.reLaunch('/pages/index/index')
-await miniProgram.wait('pages/index/index')
-// 组件
-const suggest1 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'component')
+  const miniProgram = await Automator.launch({
+    projectPath: './dist/wx'
+  })
+  // 页面
+  page = await miniProgram.reLaunch('/pages/index/index')
+  await miniProgram.wait('pages/index/index')
+  // 组件
+  const suggest1 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'component')
 
-// 组件更新
-const suggest2 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'componentUpdate')
+  // 组件更新
+  const suggest2 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'componentUpdate')
 
-// 请求
-const request = await miniProgram.wait('https://xxxx.xxx/xxx', 'request')
+  // 请求
+  const request = await miniProgram.wait('https://xxxx.xxx/xxx', 'request')
 
-// 返回结果
-const response = await miniProgram.wait('https://xxxx.xxx/xxx', 'response')
-expect(response.options.data.errno).toBe(0)
-const data = response.options.data.data
-expect(data.status).toBe(1)
+  // 返回结果
+  const response = await miniProgram.wait('https://xxxx.xxx/xxx', 'response')
+  expect(response.options.data.errno).toBe(0)
+  const data = response.options.data.data
+  expect(data.status).toBe(1)
 
 ```
 
@@ -106,10 +111,10 @@ expect(data.status).toBe(1)
 
 > 同时等待多个操作
 
-```js
-waitAll<T> (args:[Promise<T>]): Promise<any>
+```ts
+  waitAll<T> (args:[Promise<T>]): Promise<any>
 
-const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaafe3e4/suggest'), inputbtn.tap())
+  const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaafe3e4/suggest'), inputbtn.tap())
 
 ```
 
@@ -117,36 +122,37 @@ const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaa
 
 > 获取当前页面的路径
 
-```js
-const curPath = await miniProgram.currentPagePath()
-expect(curPath).toBe('pages/index/index')
+```ts
+  const curPath = await miniProgram.currentPagePath()
+  expect(curPath).toBe('pages/index/index')
 ```
 
 ## 3 Page
+
 [继承微信自动化sdk](https://developers.weixin.qq.com/miniprogram/dev/devtools/auto/page.html)
 
 【重写方法】重写page和element的$,$$方法
 ### 3.1 $
 
 > 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题。(不传入components名称则走微信原生方式获取)
-```js
-$(className: string, componentsName?: string): Promise<Element | any>
 
-const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91faba/confirm')
+```ts
+  $(className: string, componentsName?: string): Promise<Element | any>
 
-const confirmbtn2 = await page.$('.confirm-btn')
-const view = await page.$('view')
-const id = await page.$('#id')
+  const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91faba/confirm')
+
+  const confirmbtn2 = await page.$('.confirm-btn')
+  const view = await page.$('view')
+  const id = await page.$('#id')
 ```
 
 ### 3.2 $$
+
 > \$\$同$
 
-```js
-$(className: string, componentsName?: string): Promise<any>
-
-const btns = await page.$$('confirm-btn', 'homepage/components/btnf91faba/btn')
-
+```ts
+  $(className: string, componentsName?: string): Promise<any>
+  const btns = await page.$$('confirm-btn', 'homepage/components/btnf91faba/btn')
 ```
 
 
