@@ -155,4 +155,9 @@
   const btns = await page.$$('confirm-btn', 'homepage/components/btnf91faba/btn')
 ```
 
+## FAQ
+
+- $方法为什么取不到dom元素
+- 
+
 
