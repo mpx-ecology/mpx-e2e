@@ -202,6 +202,7 @@ export default class EMiniProgram {
 
       await this.miniProgram.evaluate(() => {
         const { xfetch, mixin } = getApp().getMpx() || getApp()
+        const proxyCfg = getApp().setProxy
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
         }
@@ -230,6 +231,23 @@ export default class EMiniProgram {
             onComponentReady(this.is)
           }
         }, 'component')
+
+        if (proxyCfg && proxyCfg.length) {
+          let cfg = proxyCfg.map(({ test, proxy }: Record<any, any>) => {
+            let host = test.host || test.url.match(/https:\/\/([^/]+)/g)[1];
+            return {
+              test,
+              proxy: {
+                ...proxy,
+                header: {
+                  mpx_origin_host: host
+                }
+              }
+            }
+          });
+          xfetch.setProxy(cfg)
+        }
+
         xfetch.interceptors.request.use(function (config:any) {
           onXfetchRequest(config)
           return config
