@@ -14,7 +14,7 @@
 
 > 初始化mock，提供mock需要的配置可实现本地mock或更改接口返回参数
 
-```
+```ts
 interface E2eMockConfig {
   staticDir: string, // 本地文件目录：
   debug: boolean // debug模式
@@ -65,7 +65,7 @@ Automator.removeMockFromMap (path:string): void
 > 稳定等待['页面', '组件', '组件更新', '接口发起', '接口返回']，解决waitFor不能解决时间不确定的情况，发生报错。并且增加多种等待时机，更加掌控e2e流程
 
 
-```
+```js
 const miniProgram = await Automator.launch({
   projectPath: './dist/wx'
 })
@@ -73,16 +73,16 @@ const miniProgram = await Automator.launch({
 page = await miniProgram.reLaunch('/pages/index/index')
 await miniProgram.wait('pages/index/index')
 // 组件
-const suggest1 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'component', 800)
+const suggest1 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'component')
 
 // 组件更新
-const suggest2 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'componentUpdate', 800)
+const suggest2 = await miniProgram.wait('suggest/components/suggestcaafe3e4/suggest', 'componentUpdate')
 
 // 请求
 const request = await miniProgram.wait('https://xxxx.xxx/xxx', 'request')
 
 // 返回结果
-const response = await miniProgram.wait('https://xxxx.xxx/xxx')
+const response = await miniProgram.wait('https://xxxx.xxx/xxx', 'response')
 expect(response.options.data.errno).toBe(0)
 const data = response.options.data.data
 expect(data.status).toBe(1)
@@ -93,7 +93,7 @@ expect(data.status).toBe(1)
 
 > 同时等待多个操作
 
-```
+```js
 waitAll<T> (args:[Promise<T>]): Promise<any>
 
 const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaafe3e4/suggest'), inputbtn.tap())
@@ -104,7 +104,7 @@ const [suggest] = await miniProgram.waitAll(miniProgram.wait('suggest/suggestcaa
 
 > 获取当前页面的路径
 
-```
+```js
 const curPath = await miniProgram.currentPagePath()
 expect(curPath).toBe('pages/index/index')
 ```
@@ -116,7 +116,7 @@ expect(curPath).toBe('pages/index/index')
 ### 3.1 $
 
 > 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题
-```
+```js
 $(className: string, componentsName?: string): Promise<Element | any>
 
 const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91faba/confirm')
@@ -125,7 +125,7 @@ const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91f
 ### 3.2 $$
 > \$\$同$
 
-```
+```js
 $(className: string, componentsName?: string): Promise<any>
 
 const btns = await page.$$('confirm-btn', 'homepage/components/btnf91faba/btn')
