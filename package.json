@@ -1,6 +1,6 @@
 {
   "name": "@didi/e2e-extension",
-  "version": "0.0.10-0",
+  "version": "0.0.10-1",
   "description": "",
   "main": "lib/e2ex.js",
   "scripts": {
