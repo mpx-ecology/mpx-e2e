@@ -59,18 +59,13 @@ export default class EMiniProgram {
       return curPage ? curPage.path : curPage
     }
     /** 可以等待五种种类型 页面 发请求 请求返回 组件渲染 组件更新 */
-    wait (path: string, type = 'page', timeout = 8000): Promise<string | undefined> | void {
+    wait (path: string, type = 'page'): Promise<string | undefined> | void {
       if (!this.hasAbility) return log(chalk.red.bold('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持'))
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
         log(chalk.yellow('当前wait=>' + path))
         if (type === 'page' && path.startsWith('https')) {
           type = 'response'
-        }
-        let doudiTimer: any
-        let resolvep = (data:any) => {
-          clearTimeout(doudiTimer)
-          return resolve(data)
         }
         switch (type) {
           case 'page': {
@@ -80,14 +75,18 @@ export default class EMiniProgram {
               log(chalk.green('wait成功!=>' + path + '(page)'))
               return resolve(path)
             }
-            // 兜底
-            doudiTimer = setTimeout(async () => {
+            // 兜底 防止onShow没有触发
+            let doudiTimer = setTimeout(async () => {
               const curPath = await this.currentPagePath()
               if (curPath === path) {
                 log(chalk.green('兜底成功!=>' + path + '(page)'))
                 return resolve(path)
               }
-            }, timeout)
+            }, 3000)
+            let resolvep = (data:any) => {
+              clearTimeout(doudiTimer)
+              return resolve(data)
+            }
             this.curWaitPage = {
               path,
               resolve: resolvep
@@ -113,13 +112,9 @@ export default class EMiniProgram {
             }
             break
           case 'componentUpdate': {
-            let timer: any
             this.curWaitComponentUpdate = {
               path,
-              resolve: (data:any) => {
-                clearTimeout(timer)
-                timer = setTimeout(() => resolve(data), timeout)
-              }
+              resolve
             }
           }
             break
@@ -206,7 +201,7 @@ export default class EMiniProgram {
       })
 
       await this.miniProgram.evaluate(() => {
-        const { xfetch, mixin } = getApp()
+        const { xfetch, mixin } = getApp().getMpx()
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
         }

@@ -11,10 +11,13 @@ import Element from "miniprogram-automator/out/Element"
 import Page from "miniprogram-automator/out/Page"
 
 async function $(fn: (selector: string) => Promise<any>, className: string, componentsName?: string) {
+  if (className[0] === '.') {
+    className = className.slice(1)
+  }
   if (!componentsName) {
     return await fn('.' + className)
   }
-  const componetsNameArr = componentsName.split(/\/|-/)
+  const componetsNameArr = componentsName ? componentsName.split(/\/|-/) : []
   return await _getDOM(fn, componetsNameArr, className)
 }
 
@@ -53,10 +56,12 @@ export default class EPage {
     const newPage = Object.create(page)
     // 重写page和element的$,$$方法
     newPage.$ = async (className: string, componentsName?: string): Promise<Element | any> => {
+      if (!componentsName) return new$.call(page, className)
       const element = await $(s => new$.call(page, s), className, componentsName)
       return element ? new EPage(element) : element
     }
     newPage.$$ = async (className: string, componentsName?: string): Promise<Element[] | any[]> => {
+      if (!componentsName) return new$$.call(page, className)
       const elements = await $(s => new$$.call(page, s), className, componentsName)
       if (elements && elements.length) {
         return elements.map((element:any) => new EPage(element))
