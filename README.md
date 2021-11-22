@@ -2,6 +2,16 @@
 
 基于官方自动化库`miniprogram-automator`上进行了封装，提供了wait模式和mock的功能，另外获取dom元素更加稳定便捷。
 
+## 前置
+
+> mpx低版本需要在creatApp()上挂载xfetch, mixin(mpx@2.6.106版本以上则无需此步骤)
+```js
+  createApp({
+    mixin: mpx.mixin.
+    xfetch: mpx.xfetch
+  })
+```
+
 ## API
 
 ## 1. Automator
@@ -65,7 +75,10 @@ Automator.removeMockFromMap (path:string): void
 > 稳定等待['页面', '组件', '组件更新', '接口发起', '接口返回']，解决waitFor不能解决时间不确定的情况，发生报错。并且增加多种等待时机，更加掌控e2e流程
 
 
-```js
+```ts
+
+wait(path: string, type?: string): Promise<string | undefined> | void;
+
 const miniProgram = await Automator.launch({
   projectPath: './dist/wx'
 })
@@ -115,11 +128,15 @@ expect(curPath).toBe('pages/index/index')
 【重写方法】重写page和element的$,$$方法
 ### 3.1 $
 
-> 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题
+> 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题。(不传入components名称则走微信原生方式获取)
 ```js
 $(className: string, componentsName?: string): Promise<Element | any>
 
 const confirmbtn = await page.$('confirm-btn', 'homepage/components/confirmef91faba/confirm')
+
+const confirmbtn2 = await page.$('.confirm-btn')
+const view = await page.$('view')
+const id = await page.$('#id')
 ```
 
 ### 3.2 $$
