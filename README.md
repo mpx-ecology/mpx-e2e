@@ -157,7 +157,24 @@
 
 ## FAQ
 
-- $方法为什么取不到dom元素
-- 
+- $方法为什么取不到dom元素？
+  > 可能存在以下几种情况
+  
+  1. dom类名不对，或者组件名不对，或者类名和组件名不匹配
+  2. page对象没有更新，如果跳转到某一个页面，需要重新赋值page即:
+  ```ts
+    page = await miniProgram.currentPage()
+  ```
+  3. dom元素未渲染，即可能用wx:if控制的元素，如需要获取一定要保证该元素在获取时渲染在模拟器或者真机上
+
+- 组件名的hash值一改动代码就会发生变化，如何固定hash？
+  
+  在构建配置中加入此参数
+  ```ts
+    new MpxWebpackPlugin({
+      pathHashMode: 'relative' // 可保证hash不变
+    })
+  ```
+
 
 
