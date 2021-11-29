@@ -135,6 +135,7 @@
 ### 3.1 $
 
 > 获取dom元素，不同官方$的是，配合components名称可获取自定义组件中的元素，解决官方$获取不到的问题。(不传入components名称则走微信原生方式获取)
+> 切忌传入组件名只能和class选择器配合使用，其他选择器方式可用原生方式
 
 ```ts
   $(className: string, componentsName?: string): Promise<Element | any>
