@@ -232,6 +232,8 @@ export default class EMiniProgram {
           }
         }, 'component')
 
+        console.log('proxyCfg ====>>>>>', proxyCfg)
+
         if (proxyCfg && proxyCfg.length) {
           let cfg = proxyCfg.map(({ test, proxy }: Record<any, any>) => {
             let host
