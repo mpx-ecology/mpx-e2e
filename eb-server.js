@@ -8,6 +8,7 @@ esbuild.build({
   target: 'es6',
   bundle: true,
   outfile: './lib/e2e-mock-server.js',
+  // watch: true,
   // minify: true
   // sourcemap: true,
 }).then(() => {
