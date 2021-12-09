@@ -63,8 +63,7 @@ export default class EMiniProgram {
       if (!this.hasAbility) return log(chalk.red.bold('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持'))
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
-        log(chalk.yellow('当前wait=>' + path))
-        if (type === 'page' && path.startsWith('https')) {
+        if (type === 'page' && /^(http|\/)/g.test(path)) {
           type = 'response'
         }
         switch (type) {
@@ -121,6 +120,7 @@ export default class EMiniProgram {
           default:
             break
         }
+        log(chalk.yellow('当前wait=> type ' + type + ' ' + path))
       })
     }
     waitAll<T> (...args:[Promise<T>]): Promise<any> {
@@ -173,7 +173,8 @@ export default class EMiniProgram {
       await this.miniProgram.exposeFunction('onXfetchResponse', (options: any) => {
         const url = options.requestConfig && options.requestConfig.url && options.requestConfig.url.split('?')[0]
         const { curWaitResponse } = this
-        if (curWaitResponse && curWaitResponse.path === url) {
+        // console.log('onXfetchResponse', curWaitResponse?.path, url?.includes(curWaitResponse?.path))
+        if (curWaitResponse && url?.includes(curWaitResponse?.path)) {
           curWaitResponse.path = ''
           curWaitResponse.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(response)'))
@@ -232,7 +233,7 @@ export default class EMiniProgram {
           }
         }, 'component')
 
-        console.log('proxyCfg ====>>>>>', proxyCfg)
+        // console.log('proxyCfg ====>>>>>111', proxyCfg)
 
         if (proxyCfg && proxyCfg.length) {
           let cfg = proxyCfg.map(({ test, proxy }: Record<any, any>) => {
@@ -248,14 +249,14 @@ export default class EMiniProgram {
             }
             return {
               test,
-              proxy: {
-                ...proxy,
+              proxy: Object.assign(proxy, {
                 header: {
                   mpx_origin_host: host
                 }
-              }
+              })
             }
           });
+          // console.log('cfg ===>>>>', cfg)
           xfetch.setProxy(cfg)
         }
 
