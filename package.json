@@ -3,6 +3,7 @@
   "version": "0.0.10-5",
   "description": "",
   "main": "lib/e2ex.js",
+  "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run lint && tsc --emitDeclarationOnly && ./by-esbuild.js",
