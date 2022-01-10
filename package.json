@@ -3,9 +3,10 @@
   "version": "0.0.10-10",
   "description": "",
   "main": "lib/e2ex.js",
+  "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run lint && tsc --emitDeclarationOnly && ./by-esbuild.js",
+    "build": "npm run lint && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
     "tsc": "tsc"
   },
