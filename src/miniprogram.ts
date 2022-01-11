@@ -198,7 +198,7 @@ export default class EMiniProgram {
           log(chalk.green('wait成功!=>' + options.path + '(component)'))
         }
       })
-      await this.miniProgram.exposeFunction('onHa sAbility', (options: boolean) => {
+      await this.miniProgram.exposeFunction('onHasAbility', (options: boolean) => {
         this.hasAbility = options
       })
 
