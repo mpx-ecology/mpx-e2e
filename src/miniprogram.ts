@@ -10,6 +10,7 @@ interface CurWaitType {
   path: string
   resolve: any
 }
+type InterceptFn = (config: any) => void
 
 export default class EMiniProgram {
     private miniProgram: MiniProgram
@@ -20,6 +21,8 @@ export default class EMiniProgram {
     private curWaitComponentUpdate: CurWaitType | undefined
     private hasAbility = false
     private cachePageStack = new Set()
+    private interceptRequetStack:InterceptFn[] = []
+    private interceptResponseStack:InterceptFn[] = []
     constructor (options: MiniProgram) {
       const miniProgram = Object.create(options)
       // 重构返回page的方法，用Epage代替
@@ -46,7 +49,8 @@ export default class EMiniProgram {
       miniProgram.wait = (...args:[any]) => this.wait.call(that, ...args)
       miniProgram.waitAll = (...args:[any]) => this.waitAll.call(that, ...args)
       miniProgram.currentPagePath = () => this.currentPagePath.call(that)
-
+      miniProgram.addInterceptRequest = (fn: InterceptFn) => this.interceptRequetStack.push(fn)
+      miniProgram.addInterceptResponse = (fn: InterceptFn) => this.interceptResponseStack.push(fn)
       miniProgram.init = (iniCfg: Record<any, any>) => this.init.call(that, iniCfg)
 
       this.miniProgram = miniProgram
@@ -163,23 +167,29 @@ export default class EMiniProgram {
       })
       /** 请求相关的等待实现 */
       await this.miniProgram.exposeFunction('onXfetchRequest', (options: any) => {
-        const { curWaitRequest } = this
+        const { curWaitRequest, interceptRequetStack } = this
         const url = options.url && options.url.split('?')[0]
         if (curWaitRequest && curWaitRequest.path === url) {
           curWaitRequest.path = ''
           curWaitRequest.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(request)'))
         }
+        interceptRequetStack.forEach(item => {
+          if (typeof item === 'function') { item(options) }
+        })
       })
       await this.miniProgram.exposeFunction('onXfetchResponse', (options: any) => {
         const url = options.requestConfig && options.requestConfig.url && options.requestConfig.url.split('?')[0]
-        const { curWaitResponse } = this
+        const { curWaitResponse, interceptResponseStack } = this
         // console.log('onXfetchResponse', curWaitResponse?.path, url?.includes(curWaitResponse?.path))
         if (curWaitResponse && curWaitResponse?.path && url?.includes(curWaitResponse.path)) {
           curWaitResponse.path = ''
           curWaitResponse.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(response)'))
         }
+        interceptResponseStack.forEach(item => {
+          if (typeof item === 'function') { item(options) }
+        })
       })
       await this.miniProgram.exposeFunction('onComponentUpdate', (options: any) => {
         const { curWaitComponentUpdate } = this
