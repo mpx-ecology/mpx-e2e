@@ -175,7 +175,7 @@ export default class EMiniProgram {
         const url = options.requestConfig && options.requestConfig.url && options.requestConfig.url.split('?')[0]
         const { curWaitResponse } = this
         // console.log('onXfetchResponse', curWaitResponse?.path, url?.includes(curWaitResponse?.path))
-        if (curWaitResponse && url?.includes(curWaitResponse?.path)) {
+        if (curWaitResponse && curWaitResponse?.path && url?.includes(curWaitResponse.path)) {
           curWaitResponse.path = ''
           curWaitResponse.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(response)'))
@@ -198,7 +198,7 @@ export default class EMiniProgram {
           log(chalk.green('wait成功!=>' + options.path + '(component)'))
         }
       })
-      await this.miniProgram.exposeFunction('onHa sAbility', (options: boolean) => {
+      await this.miniProgram.exposeFunction('onHasAbility', (options: boolean) => {
         this.hasAbility = options
       })
 
