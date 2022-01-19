@@ -205,7 +205,7 @@ export default class EMiniProgram {
         if (curWaitComponent && curWaitComponent.path === options) {
           curWaitComponent.path = ''
           curWaitComponent.resolve(options)
-          log(chalk.green('wait成功!=>' + options.path + '(component)'))
+          log(chalk.green('wait成功!=>' + options + '(component)'))
         }
       })
       await this.miniProgram.exposeFunction('onHasAbility', (options: boolean) => {
