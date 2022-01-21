@@ -218,7 +218,7 @@ export default class EMiniProgram {
 
       // console.log(`mockEnable ====>>>>>`, setProxy);
       let functionStr = `const { xfetch, mixin } = getApp().getMpx() || getApp()
-       console.error('hahahhahahahahah')
+      
         // const proxyCfg = getApp().setProxy;
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
