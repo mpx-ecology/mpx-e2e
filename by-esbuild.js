@@ -8,7 +8,6 @@ esbuild.build({
   bundle: true,
   outfile: './lib/e2ex.js',
   minify: true,
-  watch: true
   // sourcemap: true,
 }).then(() => {
   console.log('打包完成!')
