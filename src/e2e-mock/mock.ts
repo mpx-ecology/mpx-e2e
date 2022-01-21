@@ -9,7 +9,7 @@ const bodyParser = require('koa-bodyparser');
 
 export interface E2eMockConfig {
   // useStatic: boolean,
-  staticDir: string,
+  staticDir?: string,
   port?: number
   // debug: boolean
 }
@@ -17,7 +17,7 @@ type mockReturnType = void | (() => boolean)
 
 class E2eMock {
   // public useStatic: boolean
-  public staticDir: string
+  public staticDir: string | void
   // public debug: boolean
   public mockMap = new Map()
   public server: Application | null
