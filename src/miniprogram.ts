@@ -216,6 +216,11 @@ export default class EMiniProgram {
       let setProxy = mockCfg?.setProxy
       setProxy = setProxy ? JSON.stringify(setProxy) : false
 
+      let interceptorCfg = initCfg?.injectInterceptorCfg || {}
+      let requestInterceptors = interceptorCfg.request?.map((itm: any) => `xfetch.interceptors.request.use(${itm})`) || ''
+      let responseInterceptors = interceptorCfg.response?.map((item: any) => `xfetch.interceptors.response.use(${item})`) || ''
+
+
       // console.log(`mockEnable ====>>>>>`, setProxy);
       let functionStr = `const { xfetch, mixin } = getApp().getMpx() || getApp()
       
@@ -277,17 +282,19 @@ export default class EMiniProgram {
           // console.log('cfg ===>>>>', cfg)
           xfetch.setProxy(cfg);
         }
-
         xfetch.interceptors.request.use(function (config) {
           onXfetchRequest(config);
           return config
-        })
+        });
         xfetch.interceptors.response.use(function (config) {
           onXfetchResponse(config)
           return config
-        })`
+        });
+        ${requestInterceptors ? requestInterceptors.join(';') : ''}
+        ${responseInterceptors ? responseInterceptors.join(';') : ''}
+        `;
 
-      await this.miniProgram.evaluate(new Function('a', 'b', functionStr))
+      await this.miniProgram.evaluate(new Function(functionStr))
       log(chalk.blue.bold('初始化结束'))
     }
 }
