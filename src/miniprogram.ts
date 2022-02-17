@@ -217,8 +217,13 @@ export default class EMiniProgram {
       setProxy = setProxy ? JSON.stringify(setProxy) : false
 
       let interceptorCfg = initCfg?.injectInterceptorCfg || {}
-      let requestInterceptors = interceptorCfg.request?.map((itm: any) => `xfetch.interceptors.request.use(${itm})`) || ''
-      let responseInterceptors = interceptorCfg.response?.map((item: any) => `xfetch.interceptors.response.use(${item})`) || ''
+      let requestInterceptors = interceptorCfg.request?.map((itm: any) => {
+         return `(${!itm.preIntercept || itm.preIntercept()}) && xfetch.interceptors.request.use(${itm.intercept})`
+      }) || ''
+
+      let responseInterceptors = interceptorCfg.response?.map((item: any) => {
+        return `(${!item.preIntercept || item.preIntercept()}) && xfetch.interceptors.response.use(${item.intercept})`
+      }) || ''
 
 
       // console.log(`mockEnable ====>>>>>`, setProxy);
