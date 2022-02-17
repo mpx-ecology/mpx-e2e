@@ -230,7 +230,7 @@ export default class EMiniProgram {
       }) || ''
 
 
-      // console.log(`mockEnable ====>>>>>`, setProxy);
+      console.log(`mockInterceptor ====>>>>>`, responseInterceptors);
       let functionStr = `const { xfetch, mixin } = getApp().getMpx() || getApp()
       
         // const proxyCfg = getApp().setProxy;
