@@ -31,7 +31,7 @@ export default class Automator {
       this.mockHelper = new E2eMock(mockCfg)
     }
   }
-  injectInterceptors (interceptorCfg: interceptorCfgType) {
+  injectInterceptors (interceptorCfg: interceptorCfgType): void {
     this.injectInterceptorCfg = interceptorCfg
   }
   setMock (path:string, response:Record<any, any>): void | (() => boolean){

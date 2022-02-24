@@ -136,7 +136,7 @@ export default class EMiniProgram {
     }
     /** 初始化工作 */
     async init(initCfg?: Record<any, any>): Promise<void> {
-      console.log('initCfg ------>>>>>', initCfg)
+      // console.log('initCfg ------>>>>>', initCfg)
       log(chalk.blue.bold('初始化开始'))
       /** 监听页面渲染，需要ready搭配show生命周期 还有unload来完成页面等待 */
       await this.miniProgram.exposeFunction('onPageReady', (options: any) => {
