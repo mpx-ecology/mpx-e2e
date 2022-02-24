@@ -10,6 +10,7 @@ interface CurWaitType {
   path: string
   resolve: any
 }
+type InterceptFn = (config: any) => void
 
 export default class EMiniProgram {
     private miniProgram: MiniProgram
@@ -20,6 +21,8 @@ export default class EMiniProgram {
     private curWaitComponentUpdate: CurWaitType | undefined
     private hasAbility = false
     private cachePageStack = new Set()
+    private interceptRequetStack:InterceptFn[] = []
+    private interceptResponseStack:InterceptFn[] = []
     constructor (options: MiniProgram) {
       const miniProgram = Object.create(options)
       // 重构返回page的方法，用Epage代替
@@ -46,8 +49,9 @@ export default class EMiniProgram {
       miniProgram.wait = (...args:[any]) => this.wait.call(that, ...args)
       miniProgram.waitAll = (...args:[any]) => this.waitAll.call(that, ...args)
       miniProgram.currentPagePath = () => this.currentPagePath.call(that)
-
-      miniProgram.init = () => this.init.call(that)
+      miniProgram.addInterceptRequest = (fn: InterceptFn) => this.interceptRequetStack.push(fn)
+      miniProgram.addInterceptResponse = (fn: InterceptFn) => this.interceptResponseStack.push(fn)
+      miniProgram.init = (iniCfg: Record<any, any>) => this.init.call(that, iniCfg)
 
       this.miniProgram = miniProgram
       // 初始化与appservice交互
@@ -63,8 +67,7 @@ export default class EMiniProgram {
       if (!this.hasAbility) return log(chalk.red.bold('由于在app上未注册mixin,xfetch导致初始化未完成，wait能力无法支持'))
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
-        log(chalk.yellow('当前wait=>' + path))
-        if (type === 'page' && path.startsWith('https')) {
+        if (type === 'page' && /^(http|\/)/g.test(path)) {
           type = 'response'
         }
         switch (type) {
@@ -121,6 +124,7 @@ export default class EMiniProgram {
           default:
             break
         }
+        log(chalk.yellow('当前wait=> type ' + type + ' ' + path))
       })
     }
     waitAll<T> (...args:[Promise<T>]): Promise<any> {
@@ -131,7 +135,8 @@ export default class EMiniProgram {
       element && element.wxml().then((data:any) => console.log(data))
     }
     /** 初始化工作 */
-    async init(): Promise<void> {
+    async init(initCfg?: Record<any, any>): Promise<void> {
+      console.log('initCfg ------>>>>>', initCfg)
       log(chalk.blue.bold('初始化开始'))
       /** 监听页面渲染，需要ready搭配show生命周期 还有unload来完成页面等待 */
       await this.miniProgram.exposeFunction('onPageReady', (options: any) => {
@@ -162,22 +167,29 @@ export default class EMiniProgram {
       })
       /** 请求相关的等待实现 */
       await this.miniProgram.exposeFunction('onXfetchRequest', (options: any) => {
-        const { curWaitRequest } = this
+        const { curWaitRequest, interceptRequetStack } = this
         const url = options.url && options.url.split('?')[0]
         if (curWaitRequest && curWaitRequest.path === url) {
           curWaitRequest.path = ''
           curWaitRequest.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(request)'))
         }
+        interceptRequetStack.forEach(item => {
+          if (typeof item === 'function') { item(options) }
+        })
       })
       await this.miniProgram.exposeFunction('onXfetchResponse', (options: any) => {
         const url = options.requestConfig && options.requestConfig.url && options.requestConfig.url.split('?')[0]
-        const { curWaitResponse } = this
-        if (curWaitResponse && curWaitResponse.path === url) {
+        const { curWaitResponse, interceptResponseStack } = this
+        // console.log('onXfetchResponse', curWaitResponse?.path, url?.includes(curWaitResponse?.path))
+        if (curWaitResponse && curWaitResponse?.path && url?.includes(curWaitResponse.path)) {
           curWaitResponse.path = ''
           curWaitResponse.resolve({ url, options })
           log(chalk.green('wait成功!=>' + url + '(response)'))
         }
+        interceptResponseStack.forEach(item => {
+          if (typeof item === 'function') { item(options) }
+        })
       })
       await this.miniProgram.exposeFunction('onComponentUpdate', (options: any) => {
         const { curWaitComponentUpdate } = this
@@ -193,22 +205,41 @@ export default class EMiniProgram {
         if (curWaitComponent && curWaitComponent.path === options) {
           curWaitComponent.path = ''
           curWaitComponent.resolve(options)
-          log(chalk.green('wait成功!=>' + options.path + '(component)'))
+          log(chalk.green('wait成功!=>' + options + '(component)'))
         }
       })
       await this.miniProgram.exposeFunction('onHasAbility', (options: boolean) => {
         this.hasAbility = options
       })
 
-      await this.miniProgram.evaluate(() => {
-        const { xfetch, mixin } = getApp().getMpx() || getApp()
-        const proxyCfg = getApp().setProxy
+      let { mockCfg } = initCfg || {}
+      let setProxy = mockCfg?.setProxy
+      setProxy = setProxy ? JSON.stringify(setProxy) : false
+
+      let interceptorCfg = initCfg?.injectInterceptorCfg || {}
+      let requestInterceptors = interceptorCfg.request?.map((itm: any) => {
+         return `;(${!itm.preIntercept} || ${itm.preIntercept.toString()}()) 
+                     && xfetch.interceptors.request.use(${itm.intercept}
+                  )`
+      }) || ''
+
+      let responseInterceptors = interceptorCfg.response?.map((item: any) => {
+        return `;(${!item.preIntercept} || ${item.preIntercept.toString()}()) 
+                  && xfetch.interceptors.response.use(${item.intercept}
+                )`
+      }) || ''
+
+
+      console.log(`mockInterceptor ====>>>>>`, responseInterceptors);
+      let functionStr = `const { xfetch, mixin } = getApp().getMpx() || getApp()
+      
+        // const proxyCfg = getApp().setProxy;
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
         }
-        const hasAbility = !!abilityCheck()
-        onHasAbility(hasAbility)
-        if (!hasAbility) return
+        const hasAbility = !!abilityCheck();
+        onHasAbility(hasAbility);
+        if (!hasAbility) return;
 
         mixin({
           onShow() {
@@ -221,7 +252,7 @@ export default class EMiniProgram {
           onReady() {
             onPageReady(this.route)
           }
-        }, 'page')
+        }, 'page');
         mixin({
           updated() {
             // console.log('onUpdate ' + this.is, this.data)
@@ -230,42 +261,49 @@ export default class EMiniProgram {
           ready() {
             onComponentReady(this.is)
           }
-        }, 'component')
+        }, 'component');
 
-        if (proxyCfg && proxyCfg.length) {
-          let cfg = proxyCfg.map(({ test, proxy }: Record<any, any>) => {
-            let host
+        // console.log('proxyCfg ====>>>>>111', mockEnable.setProxy);
+        // console.log('mockEnable ===>', ${setProxy});
+
+        if (${setProxy}) {
+          let proxyCfg = ${setProxy};
+          let cfg = proxyCfg.map(({ test, proxy }) => {
+            let host;
             if (test.url) {
-              let execR = (/https:\/\/([^/]+)/g).exec(test.url)
-              host = execR && execR[1] || ''
+              let execR = (/https:\\/\\/([^/]+)/g).exec(test.url);
+              host = execR && execR[1] || '';
             } else {
-              host = test.host
+              host = test.host;
             }
             if (!host) {
-              console.error(`【e2e-setMoc-Error】the 'url' or 'host' is required when setProxy!!!!`)
+              console.error(\`【e2e-setMoc-Error】the 'url' or 'host' is required when setProxy!!!!\`)
             }
             return {
               test,
-              proxy: {
-                ...proxy,
+              proxy: Object.assign(proxy, {
                 header: {
                   mpx_origin_host: host
                 }
-              }
+              })
             }
           });
-          xfetch.setProxy(cfg)
+          // console.log('cfg ===>>>>', cfg)
+          xfetch.setProxy(cfg);
         }
-
-        xfetch.interceptors.request.use(function (config:any) {
-          onXfetchRequest(config)
+        xfetch.interceptors.request.use(function (config) {
+          onXfetchRequest(config);
           return config
-        })
-        xfetch.interceptors.response.use(function (config:any) {
+        });
+        xfetch.interceptors.response.use(function (config) {
           onXfetchResponse(config)
           return config
-        })
-      })
+        });
+        ${requestInterceptors ? requestInterceptors.join(';') : ''}
+        ${responseInterceptors ? responseInterceptors.join(';') : ''}
+        `;
+
+      await this.miniProgram.evaluate(new Function(functionStr))
       log(chalk.blue.bold('初始化结束'))
     }
 }

@@ -11,6 +11,7 @@ export interface E2eMockConfig {
   // useStatic: boolean,
   staticDir?: string,
   port?: number
+  setProxy?: any[]
   // debug: boolean
 }
 type mockReturnType = void | (() => boolean)
@@ -42,7 +43,7 @@ class E2eMock {
 
     app.use(proxyMiddle(this.mockMap));
 
-    this.connection = app.listen(port, () => console.log('8887 has been running!!!'));
+    this.connection = app.listen(port, () => console.log(port + ' has been running!!!'));
     this.server = app
   }
   shutdown ():void {

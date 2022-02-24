@@ -7,7 +7,7 @@ esbuild.build({
   target: 'es2015',
   bundle: true,
   outfile: './lib/e2ex.js',
-  minify: true
+  minify: true,
   // sourcemap: true,
 }).then(() => {
   console.log('打包完成!')
