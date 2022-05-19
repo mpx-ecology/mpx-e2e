@@ -10,9 +10,13 @@
     "lint": "eslint . --ext .ts",
     "tsc": "tsc"
   },
-  "keywords": [],
+  "keywords": ["e2e", "mpx", "miniprogram"],
   "author": "kf-fe",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mpx-ecology/mpx-e2e/issues"
+  },
+  "homepage": "https://github.com/mpx-ecology/mpx-e2e#readme",
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/node": "^16.6.1",
