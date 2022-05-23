@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as utils from './utils';
 import { promises as fs }  from 'fs';
-import Application from 'koa';
+import * as Application from 'koa';
 
 // const NOT_FOUND_TIPS = 'e2e-static-mock-failed! check the json-filename and the static-dir provided!';
 // const NOT_FOUND_STATUS = 404;

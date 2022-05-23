@@ -1,4 +1,4 @@
-import Application from 'koa';
+import * as Application from 'koa';
 import staticMock from './static-middleware';
 import proxyMiddle from './proxy-middleware';
 import { Server } from 'http';

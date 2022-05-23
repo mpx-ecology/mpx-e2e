@@ -1,4 +1,4 @@
-import Application from 'koa';
+import * as Application from 'koa';
 
 import httpRequest from './https-helper';
 // const httpRequest = require('./https-helper');

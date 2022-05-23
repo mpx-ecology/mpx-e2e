@@ -1,5 +1,5 @@
 import EPage from './page'
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 import MiniProgram from "miniprogram-automator/out/MiniProgram"
 import Element from "miniprogram-automator/out/Element"
 import Page from "miniprogram-automator/out/Page"
