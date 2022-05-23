@@ -1,6 +1,6 @@
 {
   "name": "@mpxjs/e2e",
-  "version": "0.0.10",
+  "version": "0.0.11-0",
   "description": "",
   "main": "lib/e2ex.js",
   "types": "src/index.ts",
@@ -10,7 +10,11 @@
     "lint": "eslint . --ext .ts",
     "tsc": "tsc"
   },
-  "keywords": ["e2e", "mpx", "miniprogram"],
+  "keywords": [
+    "e2e",
+    "mpx",
+    "miniprogram"
+  ],
   "author": "kf-fe",
   "license": "ISC",
   "bugs": {
