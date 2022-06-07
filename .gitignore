@@ -4,7 +4,6 @@ npm-debug.log
 .idea/
 deploy/
 output/
-dist/
 .vscode/
 dll/
 .eslintcache

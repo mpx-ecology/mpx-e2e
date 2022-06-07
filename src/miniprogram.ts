@@ -3,6 +3,8 @@ import * as chalk from 'chalk'
 import MiniProgram from "miniprogram-automator/out/MiniProgram"
 import Element from "miniprogram-automator/out/Element"
 import Page from "miniprogram-automator/out/Page"
+import { pushImg } from './report-server/util'
+import * as path from 'path'
 
 const log = (...str: string[]) => console.log(chalk.blue.bgGreenBright.bold('【e2e-sdk】: '), ...str)
 
@@ -52,6 +54,13 @@ export default class EMiniProgram {
       miniProgram.addInterceptRequest = (fn: InterceptFn) => this.interceptRequetStack.push(fn)
       miniProgram.addInterceptResponse = (fn: InterceptFn) => this.interceptResponseStack.push(fn)
       miniProgram.init = (iniCfg: Record<any, any>) => this.init.call(that, iniCfg)
+
+      const screenshot = miniProgram.screenshot
+      miniProgram.screenshot = async (options: { path: string }) => {
+        await screenshot.call(miniProgram, options)
+        const src = path.join(process.cwd(), options.path)
+        pushImg({ path: options.path,  src })
+      }
 
       this.miniProgram = miniProgram
       // 初始化与appservice交互
