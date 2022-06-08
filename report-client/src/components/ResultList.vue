@@ -36,8 +36,10 @@ onBeforeMount(() => {
 <template>
   <div>
     <div>
-      {{ state.result.numFailingTests }}
-      {{ state.result.numPassingTests }}
+      测试失败：{{ state.result.numFailingTests }}
+    </div>
+    <div>
+      测试通过：{{ state.result.numPassingTests }}
     </div>
   </div>
 </template>

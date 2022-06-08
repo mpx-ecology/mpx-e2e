@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, reactive } from 'vue';
 import axios from 'axios'
-import { ElButton } from 'element-plus'
+import { ElImage, ElEmpty } from 'element-plus'
 
 type Img = {
   path: string,
@@ -35,10 +35,11 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    <el-button>确定</el-button>
-    <div v-for="(item, index) in state.imgList" :key="index">
-      <img :src="item.src" :alt="item.path">
-    </div>
+    <div>测试生成截图共 {{state.imgList.length}} 张</div>
+    <template v-for="(item, index) in state.imgList" :key="index">
+      <el-image style="width: 100px; height: 100px" :src="item.src" fit="contain" />
+    </template>
+    <el-empty description="description" />
   </div>
 </template>
 

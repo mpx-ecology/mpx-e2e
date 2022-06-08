@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { ElHeader, ElMain, ElFooter, ElContainer } from 'element-plus'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div class="common-layout">
+    <el-container>
+      <el-header height="66px">
+        <nav class="nav-menu">
+          <RouterLink to="/">测试数据</RouterLink>
+          <RouterLink to="/about">测试截图</RouterLink>
+        </nav>
+      </el-header>
+      <el-main>
+        <RouterView />
+      </el-main>
+      <el-footer height="40px">Copyright 2022 滴滴出行</el-footer>
+    </el-container>
+  </div>
 </template>
 
 <style>
 @import '@/assets/base.css';
 
 #app {
-  max-width: 1280px;
+  height: 100%;
   margin: 0 auto;
-  padding: 2rem;
 
   font-weight: normal;
 }
@@ -54,11 +53,18 @@ a,
   }
 }
 
+.common-layout, .el-container {
+  height: 100%;
+}
+
+.el-header, .el-footer {
+  background: var(--vt-c-black-mute);
+}
+
 nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -79,41 +85,4 @@ nav a:first-of-type {
   border: 0;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>
