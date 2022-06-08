@@ -3,6 +3,7 @@ import koaStatic from 'koa-static';
 import { Server } from 'http';
 import * as path from 'path';
 import open from 'open';
+import WebSocket, { WebSocketServer } from 'ws';
 import { handleCors, handleImg } from './util'
 import common from './route/common';
 
@@ -19,6 +20,8 @@ class E2eMock {
   public mockMap = new Map()
   public server: Application | null
   public connection: Server | undefined
+  public messageList = ['初始化']
+  public wsServer: WebSocket.Server | undefined
   constructor (cfg:E2eServerConfig = { staticDir: '', port: 8886 }) {
     this.staticDir = cfg.staticDir;
     this.server = null;
@@ -45,10 +48,30 @@ class E2eMock {
 
     open(`http://localhost:${port}/`)
     this.server = app
-    
+    this.initWebsocket()
   }
   shutdown ():void {
     this.connection?.close(console.log.bind(console, 'E2E server has shutdown'))
+  }
+  initWebsocket ():void {
+    const wsServer = new WebSocketServer({ port: 8885 })
+    wsServer.on('connection', () => {
+      this.sendMessage()
+    })
+    this.wsServer = wsServer
+  }
+  sendMessage (text?: string): void {
+    if (!this.wsServer) return
+    if (text) {
+      this.messageList.push(text)
+      this.wsServer.clients.forEach(socket => {
+        socket.send(JSON.stringify([text]))
+      })
+      return
+    }
+    this.wsServer.clients.forEach(socket => {
+      socket.send(JSON.stringify(this.messageList))
+    })
   }
 }
 

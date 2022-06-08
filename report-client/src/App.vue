@@ -63,7 +63,11 @@ a,
 
 nav {
   width: 100%;
-  font-size: 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   text-align: center;
 }
 
