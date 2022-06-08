@@ -8,3 +8,4 @@ output/
 dll/
 .eslintcache
 static-dir
+report-client/node_modules/
