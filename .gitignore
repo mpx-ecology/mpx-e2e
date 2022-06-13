@@ -4,8 +4,8 @@ npm-debug.log
 .idea/
 deploy/
 output/
-dist/
 .vscode/
 dll/
 .eslintcache
 static-dir
+report-client/node_modules/

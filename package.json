@@ -1,6 +1,6 @@
 {
   "name": "@mpxjs/e2e",
-  "version": "0.0.11",
+  "version": "0.0.12-1",
   "description": "",
   "main": "lib/e2ex.js",
   "types": "src/index.ts",
@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run lint && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "server:dev": "node ./serverTest.js"
   },
   "keywords": [
     "e2e",
@@ -30,13 +31,20 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "@types/koa-router": "^7.4.4",
+    "@types/koa-static": "^4.0.2",
+    "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "esbuild": "^0.12.15",
     "eslint": "^7.31.0",
+    "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
     "miniprogram-automator": "^0.10.0",
+    "open": "^8.4.0",
     "ts-loader": "^9.2.3",
     "webpack": "^5.46.0",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.7.2",
+    "ws": "^8.7.0"
   }
 }
