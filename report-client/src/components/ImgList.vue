@@ -8,7 +8,9 @@ type Img = {
   src: string
 }
 type BaseData = {
-  data: Img[],
+  data: {
+    imgList: Img[]
+  },
   errot: number
 }
 interface State {
@@ -26,8 +28,8 @@ const isDEV = import.meta.env.DEV
 const path = isDEV ? 'http://localhost:8886' : location.origin
 
 onBeforeMount(() => {
-  getData(`${path}/common/imgList`).then((res: Img[]) => {
-    state.imgList = res
+  getData(`${path}/common/imgList`).then((res) => {
+    state.imgList = res.imgList
   })
 })
 

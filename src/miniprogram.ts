@@ -3,7 +3,7 @@ import * as chalk from 'chalk'
 import MiniProgram from "miniprogram-automator/out/MiniProgram"
 import Element from "miniprogram-automator/out/Element"
 import Page from "miniprogram-automator/out/Page"
-import { pushImg } from './report-server/util'
+import { pushImg } from './utils'
 import * as path from 'path'
 
 const log = (...str: string[]) => console.log(chalk.blue.bgGreenBright.bold('【e2e-sdk】: '), ...str)

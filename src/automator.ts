@@ -2,8 +2,6 @@ import * as automator from 'miniprogram-automator'
 import MiniProgram from './miniprogram'
 import { IConnectOptions, ILaunchOptions } from 'miniprogram-automator/out/Launcher'
 import E2eMock, { E2eMockConfig } from './e2e-mock/mock';
-import E2eServer, { E2eServerConfig } from './report-server/server';
-
 
 interface interceptorCfgType {
   request?: any[],
@@ -32,10 +30,6 @@ export default class Automator {
       this.mockCfg = mockCfg
       this.mockHelper = new E2eMock(mockCfg)
     }
-  }
-  initServer(ServerCfg: E2eServerConfig): void {
-    console.log(`initMock -----serverCfg`, ServerCfg)
-    new E2eServer(ServerCfg)
   }
   injectInterceptors (interceptorCfg: interceptorCfgType): void {
     this.injectInterceptorCfg = interceptorCfg

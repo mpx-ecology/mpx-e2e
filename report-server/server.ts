@@ -2,32 +2,38 @@ import * as Application from 'koa';
 import koaStatic from 'koa-static';
 import { Server } from 'http';
 import * as path from 'path';
-import open from 'open';
+import openBrowser from 'open';
 import WebSocket, { WebSocketServer } from 'ws';
 import { handleCors, handleImg } from './util'
 import common from './route/common';
+import bodyParser from 'koa-bodyparser';
+import * as fs from 'fs'
 
 const Koa = require('koa');
 
-export interface E2eServerConfig {
-  staticDir?: string,
+interface E2eServerConfig {
   port?: number
-  setProxy?: any[]
+  open?: boolean
 }
 
-class E2eMock {
-  public staticDir: string | void
+class E2eServer {
   public mockMap = new Map()
   public server: Application | null
   public connection: Server | undefined
   public messageList = ['初始化']
   public wsServer: WebSocket.Server | undefined
-  constructor (cfg:E2eServerConfig = { staticDir: '', port: 8886 }) {
-    this.staticDir = cfg.staticDir;
+  public isServer: boolean
+  public cfg: E2eServerConfig
+  constructor () {
     this.server = null;
-    this.engineStart(cfg.port);
+    this.isServer = true;
+    this.cfg = { open: true, port: 8886 }
   }
-  engineStart (port = 8886): void {
+  apply (cfg: E2eServerConfig): void {
+    const dist = path.resolve(__dirname, './testResult.json')
+    fs.writeFileSync(dist, JSON.stringify({}))
+    this.cfg = Object.assign(this.cfg, cfg)
+    const { port = 8886 } = cfg
     if (this.server) {
       console.warn('the last server has been shutdown!!! a new server will start soon!!!');
       // this.server.close()
@@ -35,7 +41,7 @@ class E2eMock {
     }
 
     const app = new Koa();
-
+    app.use(bodyParser())
     app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
     app.use(handleCors)
     app.use(handleImg)
@@ -45,10 +51,16 @@ class E2eMock {
     this.connection = app.listen(port, () => {
       // console.log(`Starting up E2E server! ( http://localhost:${port}/ )`)
     });
-
-    open(`http://localhost:${port}/`)
+    // if (open) {
+    //   openBrowser(`http://localhost:${port}/`)
+    // }
     this.server = app
     this.initWebsocket()
+  }
+  done ():void {
+    if (this.cfg.open) {
+      openBrowser(`http://localhost:${this.cfg.port}/`)
+    }
   }
   shutdown ():void {
     this.connection?.close(console.log.bind(console, 'E2E server has shutdown'))
@@ -75,4 +87,5 @@ class E2eMock {
   }
 }
 
-export default E2eMock
+module.exports = E2eServer
+export default E2eServer
