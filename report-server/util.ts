@@ -1,16 +1,16 @@
 import * as Application from 'koa';
 import * as fs from 'fs';
 
-interface Img {
-  path: string,
-  src: string
-}
+// interface Img {
+//   path: string,
+//   src: string
+// }
 
-export const imgList: Img[] = []
+// export const imgList: Img[] = []
 
-export function pushImg (params: Img): void {
-  imgList.push(params)
-}
+// export function pushImg (params: Img): void {
+//   imgList.push(params)
+// }
 
 export function handleCors (ctx: Application.Context, next: Application.Next): void {
   ctx.set('Access-Control-Allow-Origin', '*');

@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-undef
-const automator = require('./lib/e2ex').default
+const PluginReport = require('./lib/plugin-report')
 
-automator.initServer()
+const app = new PluginReport()
+app.apply()
