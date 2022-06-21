@@ -17,7 +17,6 @@ interface E2eServerConfig {
 }
 
 class E2eServer {
-  public mockMap = new Map()
   public server: Application | null
   public connection: Server | undefined
   public messageList = ['初始化']

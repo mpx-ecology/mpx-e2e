@@ -9,6 +9,7 @@
     "build": "npm run lint && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
     "tsc": "tsc",
+    "dev": "./by-esbuild.js -w",
     "server:dev": "node ./serverTest.js"
   },
   "keywords": [
@@ -37,6 +38,7 @@
     "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
+    "commander": "^6.2.1",
     "esbuild": "^0.12.15",
     "eslint": "^7.31.0",
     "koa-router": "^10.1.1",
