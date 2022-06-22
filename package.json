@@ -17,6 +17,9 @@
     "mpx",
     "miniprogram"
   ],
+  "bin": {
+    "e2ePlatformBuild": "./by-esbuild.js"
+  },
   "author": "kf-fe",
   "license": "ISC",
   "bugs": {
