@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { ElHeader, ElMain, ElContainer, ElAside, ElFooter } from 'element-plus'
+import { ElHeader, ElMain, ElContainer, ElAside, ElFooter, ElScrollbar } from 'element-plus'
 import MenuList from './components/MenuList.vue'
 </script>
 
@@ -18,7 +18,11 @@ import MenuList from './components/MenuList.vue'
           <menu-list></menu-list>
         </el-aside>
         <el-container>
-          <el-main><router-view></router-view></el-main>
+          <el-scrollbar>
+            <el-main>
+              <router-view></router-view>
+            </el-main>
+          </el-scrollbar>
           <el-footer>
             <div class="bottom-footer">power by 花小猪小程序</div>
           </el-footer>
@@ -61,7 +65,8 @@ a,
   }
 }
 
-.common-layout, .el-container {
+.common-layout,
+.el-container {
   height: 100%;
 }
 
@@ -104,11 +109,12 @@ nav a:first-of-type {
   font-size: 22px;
   color: #fff;
 }
+
 .bottom-footer {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
-  color: #eee;
+  color: #ccc;
 }
 </style>
