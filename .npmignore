@@ -12,7 +12,7 @@ report-client/node_modules/
 report-client/public/
 report-client/src/
 report-client/.eslintrc.cjs
-report-client/.env.d.ts
+report-client/env.d.ts
 report-client/index.html
 report-client/package.json
 report-client/package-lock.json
