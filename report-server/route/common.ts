@@ -18,7 +18,7 @@ router.post('/imgList', (ctx: Application.DefaultContext) => {
     if (Array.isArray(imgList)) {
       imgList.push(ctx.request.body)
     } else {
-      data.imgList = [imgList]
+      data.imgList = [ctx.request.body]
     }
     fs.writeFileSync(dist, JSON.stringify(data))
     ctx.body = { error: 0, data: {} }
@@ -35,7 +35,7 @@ router.get('/imgList', (ctx: Application.Context) => {
     ctx.body = { error: 0, data: JSON.parse(file) }
   } catch (error) {
     // 如果服务器不存在请求的图片，返回默认数据
-    ctx.body = { error: 500, data: {} }
+    ctx.body = { error: 500, data: { reportList: [], imgList: [] } }
   }
 })
 
@@ -46,7 +46,7 @@ router.get('/testResult', (ctx: Application.Context) => {
     ctx.body = { error: 0, data: JSON.parse(file) }
   } catch (error) {
     // 如果服务器不存在请求的图片，返回默认数据
-    ctx.body = { error: 500, data: {} }
+    ctx.body = { error: 500, data: { reportList: [], imgList: [] } }
   }
 })
 
