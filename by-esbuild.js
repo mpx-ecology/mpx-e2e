@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-let esbuild = require('esbuild');
-let program = require('commander');
+const esbuild = require('esbuild');
+const program = require('commander');
+const nativeModulePlugin = require('./node-native-plugin');
+const { copy } = require('esbuild-plugin-copy');
 let pm2;
 let pm2ConnectFn;
 let pm2ServerCfg;
@@ -34,7 +36,7 @@ const watchOnRebuild = {
     if (error) {
       console.error('watch build failed:', error)
     } else {
-      console.log('watch build succeeded:', result)
+      console.log('watch build succeeded:', new Date().toLocaleTimeString())
       if (program.start) {
         pm2ConnectFn().then(() => pm2.restart(pm2ServerName, (e) => {
           if (e) {
@@ -55,16 +57,27 @@ esbuild.build({
     'plugin-report': './report-server/server.ts'
   },
   platform: 'node',
-  target: 'es2015',
+  target: 'es2020',
   bundle: true,
   // outfile: './lib/e2ex.js',
   outdir: './lib',
   minify: !program.watch,
-  watch: program.watch && watchOnRebuild
+  watch: program.watch && watchOnRebuild,
+  plugins: [
+    nativeModulePlugin,
+    copy({
+      resolveFrom: 'out',
+      assets: {
+        from: ['./report-server/gen-spec/tpl/**/*'],
+        to: ['.']
+      },
+      keepStructure: true
+    })
+  ]
 }).then(() => {
   console.log('打包完成！');
   console.log(program.watch, program.start)
-  if (program.watch) console.log('Watching.....');
+  if (program.watch) console.log('Watching.....', new Date().toLocaleTimeString());
   if (program.start) {
     console.log('正在启动服务.....')
     pm2ConnectFn().then(() => {

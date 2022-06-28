@@ -9,7 +9,7 @@
     "build": "npm run lint && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
     "tsc": "tsc",
-    "dev": "./by-esbuild.js -w -s",
+    "dev": "./by-esbuild.js -w",
     "server:dev": "node ./serverTest.js"
   },
   "keywords": [
@@ -18,7 +18,7 @@
     "miniprogram"
   ],
   "bin": {
-    "e2ePlatformBuild": "./by-esbuild.js"
+    "e2ePlatformBuild": "./serverTest.js"
   },
   "author": "kf-fe",
   "license": "ISC",
@@ -29,9 +29,12 @@
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/node": "^16.6.1",
+    "@types/nunjucks": "^3.2.1",
     "chalk": "^4.1.2",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
+    "nunjucks": "^3.2.3",
+    "prettier": "^2.7.1",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
@@ -43,6 +46,7 @@
     "@typescript-eslint/parser": "^4.28.4",
     "commander": "^6.2.1",
     "esbuild": "^0.12.15",
+    "esbuild-plugin-copy": "^1.3.0",
     "eslint": "^7.31.0",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",

@@ -1,0 +1,4 @@
+{% block useMock %}
+const requestMockRules = {{ mockRules | dump | safe }};
+await miniProgram.mockWxMethod('request', mockFunc, requestMockRules)
+{% endblock %}

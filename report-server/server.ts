@@ -7,7 +7,8 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { handleCors, handleImg } from './util'
 import common from './route/common';
 import bodyParser from 'koa-bodyparser';
-import * as fs from 'fs'
+import * as fs from 'fs';
+import generateRouter from './route/generate'
 
 const Koa = require('koa');
 
@@ -40,11 +41,12 @@ class E2eServer {
     }
 
     const app = new Koa();
-    app.use(bodyParser())
+    app.use(bodyParser());
     app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
-    app.use(handleCors)
-    app.use(handleImg)
-    app.use(common.routes(), common.allowedMethods())
+    app.use(handleCors);
+    app.use(handleImg);
+    app.use(common.routes(), common.allowedMethods());
+    app.use(generateRouter.routes())
 
 
     this.connection = app.listen(port, () => {

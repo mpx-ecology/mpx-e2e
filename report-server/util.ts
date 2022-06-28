@@ -12,7 +12,7 @@ import * as fs from 'fs';
 //   imgList.push(params)
 // }
 
-export function handleCors (ctx: Application.Context, next: Application.Next): void {
+export async function handleCors (ctx: Application.Context, next: Application.Next): Promise<any> {
   ctx.set('Access-Control-Allow-Origin', '*');
   ctx.set('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Authorization,Accept,X-Requested-With');
   ctx.set('Access-Control-Allow-Methods','PUT,POST,GET,DELETE,OPTIONS');
@@ -20,11 +20,11 @@ export function handleCors (ctx: Application.Context, next: Application.Next): v
   if(ctx.method === 'OPTIONS') {
     ctx.body = '200'
   } else {
-    next();
+    return await next();
   }
 }
 
-export function handleImg (ctx: Application.Context, next: Application.Next): void {
+export async function handleImg (ctx: Application.Context, next: Application.Next): Promise<any> {
   if (ctx.url.includes('png')) {
     try {
       const file = fs.readFileSync(ctx.url)
@@ -34,6 +34,6 @@ export function handleImg (ctx: Application.Context, next: Application.Next): vo
       // 如果服务器不存在请求的图片，返回默认图片
     }
   } else {
-    next()
+    return await next()
   }
 }
