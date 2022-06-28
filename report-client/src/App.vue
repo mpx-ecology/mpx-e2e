@@ -1,21 +1,33 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { ElHeader, ElMain, ElFooter, ElContainer } from 'element-plus'
+import { RouterView } from 'vue-router'
+import { ElHeader, ElMain, ElContainer, ElAside, ElFooter, ElScrollbar } from 'element-plus'
+import MenuList from './components/MenuList.vue'
 </script>
 
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header height="66px">
-        <nav class="nav-menu">
-          <RouterLink to="/">测试数据</RouterLink>
-          <RouterLink to="/about">测试截图</RouterLink>
-        </nav>
+      <el-header>
+        <div class="top-header">
+          <div>E2E测试平台</div>
+          <div></div>
+        </div>
       </el-header>
-      <el-main>
-        <RouterView />
-      </el-main>
-      <el-footer height="40px">Copyright 2022 滴滴出行</el-footer>
+      <el-container>
+        <el-aside width="240px">
+          <menu-list></menu-list>
+        </el-aside>
+        <el-container>
+          <el-scrollbar>
+            <el-main>
+              <router-view></router-view>
+            </el-main>
+          </el-scrollbar>
+          <el-footer>
+            <div class="bottom-footer">power by 花小猪小程序</div>
+          </el-footer>
+        </el-container>
+      </el-container>
     </el-container>
   </div>
 </template>
@@ -53,11 +65,12 @@ a,
   }
 }
 
-.common-layout, .el-container {
+.common-layout,
+.el-container {
   height: 100%;
 }
 
-.el-header, .el-footer {
+.el-header {
   background: var(--vt-c-black-mute);
 }
 
@@ -89,4 +102,19 @@ nav a:first-of-type {
   border: 0;
 }
 
+.top-header {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  font-size: 22px;
+  color: #fff;
+}
+
+.bottom-footer {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+}
 </style>

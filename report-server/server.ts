@@ -31,7 +31,7 @@ class E2eServer {
   }
   apply (cfg: E2eServerConfig): void {
     const dist = path.resolve(__dirname, './testResult.json')
-    fs.writeFileSync(dist, JSON.stringify({}))
+    fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [] }))
     this.cfg = Object.assign(this.cfg, cfg)
     const { port = 8886 } = cfg
     if (this.server) {
