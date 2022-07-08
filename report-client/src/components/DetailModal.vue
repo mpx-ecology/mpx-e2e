@@ -41,7 +41,7 @@ function confirmClick() {
 </script>
 
 <template>
-  <el-dialog v-model="showDetail" title="Shipping address">
+  <el-dialog v-model="showDetail" title="Shipping address" width="70%">
     <template #header="{ titleId, titleClass }">
       <div class="my-header">
         <Warning style="width: 1em; height: 1em; margin-right: 8px; color:coral" />
