@@ -8,3 +8,5 @@ app.apply({
   port: 8886,
   open: true
 })
+
+app.done()
