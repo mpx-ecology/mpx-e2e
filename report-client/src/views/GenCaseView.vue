@@ -1,6 +1,6 @@
 <template>
 <div>
-  <highlightjs
+  <highlight-js
       autodectect
       language="js"
       :code="code"

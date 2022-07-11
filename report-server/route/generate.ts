@@ -20,7 +20,7 @@ router.get('/loadCase', async (ctx:Application.Context, next) => {
 });
 
 router.get('/', async (ctx: Application.Context, next) => {
-
+	next()
 });
 
 

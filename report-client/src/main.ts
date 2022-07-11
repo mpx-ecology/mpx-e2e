@@ -13,7 +13,7 @@ import router from './router';
 hljs.registerLanguage('javascript', javascript);
 
 const app = createApp(App)
-app.component('highlightjs', hljsVuePlugin.component);
+app.component('HighlightJs', hljsVuePlugin.component);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
