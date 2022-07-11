@@ -38,5 +38,23 @@
       "title": "desc"
     }
   ],
+  "imgList": [
+    {
+      "path": "test/e2e/screenshot/list1.png",
+      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list1.png"
+    },
+    {
+      "path": "test/e2e/screenshot/list2.png",
+      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list2.png"
+    },
+    {
+      "path": "test/e2e/screenshot/liste3.png",
+      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/liste3.png"
+    },
+    {
+      "path": "test/e2e/screenshot/list4.png",
+      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list4.png"
+    }
+  ],
   "failureMessage": null
 }

@@ -70,7 +70,8 @@ a,
   box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
   position: sticky;
   top: 0;
-  background: #fff;
+  background: #4A5259;
+  z-index: 8;
 }
 
 nav {
