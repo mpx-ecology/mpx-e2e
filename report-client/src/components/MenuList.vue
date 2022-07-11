@@ -1,35 +1,29 @@
 <script setup lang="ts">
 import { ElMenu, ElMenuItem } from 'element-plus'
 import { config } from '../router/index'
-import { useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router'
+import { computed } from '@vue/reactivity'
 
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-const path = ref('')
-
-onMounted(() => {
-  const router = useRouter()
-  path.value = '/home'
-  router.replace('/home')
+const path = computed(() => {
+  const router = useRoute()
+  return router.path
 })
+
 </script>
 
 <template>
   <div class="menu-list">
     <div class="menu-inner">
-      <img class="menu-logo" src="https://dpubstatic.udache.com/static/dpubimg/imdk1FF2QF/logo_color.png" alt="">
-      <div class="menu-info">E2E 平台</div>
+      <img class="menu-logo" src="https://dpubstatic.udache.com/static/dpubimg/T1R-u2N8nn/footer_logo.png" alt="">
+      <div class="menu-info">E2E Report</div>
     </div>
     <el-menu
       :default-active="path"
       class="el-menu-demo"
       mode="horizontal"
-      @select="handleSelect"
-      text-color="#1c1e21"
-      active-text-color="#10910e"
+      text-color="#fff"
+      background-color="#4A5259"
+      active-text-color="#77CD9E"
       :router="true"
     >
       <el-menu-item
@@ -55,6 +49,7 @@ onMounted(() => {
 
 .el-menu-item {
   font-weight: 500;
+  margin: 0 10px;
 }
 
 .el-menu-item.is-active {
@@ -64,16 +59,15 @@ onMounted(() => {
 .menu-logo {
   width: 135px;
   height: 35px;
-  margin-right: 24px;
 }
 
 .menu-info {
-  background: #15c213;
-  font-size: 20px;
+  /* background: #77CD9E; */
+  font-size: 24px;
   font-weight: 500;
   line-height: 20px;
   padding: 6px 15px;
-  color: #fff;
+  color: #77CD9E;
 }
 
 .menu-list {
@@ -90,7 +84,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 50px;
+  margin-right: 60px;
 }
 
 .github {
@@ -107,7 +101,7 @@ onMounted(() => {
 
 .doc {
   font-weight: 500;
-  color: #1c1e21;
+  color: rgb(235 235 235 / 60%);
 }
 
 .doc:hover {
