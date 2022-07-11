@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { ElMenu, ElMenuItem } from 'element-plus'
 import { config } from '../router/index'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed } from '@vue/reactivity'
 
+const router = useRouter()
+
 const path = computed(() => {
-  const router = useRoute()
-  return router.path
+  const route = useRoute()
+  if (route.path === '/') {
+    router.replace('/home')
+  }
+  return route.path
 })
 
 </script>
