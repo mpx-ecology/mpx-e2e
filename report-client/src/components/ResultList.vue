@@ -62,7 +62,7 @@ onBeforeMount(() => {
     <div class="card">
       <el-card class="box-card">
         <template #header>
-          <div >测试通过</div>
+          <div class="card-title">Tests Total</div>
         </template>
         <div class="count">{{ totalInfo.numPassingTests }}</div>
       </el-card>
@@ -70,7 +70,7 @@ onBeforeMount(() => {
     <div class="card">
       <el-card class="box-card">
         <template #header>
-          <div >测试失败</div>
+          <div class="card-title">Failed Tests</div>
         </template>
         <div class="count fail">{{ totalInfo.numFailingTests }}</div>
       </el-card>
@@ -96,5 +96,10 @@ onBeforeMount(() => {
   width: 260px;
   margin-right: 24px;
   display: inline-block;
+  font-weight: 900;
+}
+
+.card-title {
+  font-weight: 600;
 }
 </style>

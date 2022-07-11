@@ -6,16 +6,19 @@ export const config = [
     path: '/home',
     name: 'home',
     component: HomeView,
-    title: '首页'
+    title: '报告'
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import('../views/AboutView.vue'),
     title: '截图'
+  },
+  {
+    path: '/work',
+    name: 'work',
+    component: () => import('../views/WorkView.vue'),
+    title: '工作台'
   },
   {
     path: '/gencase',

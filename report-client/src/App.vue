@@ -8,19 +8,15 @@ import MenuList from './components/MenuList.vue'
   <div class="common-layout">
     <el-container>
       <el-header>
-        <div class="top-header">
-          <div>E2E测试平台</div>
-          <div></div>
-        </div>
+        <menu-list></menu-list>
       </el-header>
       <el-container>
-        <el-aside width="240px">
-          <menu-list></menu-list>
-        </el-aside>
         <el-container>
           <el-scrollbar>
             <el-main>
-              <router-view></router-view>
+              <div class="common-container">
+                <router-view></router-view>
+              </div>
             </el-main>
           </el-scrollbar>
           <el-footer>
@@ -71,7 +67,11 @@ a,
 }
 
 .el-header {
-  background: var(--vt-c-black-mute);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
+  position: sticky;
+  top: 0;
+  background: #4A5259;
+  z-index: 8;
 }
 
 nav {
@@ -116,5 +116,16 @@ nav a:first-of-type {
   align-items: center;
   justify-content: center;
   color: #ccc;
+}
+
+.common-container {
+  width: 100%;
+  min-width: 1280px;
+  min-height: 76vh;
+  background: #fff;
+  margin-bottom: 10px;
+  padding: 24px;
+  display: inline-block;
+  border: 1px solid #E6E9ED;
 }
 </style>
