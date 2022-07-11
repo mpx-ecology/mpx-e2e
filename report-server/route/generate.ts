@@ -12,10 +12,16 @@ const router = new Router({
 	prefix: '/gen'
 });
 
-router.get('/loadCase', async (ctx:Application.Context) => {
-	// 加载
+router.get('/loadCase', async (ctx:Application.Context, next) => {
+	// 加载 minitest.json
 	let result = await generateSpec(e2erc);
 	ctx.body = { e2erc, result };
-})
+	return await next();
+});
+
+router.get('/', async (ctx: Application.Context, next) => {
+
+});
+
 
 export default router

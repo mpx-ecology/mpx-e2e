@@ -16,6 +16,12 @@ export const config = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/AboutView.vue'),
     title: '截图'
+  },
+  {
+    path: '/gencase',
+    name: 'gencase',
+    component: () => import('../views/GenCaseView.vue'),
+    title: '生成测试用例'
   }
 ]
 const router = createRouter({

@@ -26,7 +26,7 @@ if (program.start) {
     })
   });
   pm2ServerCfg = {
-    script: './serverTest.js',
+    script: '/Users/didi/Documents/01dev/kf-mp-apphome/node_modules/@mpxjs/e2e/serverTest.js',
     name: pm2ServerName
   }
 }
