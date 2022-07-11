@@ -32,7 +32,7 @@ const totalInfo = computed(() => {
     numPassingTests += item.numPassingTests
   })
 
-  return { numFailingTests, numPassingTests }
+  return { numFailingTests, numPassingTests, total: state.result.length }
 })
 
 const chartList = computed(() => {
@@ -59,10 +59,18 @@ onBeforeMount(() => {
 
 <template>
   <div>
+     <div class="card">
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-title">Total Tests</div>
+        </template>
+        <div class="count dark">{{ totalInfo.total }}</div>
+      </el-card>
+    </div>
     <div class="card">
       <el-card class="box-card">
         <template #header>
-          <div class="card-title">Tests Total</div>
+          <div class="card-title">Passed Tests</div>
         </template>
         <div class="count">{{ totalInfo.numPassingTests }}</div>
       </el-card>
@@ -97,6 +105,10 @@ onBeforeMount(() => {
   margin-right: 24px;
   display: inline-block;
   font-weight: 900;
+}
+
+.dark {
+  color: #909399;
 }
 
 .card-title {

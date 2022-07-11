@@ -27,7 +27,7 @@ const showDetail = computed({
   get() {
     return props.modelValue
   },
-  set(newValue) {
+  set(newValue: boolean) {
     emit('update:modelValue', newValue)
   }
 })

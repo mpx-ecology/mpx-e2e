@@ -1,6 +1,6 @@
 {
   "name": "@mpxjs/e2e",
-  "version": "0.0.12-9",
+  "version": "0.0.12-11",
   "description": "",
   "main": "lib/e2ex.js",
   "types": "src/index.ts",
@@ -54,7 +54,7 @@
     "eslint": "^7.31.0",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
-    "miniprogram-automator": "^0.10.0",
+    "miniprogram-automator": "^0.11.0",
     "open": "^8.4.0",
     "pm2": "^5.2.0",
     "ts-loader": "^9.2.3",
