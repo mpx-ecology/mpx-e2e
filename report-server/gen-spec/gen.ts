@@ -1,7 +1,7 @@
 const prettier = require('prettier');
 const fsOrigin = require('fs');
 const path = require('path');
-const nunjucks = require('nunjucks')
+const tpl = require('./template');
 const fs = fsOrigin.promises;
 
 export default async function generateSpec (e2eRc: any) {
@@ -57,8 +57,9 @@ export default async function generateSpec (e2eRc: any) {
     let tplPath = path.resolve(__dirname, './tpl.njk')
     let str = await fs.readFile(tplPath, 'utf-8');
     // console.log(str);
-    let res = nunjucks.renderString(str, rd);
+    // let res = nunjucks.renderString(str, rd);
 
+    let res = tpl(rd);
     res = await prettier.format(res, { semi: true, singleQuote: true, parser: 'babel' });
     await fs.writeFile(f.n, res);
     specFileList.push(res);
