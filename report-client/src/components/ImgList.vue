@@ -57,7 +57,7 @@ const isEmpty = computed(() => {
       <el-scrollbar>
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
-            <el-image class="image" :src="img.src" fit="contain" :preview-src-list="item.preview" />
+            <el-image class="image" :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
             <div class="step">{{ img.path }}</div>
           </div>
         </div>
