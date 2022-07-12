@@ -55,7 +55,7 @@ export default async function generateSpec (e2eRc: any) {
     };
 
     let tplPath = path.resolve(__dirname, './tpl.njk')
-    let str = await fs.readFile(tplPath, 'utf-8');
+    // let str = await fs.readFile(tplPath, 'utf-8');
     // console.log(str);
     // let res = nunjucks.renderString(str, rd);
 
