@@ -1,5 +1,4 @@
-import * as Application from 'koa';
-import * as fs from 'fs';
+import fs from 'fs';
 
 // interface Img {
 //   path: string,
@@ -12,7 +11,7 @@ import * as fs from 'fs';
 //   imgList.push(params)
 // }
 
-export async function handleCors (ctx: Application.Context, next: Application.Next): Promise<any> {
+export async function handleCors (ctx, next) {
   ctx.set('Access-Control-Allow-Origin', '*');
   ctx.set('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Authorization,Accept,X-Requested-With');
   ctx.set('Access-Control-Allow-Methods','PUT,POST,GET,DELETE,OPTIONS');
@@ -24,14 +23,14 @@ export async function handleCors (ctx: Application.Context, next: Application.Ne
   }
 }
 
-export async function handleImg (ctx: Application.Context, next: Application.Next): Promise<any> {
+export async function handleImg (ctx, next) {
   if (ctx.url.includes('png')) {
     try {
       const file = fs.readFileSync(ctx.url)
       ctx.set('content-type', 'image/png')
       ctx.body = file
     } catch (error) {
-      // 如果服务器不存在请求的图片，返回默认图片
+      // console.log(error)
     }
   } else {
     return await next()

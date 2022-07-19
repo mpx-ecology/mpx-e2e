@@ -1,47 +1,37 @@
-import * as Application from 'koa';
 import koaStatic from 'koa-static';
-import { Server } from 'http';
-import * as path from 'path';
+import path from 'path';
 import openBrowser from 'open';
-import WebSocket, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import { handleCors, handleImg } from './util'
 import common from './route/common';
 import bodyParser from 'koa-bodyparser';
-import * as fs from 'fs';
+import fs from 'fs';
 import generateRouter from './route/generate'
+import Koa from 'koa'
 
-const Koa = require('koa');
-
-interface E2eServerConfig {
-  port?: number
-  open?: boolean
-}
+// const Koa = require('koa');
 
 class E2eServer {
-  public server: Application | null
-  public connection: Server | undefined
-  public messageList = ['初始化']
-  public wsServer: WebSocket.Server | undefined
-  public isServer: boolean
-  public cfg: E2eServerConfig
   constructor () {
     this.server = null;
     this.isServer = true;
     this.cfg = { open: true, port: 8886 }
   }
-  apply (cfg: E2eServerConfig): void {
+  apply (cfg) {
+    // eslint-disable-next-line no-undef
     const dist = path.resolve(__dirname, './testResult.json')
     fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [] }))
     this.cfg = Object.assign(this.cfg, cfg)
     const { port = 8886 } = cfg
     if (this.server) {
-      console.warn('the last server has been shutdown!!! a new server will start soon!!!');
+      // console.warn('the last server has been shutdown!!! a new server will start soon!!!');
       // this.server.close()
       return
     }
 
     const app = new Koa();
     app.use(bodyParser());
+    // eslint-disable-next-line no-undef
     app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
     app.use(handleCors);
     app.use(handleImg);
@@ -58,22 +48,22 @@ class E2eServer {
     this.server = app
     this.initWebsocket()
   }
-  done ():void {
+  done () {
     if (this.cfg.open) {
       openBrowser(`http://localhost:${this.cfg.port}/`)
     }
   }
-  shutdown ():void {
-    this.connection?.close(console.log.bind(console, 'E2E server has shutdown'))
+  shutdown () {
+    this.connection?.close()
   }
-  initWebsocket ():void {
+  initWebsocket () {
     const wsServer = new WebSocketServer({ port: 8885 })
     wsServer.on('connection', () => {
       this.sendMessage()
     })
     this.wsServer = wsServer
   }
-  sendMessage (text?: string): void {
+  sendMessage (text) {
     if (!this.wsServer) return
     if (text) {
       this.messageList.push(text)
@@ -88,5 +78,6 @@ class E2eServer {
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = E2eServer
 export default E2eServer
