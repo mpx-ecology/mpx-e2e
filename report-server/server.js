@@ -76,4 +76,4 @@ class E2eServer {
   }
 }
 
-module.exports = E2eServer
+module.exports = E2eServer;

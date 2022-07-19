@@ -4,7 +4,7 @@ const path = require('path');
 const tpl = require('./template');
 const fs = fsOrigin.promises;
 
-exports.generateSpec = async function generateSpec (e2eRc) {
+module.exports = async function generateSpec (e2eRc) {
   const { testSuitsDir,projectPath } = e2eRc;
 
   if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
