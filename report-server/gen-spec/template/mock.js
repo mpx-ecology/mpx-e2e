@@ -1,4 +1,4 @@
-const mockFunc = function () {
+function mockFunc () {
 
   function matchFilter(filterList, args) {
     for (let i = 0, len = filterList.length; i < len; ++i) {
@@ -61,6 +61,7 @@ const mockFunc = function () {
       })
     })
   }
-};
-exports.mockFn = () => mockFunc.toString();
+}
+
+exports.mockFn = () => `const mockFunc = ${mockFunc.toString()}`;
 

@@ -8,9 +8,8 @@ let fn = (renderData) => {
   let miniProgram;`;
 
   if (mockRules) {
-    str += `${mock.mockFn()}`
+    str += `${mock.mockFn()};`
   }
-
   str += beforeAll(renderData);
   str += afterAll(renderData);
 
@@ -19,6 +18,7 @@ let fn = (renderData) => {
     str += `const requestMockRules = ${ JSON.stringify(mockRules) };`
     str += `await miniProgram.mockWxMethod('request', mockFunc, requestMockRules);`
   }
+
 
   str += `let page, element, expectResult, actualResult;
 

@@ -54,13 +54,14 @@ module.exports = async function generateSpec (e2eRc) {
       connectFirst: false, // automator 优先使用 connect 而非 launch
     };
 
-    let tplPath = path.resolve(__dirname, './tpl.njk')
+    // let tplPath = path.resolve(__dirname, './tpl.njk')
     // let str = await fs.readFile(tplPath, 'utf-8');
     // console.log(str);
     // let res = nunjucks.renderString(str, rd);
 
     let res = tpl(rd);
     res = await prettier.format(res, { semi: true, singleQuote: true, parser: 'babel' });
+    console.log(res);
     await fs.writeFile(f.n, res);
     specFileList.push(res);
   }

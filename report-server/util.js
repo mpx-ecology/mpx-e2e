@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 // interface Img {
 //   path: string,
 //   src: string
@@ -34,4 +35,10 @@ exports.handleImg = async function handleImg (ctx, next) {
   } else {
     return await next()
   }
+}
+
+exports.getE2erc = () => {
+  const cwd = process.cwd();
+  let e2erc = require(path.resolve(cwd, './.e2erc.js'));
+  return e2erc
 }
