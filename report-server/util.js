@@ -1,5 +1,4 @@
-import fs from 'fs';
-
+const fs = require('fs');
 // interface Img {
 //   path: string,
 //   src: string
@@ -11,7 +10,7 @@ import fs from 'fs';
 //   imgList.push(params)
 // }
 
-export async function handleCors (ctx, next) {
+exports.handleCors = async function handleCors (ctx, next) {
   ctx.set('Access-Control-Allow-Origin', '*');
   ctx.set('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Authorization,Accept,X-Requested-With');
   ctx.set('Access-Control-Allow-Methods','PUT,POST,GET,DELETE,OPTIONS');
@@ -23,7 +22,7 @@ export async function handleCors (ctx, next) {
   }
 }
 
-export async function handleImg (ctx, next) {
+exports.handleImg = async function handleImg (ctx, next) {
   if (ctx.url.includes('png')) {
     try {
       const file = fs.readFileSync(ctx.url)

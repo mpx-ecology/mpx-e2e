@@ -1,15 +1,13 @@
-import koaStatic from 'koa-static';
-import path from 'path';
-import openBrowser from 'open';
-import { WebSocketServer } from 'ws';
-import { handleCors, handleImg } from './util'
-import common from './route/common';
-import bodyParser from 'koa-bodyparser';
-import fs from 'fs';
-import generateRouter from './route/generate'
-import Koa from 'koa'
-
-// const Koa = require('koa');
+const koaStatic = require('koa-static');
+const path = require('path');
+const Koa = require('koa');
+const openBrowser = require('open');
+const { handleCors, handleImg } = require('./util');
+const WebSocketServer = require('ws').WebSocketServer;
+const common = require('./route/common');
+const fs = require('fs');
+const generateRouter = require('./route/generate');
+const bodyParser = require('koa-bodyparser');
 
 class E2eServer {
   constructor () {
@@ -78,6 +76,4 @@ class E2eServer {
   }
 }
 
-// eslint-disable-next-line no-undef
 module.exports = E2eServer
-export default E2eServer

@@ -4,7 +4,7 @@ const path = require('path');
 const tpl = require('./template');
 const fs = fsOrigin.promises;
 
-export default async function generateSpec (e2eRc: any) {
+exports.generateSpec = async function generateSpec (e2eRc) {
   const { testSuitsDir,projectPath } = e2eRc;
 
   if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
@@ -12,7 +12,7 @@ export default async function generateSpec (e2eRc: any) {
   let caseDir = path.resolve(projectPath, './minitest');
   //
   let miniTestList = await fs.readdir(caseDir);
-  let files = miniTestList.map((i: any) => {
+  let files = miniTestList.map((i) => {
     return {
       o: i,
       we: i.replace('.json', ''),
@@ -28,13 +28,13 @@ export default async function generateSpec (e2eRc: any) {
     let minitestJson = require(f.p);
 
     let mockRules = minitestJson.commands
-      .filter((i: any) => i.command === 'mock')
-      .map((i: any) => i.rule);
+      .filter((i) => i.command === 'mock')
+      .map((i) => i.rule);
 
-    let cmds = minitestJson.commands.filter((i:any) => !['mock', 'startRecord', 'stopRecord'].includes(i.command));
+    let cmds = minitestJson.commands.filter((i) => !['mock', 'startRecord', 'stopRecord'].includes(i.command));
 
     // 把文字中的换行符等过滤掉，防止意外换行导致格式化失败
-    cmds = cmds.map((i:any) => /\n|\t|\r\n/g.test(i.text) ? { ...i, text: i.text.replace(/\n|\t|\r\n/g, ' ') } : i);
+    cmds = cmds.map((i) => /\n|\t|\r\n/g.test(i.text) ? { ...i, text: i.text.replace(/\n|\t|\r\n/g, ' ') } : i);
 
     let c = cmds;
 

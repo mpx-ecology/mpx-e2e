@@ -2,7 +2,7 @@
   "name": "@mpxjs/e2e",
   "version": "0.0.12-12",
   "description": "",
-  "main": "lib/e2ex.js",
+  "main": "src/index.js",
   "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

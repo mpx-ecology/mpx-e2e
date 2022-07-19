@@ -1,7 +1,6 @@
-import Router from 'koa-router';
-import fs from 'fs';
-import path from 'path';
-
+const Router = require('koa-router');
+const fs = require('fs');
+const path = require('path');
 
 const router = new Router({
   prefix: '/common'
@@ -48,4 +47,4 @@ router.get('/testResult', (ctx) => {
   }
 })
 
-export default router
+module.exports = router;
