@@ -20,4 +20,3 @@ report-client/README.md
 report-client/tsconfig.json
 report-client/tsconfig.vite-config.json
 report-client/vite.config.ts
-report-server/
