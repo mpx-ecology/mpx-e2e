@@ -8,11 +8,11 @@ const router = new Router({
 });
 
 router.get('/loadCase', async (ctx, next) => {
+	console.log('ctx.e2erc ---->', ctx.e2erc);
 	// 加载 minitest.json
 	try {
 		let e2erc = getE2erc();
 		let result = await generateSpec(e2erc);
-		console.log(result);
 		ctx.body = { e2erc, result };
 	} catch (e) {
 		ctx.body = e;

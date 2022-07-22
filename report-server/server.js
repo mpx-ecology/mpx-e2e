@@ -8,6 +8,7 @@ const common = require('./route/common');
 const fs = require('fs');
 const generateRouter = require('./route/generate');
 const bodyParser = require('koa-bodyparser');
+const getE2erc = require('./middleware/getE2erc');
 
 class E2eServer {
   constructor () {
@@ -33,8 +34,10 @@ class E2eServer {
     app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
     app.use(handleCors);
     app.use(handleImg);
+    app.use(getE2erc(cfg)); // ctx 挂载 e2erc
+
     app.use(common.routes(), common.allowedMethods());
-    app.use(generateRouter.routes())
+    app.use(generateRouter.routes());
 
 
     this.connection = app.listen(port, () => {
