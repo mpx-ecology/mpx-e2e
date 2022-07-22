@@ -40,8 +40,10 @@ exports.handleImg = async function handleImg (ctx, next) {
 exports.getE2erc = () => {
   const cwd = process.cwd();
   let e2erc = require(path.join(cwd, './.e2erc.js'));
-  if (!(/^(?:\/|[A-Z]:)/i.test(e2erc.testSuitsDir))) {
-    e2erc.testSuitsDir = path.resolve(cwd, e2erc.testSuitsDir)
-  }
+  ;['testSuitsDir', 'recordsDir'].forEach(i => {
+    if (!(/^(?:\/|[A-Z]:)/i.test(e2erc[i]))) {
+      e2erc[i] = path.resolve(cwd, e2erc[i])
+    }
+  })
   return e2erc
 }

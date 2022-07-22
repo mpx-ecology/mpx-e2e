@@ -8,13 +8,25 @@ const router = new Router({
 });
 
 router.get('/loadCase', async (ctx, next) => {
-	console.log('ctx.e2erc ---->', ctx.e2erc);
 	// 加载 minitest.json
 	try {
 		let e2erc = getE2erc();
-		let result = await generateSpec(e2erc);
-		ctx.body = { e2erc, result };
+		// 不传递 tasks 默认
+		let caseDir = path.resolve(e2erc.projectPath, './minitest');
+		let tasks = await fs.readdir(caseDir);
+		if (tasks.length) {
+			let result = await generateSpec({ e2erc,  tasks, write: true });
+			ctx.body = { errno: 0, errmsg: 'ok', e2erc, result };
+		} else {
+			ctx.body = {
+				errno: 100,
+				errmsg: 'no json file',
+				e2erc,
+				result: null
+			}
+		}
 	} catch (e) {
+		console.log(e);
 		ctx.body = e;
 	}
 	return await next();

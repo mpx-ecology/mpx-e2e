@@ -3,28 +3,36 @@ const fsOrigin = require('fs');
 const path = require('path');
 const tpl = require('./template');
 const fs = fsOrigin.promises;
-
-module.exports = async function generateSpec (e2eRc) {
-  const { testSuitsDir,projectPath } = e2eRc;
+const fsExtra = require('fs-extra');
+/**
+ *
+ * @param e2erc  .e2erc.js module
+ * @param tasks jsonfile[] json file list []
+ * @param write <boolean> should write file or not
+ * @returns {Promise<*[]>}
+ */
+module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
+  const { recordsDir, testSuitsDir,projectPath, jsonCaseCpDir } = e2erc;
 
   if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
 
-  let caseDir = path.resolve(projectPath, './minitest');
-  //
-  let miniTestList = await fs.readdir(caseDir);
-  let files = miniTestList.map((i) => {
+  let files = tasks.map((i) => {
     return {
-      o: i,
-      we: i.replace('.json', ''),
-      p: path.join(caseDir, i),
-      n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js'
+      o: i, // original name of json file
+      we: i.replace('.json', ''), // filename  without '.json' extension name
+      p: path.join(recordsDir, i), // absolute path of json file
+      n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js' // target spec file full name
     }
   });
 
   let specFileList = [];
 
-  if (!files.length) throw new Error(caseDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
+  if (!files.length) throw new Error(recordsDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
   for (let f of files) {
+    // 文件冲突检查 & 复制文件
+    // 复制 minitest/*.json 到 e2erc.jsonCaseCpDir
+    if (jsonCaseCpDir) await fsExtra.copy(f.p, `${jsonCaseCpDir}/${f.o}`);
+
     let minitestJson = require(f.p);
 
     let mockRules = minitestJson.commands
@@ -40,18 +48,18 @@ module.exports = async function generateSpec (e2eRc) {
 
     let rd = {
       projectPath,
-      blockPath: path.resolve(__dirname, './blocks'),
+      // blockPath: path.resolve(__dirname, './blocks'),
       descName: f.we,
       itName: f.we,
-      needRealMachine: false, // 是否需要真机
-      jestTimeout: 30000000,
-      defaultWaitFor: 10000, // 默认 waitFor 等待时长
-      connectUrl: 'ws://localhost:9420', // wsEndPoint
+      needRealMachine: e2erc.needRealMachine || false, // 是否需要真机
+      jestTimeout: e2erc.jestTimeout || 30000000,
+      defaultWaitFor: e2erc.defaultWaitFor || 10000, // 默认 waitFor 等待时长
+      wsEndpoint: e2erc.wsEndpoint, // wsEndPoint
       mockRules: mockRules?.length ? mockRules : false,
       cmds: c,
-      macroPath: './macros',
+      // macroPath: './macros',
       item: c[0],
-      connectFirst: false, // automator 优先使用 connect 而非 launch
+      connectFirst: e2erc.connectFirst, // automator 优先使用 connect 而非 launch
     };
 
     // let tplPath = path.resolve(__dirname, './tpl.njk')
@@ -61,8 +69,9 @@ module.exports = async function generateSpec (e2eRc) {
 
     let res = tpl(rd);
     res = await prettier.format(res, { semi: true, singleQuote: true, parser: 'babel' });
-    console.log(res);
-    await fs.writeFile(f.n, res);
+    if (write) {
+      await fs.writeFile(f.n, res);
+    }
     specFileList.push(res);
   }
   return specFileList

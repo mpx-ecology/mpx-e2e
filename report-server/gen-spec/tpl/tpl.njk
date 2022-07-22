@@ -78,7 +78,7 @@ describe('{{ descName }}', () => {
   {%- if connectFirst  %}
     try {
       miniProgram = await automator.connect({
-        wsEndpoint: '{{ connectUrl }}'
+        wsEndpoint: '{{ wsEndpoint }}'
       })
     } catch (e) {
       miniProgram = await automator.launch({
