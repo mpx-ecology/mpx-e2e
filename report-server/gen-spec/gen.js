@@ -36,7 +36,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
     let minitestJson = require(f.p);
 
     // 去重获知被 MOCK 的 api 名称及出现顺序
-    let recordsAPIs = minitestJson?.env?.recordAPIs.length ? [...new Set(minitestJson.recordAPIs)] : [];
+    let recordAPIs = minitestJson?.env?.recordAPIs.length ? [...new Set(minitestJson.env.recordAPIs)] : [];
 
     let mockRules = minitestJson.commands
       .filter((i) => i.command === 'mock')
@@ -49,8 +49,8 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
 
     let c = cmds;
 
-    let rd = {
-      recordsAPIs, // minitest.json 中记录的被 mock 的 api
+    let renderData = {
+      recordAPIs, // minitest.json 中记录的被 mock 的 api
       projectPath,
       // blockPath: path.resolve(__dirname, './blocks'),
       descName: f.we,
@@ -65,15 +65,14 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
       connectFirst: e2erc.connectFirst, // automator 优先使用 connect 而非 launch
     };
 
-    if (recordsAPIs.length) {
-      recordsAPIs.forEach(i => {
-        rd[`${i}MockRules`] = mockRules.filter(r => r.ruleName === i)
+    if (recordAPIs.length) {
+      // 把各个被 mock 的 api 对应的 rule 拍平到 renderData 下
+      recordAPIs.forEach(i => {
+        renderData[`${i}MockRules`] = mockRules.filter(r => r.ruleName === i)
       })
     }
 
-    console.log(rd);
-
-    let res = tpl(rd);
+    let res = tpl(renderData);
     res = await prettier.format(res, { semi: true, singleQuote: true, parser: 'babel' });
     if (write) {
       await fs.writeFile(f.n, res);
