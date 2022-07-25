@@ -35,11 +35,14 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
 
     let minitestJson = require(f.p);
 
+    // 去重获知被 MOCK 的 api 名称及出现顺序
+    let recordsAPIs = minitestJson?.env?.recordAPIs.length ? [...new Set(minitestJson.recordAPIs)] : [];
+
     let mockRules = minitestJson.commands
       .filter((i) => i.command === 'mock')
       .map((i) => i.rule);
 
-    let cmds = minitestJson.commands.filter((i) => !['mock', 'startRecord', 'stopRecord'].includes(i.command));
+    let cmds = minitestJson.commands.filter(i => !['mock', 'startRecord', 'stopRecord'].includes(i.command));
 
     // 把文字中的换行符等过滤掉，防止意外换行导致格式化失败
     cmds = cmds.map((i) => /\n|\t|\r\n/g.test(i.text) ? { ...i, text: i.text.replace(/\n|\t|\r\n/g, ' ') } : i);
@@ -47,6 +50,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
     let c = cmds;
 
     let rd = {
+      recordsAPIs, // minitest.json 中记录的被 mock 的 api
       projectPath,
       // blockPath: path.resolve(__dirname, './blocks'),
       descName: f.we,
@@ -55,17 +59,19 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
       jestTimeout: e2erc.jestTimeout || 30000000,
       defaultWaitFor: e2erc.defaultWaitFor || 10000, // 默认 waitFor 等待时长
       wsEndpoint: e2erc.wsEndpoint, // wsEndPoint
-      mockRules: mockRules?.length ? mockRules : false,
       cmds: c,
       // macroPath: './macros',
       item: c[0],
       connectFirst: e2erc.connectFirst, // automator 优先使用 connect 而非 launch
     };
 
-    // let tplPath = path.resolve(__dirname, './tpl.njk')
-    // let str = await fs.readFile(tplPath, 'utf-8');
-    // console.log(str);
-    // let res = nunjucks.renderString(str, rd);
+    if (recordsAPIs.length) {
+      recordsAPIs.forEach(i => {
+        rd[`${i}MockRules`] = mockRules.filter(r => r.ruleName === i)
+      })
+    }
+
+    console.log(rd);
 
     let res = tpl(rd);
     res = await prettier.format(res, { semi: true, singleQuote: true, parser: 'babel' });
