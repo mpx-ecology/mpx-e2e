@@ -3,13 +3,13 @@ const path = require('path');
 const Koa = require('koa');
 const openBrowser = require('open');
 const { handleCors, handleImg } = require('./util');
-const WebSocketServer = require('ws');
+const { WebSocketServer } = require('ws');
 const common = require('./route/common');
 const fs = require('fs');
 const generateRouter = require('./route/generate');
 const bodyParser = require('koa-bodyparser');
 const getE2erc = require('./middleware/getE2erc');
-
+// console.log(WebSocketServer);
 class E2eServer {
   constructor () {
     this.server = null;
