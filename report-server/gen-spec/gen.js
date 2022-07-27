@@ -12,7 +12,16 @@ const fsExtra = require('fs-extra');
  * @returns {Promise<*[]>}
  */
 module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
-  const { recordsDir, testSuitsDir,projectPath, jsonCaseCpDir } = e2erc;
+  const {
+    recordsDir,
+    testSuitsDir,
+    projectPath,
+    jsonCaseCpDir,
+    wsEndpoint,
+    defaultWaitFor = 6000,
+    needRealMachine = false,
+    e2ercjestTimeout = 30000000
+  } = e2erc;
 
   if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
 
@@ -55,10 +64,10 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
       // blockPath: path.resolve(__dirname, './blocks'),
       descName: f.we,
       itName: f.we,
-      needRealMachine: e2erc.needRealMachine || false, // 是否需要真机
-      jestTimeout: e2erc.jestTimeout || 30000000,
-      defaultWaitFor: e2erc.defaultWaitFor || 10000, // 默认 waitFor 等待时长
-      wsEndpoint: e2erc.wsEndpoint, // wsEndPoint
+      needRealMachine, // 是否需要真机
+      jestTimeout: e2ercjestTimeout,
+      defaultWaitFor, // 默认 waitFor 等待时长
+      wsEndpoint, // wsEndPoint
       cmds: c,
       // macroPath: './macros',
       item: c[0],
@@ -68,7 +77,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
     if (recordAPIs.length) {
       // 把各个被 mock 的 api 对应的 rule 拍平到 renderData 下
       recordAPIs.forEach(i => {
-        renderData[`${i}MockRules`] = mockRules.filter(r => r.ruleName === i)
+        renderData[`${i}MockRules`] = mockRules.filter(r => r.apiName === i)
       })
     }
 

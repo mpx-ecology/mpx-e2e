@@ -7,7 +7,7 @@ let fn = (renderData) => {
   let str = `describe('${ descName }', () => {
   let miniProgram;`;
 
-  if (recordAPIs && recordAPIs.length()) {
+  if (recordAPIs && recordAPIs.length) {
     str += `${mock.mockFn()};`
   }
   str += beforeAll(renderData);
@@ -16,8 +16,9 @@ let fn = (renderData) => {
   str += `it('${ itName }', async () => {`
   if (recordAPIs && recordAPIs.length) {
     recordAPIs.forEach(api => {
-      str += `const ${api}MockRules = ${ JSON.stringify(renderData[api]) };`
-      str += `await miniProgram.mockWxMethod('request', mockFunc, ${api}MockRules);`
+      let ruleKey = `${api}MockRules`;
+      str += `const ${ruleKey} = ${ JSON.stringify(renderData[ruleKey]) };`
+      str += `await miniProgram.mockWxMethod('${api}', mockFunc, '${api}', ${ruleKey});`
     })
   }
 
@@ -28,10 +29,12 @@ let fn = (renderData) => {
 
   cmds.forEach(item => {
     if (item.waitfor) {
-      str += `// 等待时长 ${item.waitfor}
-    await page.waitFor(${item.waitfor});`
+      str += `
+      // 等待时长 ${item.waitfor < 7000 ? item.waitfor : defaultWaitFor}
+    await page.waitFor(${item.waitfor < 7000 ? item.waitfor : defaultWaitFor});`
     } else {
-      str += `// 默认等待时长 ${defaultWaitFor}
+      str += `
+      // 默认等待时长 ${defaultWaitFor}
     await page.waitFor(${defaultWaitFor});
     `
     }
@@ -39,18 +42,21 @@ let fn = (renderData) => {
     str += `page = await miniProgram.currentPage();`;
 
     if (item.target) {
-      str += `// getEle by xpath
+      str += `
+      // getEle by xpath
       element = await page.xpath('${ item.target }');
       `
     }
 
     if (item.clazz) {
-      str += `// getEle by class + componentName
+      str += `
+      // getEle by class + componentName
       element = await page.$('${ item.clzzName }', '${ item.compName }')`
     }
 
     if (item.selector) {
-      str += `// getEle by selector
+      str += `
+      // getEle by selector
       element = await page.$('${ item.selector }')
       `
     }
@@ -86,7 +92,7 @@ let fn = (renderData) => {
     }
   })
 
-  str += `  await page.waitFor(10000);
+  str += `  await page.waitFor(${defaultWaitFor});
   });});`;
   return str;
 }
