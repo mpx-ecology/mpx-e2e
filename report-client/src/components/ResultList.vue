@@ -34,7 +34,7 @@ const totalInfo = computed(() => {
     expectCount += item.expectCount
   })
 
-  return { numFailingTests, numPassingTests, total: state.result.length }
+  return { numFailingTests, numPassingTests, total: state.result.length, expectCount }
 })
 
 const chartList = computed(() => {

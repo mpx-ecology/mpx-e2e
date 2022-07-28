@@ -1,0 +1,176 @@
+const path = require('path');
+const automator = require('@didi/e2e-extension').default;
+let e2eRc = require(path.resolve(process.cwd(), '.e2erc.js'));
+
+jest.setTimeout({{ jestTimeout }});
+
+describe('{{ descName }}', () => {
+  let miniProgram;
+  {%-  if mockRules %}
+    const mockFunc = function () {
+
+    function matchFilter(filterList, args) {
+    for (let i = 0, len = filterList.length; i < len; ++i) {
+    const filter = filterList[i];
+    let objUrl = /(^[^?]+)/g.exec(args[filter.propName])[1];
+
+    if (!filter.propName) continue
+    if (!args) return false
+
+    if (typeof args[filter.propName] === 'undefined') {
+    return false
+    } else if (filter.matchType === 'string' && !filter.propRegString.includes(objUrl)) {
+    return false
+    } else if (filter.matchType !== 'string' && (new RegExp(filter.propRegString, 'i')).test(args[filter.propName])) {
+    return false
+    }
+    }
+    return true
+    }
+
+    if (!this.mockRuleMap) {
+    this.mockRuleMap = {}
+    }
+
+    const args = Array.from(arguments)
+    const requestMockRules = args[args.length - 1]
+    const argsOrigin = args.slice(0, -1)
+    let isSync = false
+    let obj = isSync ? argsOrigin : argsOrigin[0]
+    for (rule of requestMockRules) {
+    let res = { errMsg: rule.apiName + ' fail in mock' }
+    isSync = rule.apiName.endsWith('Sync') || rule.isSync
+    obj = isSync ? argsOrigin : argsOrigin[0]
+    const isMatch = matchFilter(rule.filterList, obj, {})
+    if (!this.mockRuleMap[rule.ruleId] && isMatch) {
+    this.mockRuleMap[rule.ruleId] = true
+    const resStr = rule.returnConfig.manual.succ.resStr
+    try {
+    res = JSON.parse(resStr)
+    } catch (e) {
+    console.error('[autotest] mock:', e)
+    res = isSync ? resStr : res
+    }
+    try {
+    let objUrl = /(^[^?]+)/g.exec(obj.url)[1];
+    console.log('e2e-mock-log: ->', objUrl, res.data);
+    } catch (e) {}
+    return res
+    }
+    }
+    if (isSync) {
+    return this.origin(...argsOrigin)
+    } else {
+    return  new Promise(resolve => {
+    this.origin({
+    ...obj,
+    complete(res) {
+    resolve(res)
+    },
+    })
+    })
+    }
+    }
+  {%- endif %}
+
+
+  beforeAll(async () => {
+  {%- if connectFirst  %}
+    try {
+      miniProgram = await automator.connect({
+        wsEndpoint: '{{ wsEndpoint }}'
+      })
+    } catch (e) {
+      miniProgram = await automator.launch({
+        projectPath: e2eRc.projectPath,
+      })
+    }
+   {% else %}
+     miniProgram = await automator.launch({
+       projectPath: e2eRc.projectPath,
+     })
+  {%- endif %}
+
+  {%- if needRealMachine %}
+    // 如果需要在真机回放请把下面注释取消
+    await miniProgram.remote()
+  {%-  endif %}
+  }, {{ jestTimeout }})
+
+  afterAll(async () => {
+    {%- if connectFirst  %}
+      await miniProgram.disconnect();
+    {% else %}
+      await miniProgram.close();
+    {%- endif %}
+  })
+
+  it('{{ itName }}', async () => {
+  {%-  if mockRules %}
+    const requestMockRules = {{ mockRules | dump | safe }};
+    await miniProgram.mockWxMethod('request', mockFunc, requestMockRules)
+  {%-  endif %}
+
+    let page, element, expectResult, actualResult;
+
+    page = await miniProgram.currentPage();
+
+    {%- for item in cmds %}
+      {%- if item.waitfor %}
+        // 等待时长 {{- item.waitfor }}
+        await page.waitFor({{- item.waitfor }});
+      {%- else %}
+        // 默认等待时长 {{- defaultWaitFor  }}
+        await page.waitFor(10000);
+      {%- endif %}
+
+      page = await miniProgram.currentPage();
+
+      {%- if item.target %}
+        // getEle by xpath
+        element = await page.xpath('{{ item.target }}');
+      {%- endif %}
+
+      {%- if item.clazz %}
+        // getEle by class + componentName
+        element = await page.$('{{ item.clzzName }}', '{{ item.compName }}')
+      {%- endif %}
+
+      {%- if item.selector %}
+        // getEle by selector
+        element = await page.$('{{ item.selector }}')
+      {%- endif %}
+
+      {%- if (item.command === 'tap') %}
+        if (element) {
+        // 触发 {{- item.tagName }} > {{- item.text }} 的 {{- item.command }} 事件
+        {%- if item.eventData %}
+          await element.dispatchEvent({ eventName: '{{ item.command }}', eventData: {{ item.eventData | dump | safe }} });
+        {%- else %}
+          await element.tap();
+        {%- endif %}
+        } else {
+        console.error('element cannot get by {{- item.target }} {{- item.clazz }} / {{- item.compName  }} {{- item.selector }}')
+        }
+      {%- elif (item.command === 'assertVisible') %}
+        expect(element).not.toBeNull();
+      {%- elif (item.command === 'assertPath') %}
+        page = await miniProgram.currentPage();
+        expect(page.path).toBe('{{ item.path }}');
+      {%- elif (item.command === 'dataSnapshot') %}
+        expectResult = {{- item.pageData | dump | safe  }};
+        actualResult = await page?.data();
+        expect(expectResult).toEqual(actualResult);
+      {%- elif (item.command === 'wxmlSnapshot') %}
+        expectResult = '{{- item.wxml | safe }}';
+        page = await miniProgram.currentPage();
+        element = await page?.$('page');
+        actualResult = await element?.outerWxml();
+        expect(expectResult).toBe(actualResult);
+      {%- endif %}
+    {%- endfor %}
+
+
+    await page.waitFor(10000);
+  })
+})

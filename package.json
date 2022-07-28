@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .ts",
     "tsc": "tsc",
     "dev": "./by-esbuild.js -w -s",
-    "server:dev": "npm run build && node ./serverTest.js",
+    "server:dev": "node ./serverTest.js",
     "release": "sh ./release.sh"
   },
   "keywords": [

@@ -1,0 +1,12 @@
+{% block eventEmit %}
+  if (element) {
+  // 触发 {{- item.tagName }} > {{- item.text }} 的 {{- item.command }} 事件
+  {%- if item.eventData %}
+    await element.dispatchEvent({ eventName: '{{ item.command }}', eventData: {{ item.eventData | dump | safe }} });
+  {%- else %}
+    await element.tap();
+  {%- endif %}
+  } else {
+  console.error('element cannot get by {{- item.target }} {{- item.clazz }} / {{- item.compName  }} {{- item.selector }}')
+  }
+{% endblock %}
