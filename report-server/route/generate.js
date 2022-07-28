@@ -25,6 +25,7 @@ router.get('/loadCase', async (ctx, next) => {
 				result: null
 			}
 		}
+		console.log('gen case done!');
 	} catch (e) {
 		console.log(e);
 		ctx.body = e;
