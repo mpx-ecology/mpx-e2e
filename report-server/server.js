@@ -51,7 +51,8 @@ class E2eServer {
   }
   done () {
     if (this.cfg.open) {
-      openBrowser(`http://localhost:${this.cfg.port}/`)
+      let url = `http://localhost:${this.cfg.port}${ this.cfg.url ? this.cfg.url : '/' }`
+      openBrowser(url);
     }
   }
   shutdown () {
