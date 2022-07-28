@@ -20,7 +20,7 @@ import MenuList from './components/MenuList.vue'
             </el-main>
           </el-scrollbar>
           <el-footer>
-            <div class="bottom-footer">power by 花小猪小程序</div>
+            <div class="bottom-footer">E2E Test Designed by 乘客前端/花小猪小程序</div>
           </el-footer>
         </el-container>
       </el-container>
