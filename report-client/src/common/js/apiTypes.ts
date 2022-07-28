@@ -38,6 +38,7 @@
       "title": "desc"
     }
   ],
+  "expectCount": 0,
   "imgList": [
     {
       "path": "test/e2e/screenshot/list1.png",

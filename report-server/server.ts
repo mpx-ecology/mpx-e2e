@@ -42,7 +42,7 @@ class E2eServer {
 
     const app = new Koa();
     app.use(bodyParser());
-    app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
+    app.use(koaStatic(path.resolve(__dirname, './public')));
     app.use(handleCors);
     app.use(handleImg);
     app.use(common.routes(), common.allowedMethods());

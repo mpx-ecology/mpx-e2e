@@ -7,3 +7,4 @@ declare function onComponentUpdate({ data: any, path: string })
 declare function onComponentReady(a:string)
 declare function onXfetchRequest(a:string)
 declare function onXfetchResponse(a:string)
+declare let expect

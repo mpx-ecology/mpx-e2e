@@ -1,0 +1,1 @@
+import{h as t,y as a,j as n,G as s,ae as c,o as l}from"./index.cfe6de27.js";const p=t({name:"GenCaseView",setup(r){const e=a("");return setTimeout(()=>{e.value="var g = null;"},5e3),(u,i)=>{const o=c("highlight-js");return l(),n("div",null,[s(o,{autodectect:"",language:"js",code:e.value},null,8,["code"])])}}});export{p as default};

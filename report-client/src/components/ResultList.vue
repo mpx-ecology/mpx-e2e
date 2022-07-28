@@ -36,7 +36,7 @@ const totalInfo = computed(() => {
 })
 
 const chartList = computed(() => {
-  return state.result.map(item => item.numPassingTests)
+  return state.result.map(item => (item.expectCount || 0))
 })
 
 const fileList = computed(() => {
