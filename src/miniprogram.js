@@ -29,7 +29,6 @@ module.exports = class EMiniProgram {
         }
       })
       // 新增方法
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this
       miniProgram.wait = (...args) => this.wait.call(that, ...args)
       miniProgram.waitAll = (...args) => this.waitAll.call(that, ...args)

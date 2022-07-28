@@ -56,5 +56,6 @@
       "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list4.png"
     }
   ],
-  "failureMessage": null
+  "failureMessage": null,
+  "expectCount": 0
 }

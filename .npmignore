@@ -8,15 +8,5 @@ output/
 dll/
 .eslintcache
 static-dir
-report-client/node_modules/
-report-client/public/
-report-client/src/
-report-client/.eslintrc.cjs
-report-client/env.d.ts
-report-client/index.html
-report-client/package.json
-report-client/package-lock.json
-report-client/README.md
-report-client/tsconfig.json
-report-client/tsconfig.vite-config.json
-report-client/vite.config.ts
+report-client/
+

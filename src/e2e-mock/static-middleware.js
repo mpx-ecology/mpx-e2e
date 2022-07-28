@@ -18,6 +18,7 @@ const e2eMockStatic = (dirname) => {
         console.log(`【staticMock】-> ${urlWithoutQueryFirstSlash} matches  ${filePath}`)
       }
     } catch (e) {
+      // e
     }
     await next()
   }

@@ -12,14 +12,14 @@ fi
 # build clent
 echo "正在打包Client..."
 cd report-client
-npm ci
+# npm ci
 npm run build
 
 # build server
-echo "正在打包Server..."
-cd ..
-npm ci
-npm run build
+# echo "正在打包Server..."
+# cd ..
+# npm ci
+# npm run build
 
 if [ -z "$1" ]; then
   type='prerelease'

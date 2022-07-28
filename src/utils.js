@@ -7,10 +7,10 @@ const imgList = [];
 exports.imgList = imgList;
 exports.pushImg = pushImg;
 exports.emitFile = emitFile;
+exports.pushExpect = pushExpect;
 
 function pushImg (params) {
   imgList.push(params)
-  // axios.post('http://localhost:8886/common/imgList', {imgList})
   const req = http.request({
     port: 8886,
     method: 'POST',
@@ -36,4 +36,20 @@ function emitFile () {
   } catch (error) {
     console.log(error)
   }
+}
+
+function pushExpect () {
+  const req = http.request({
+    port: 8886,
+    method: 'POST',
+    hostname: 'localhost',
+    path: '/common/expectList',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }, () => {
+    // console.log('发送成功')
+  })
+  // req.write(JSON.stringify(params))
+  req.end()
 }

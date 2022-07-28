@@ -31,7 +31,7 @@ class E2eServer {
     const app = new Koa();
     app.use(bodyParser());
     // eslint-disable-next-line no-undef
-    app.use(koaStatic(path.resolve(__dirname, '../report-client/dist')));
+    app.use(koaStatic(path.resolve(__dirname, './public')));
     app.use(handleCors);
     app.use(handleImg);
     app.use(getE2erc(cfg)); // ctx 挂载 e2erc
