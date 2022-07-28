@@ -27,9 +27,11 @@ async function getData(url: string) {
 const totalInfo = computed(() => {
   let numFailingTests = 0
   let numPassingTests = 0
+  let expectCount = 0
   state.result.forEach(item => {
     numFailingTests += item.numFailingTests
     numPassingTests += item.numPassingTests
+    expectCount += item.expectCount
   })
 
   return { numFailingTests, numPassingTests, total: state.result.length }
@@ -81,6 +83,14 @@ onBeforeMount(() => {
           <div class="card-title">Failed Tests</div>
         </template>
         <div class="count fail">{{ totalInfo.numFailingTests }}</div>
+      </el-card>
+    </div>
+    <div class="card">
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-title">Total Expect</div>
+        </template>
+        <div class="count">{{ totalInfo.expectCount }}</div>
       </el-card>
     </div>
     <home-chart :file="fileList" :list="chartList" v-if="chartList.length"></home-chart>

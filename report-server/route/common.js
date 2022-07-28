@@ -8,7 +8,7 @@ const router = new Router({
 
 router.post('/imgList', (ctx) => {
   try {
-    const dist = path.resolve(__dirname, './testResult.json')
+    const dist = path.resolve(__dirname, '../testResult.json')
     const oldFile = fs.readFileSync(dist, 'utf8')
     const data = JSON.parse(oldFile)
     const imgList = data.imgList
@@ -26,7 +26,7 @@ router.post('/imgList', (ctx) => {
 
 router.get('/imgList', (ctx) => {
   try {
-    const url = path.resolve(__dirname, './testResult.json')
+    const url = path.resolve(__dirname, '../testResult.json')
     const file = fs.readFileSync(url, { encoding: 'utf-8' })
     ctx.body = { error: 0, data: JSON.parse(file) }
   } catch (error) {
@@ -36,7 +36,7 @@ router.get('/imgList', (ctx) => {
 
 router.post('/expectList', (ctx) => {
   try {
-    const dist = path.resolve(__dirname, './testResult.json')
+    const dist = path.resolve(__dirname, '../testResult.json')
     const oldFile = fs.readFileSync(dist, 'utf8')
     const data = JSON.parse(oldFile)
     const expectCount = data.expectCount || 0
@@ -50,7 +50,7 @@ router.post('/expectList', (ctx) => {
 
 router.get('/testResult', (ctx) => {
   try {
-    const url = path.resolve(__dirname, './testResult.json')
+    const url = path.resolve(__dirname, '../testResult.json')
     const file = fs.readFileSync(url, { encoding: 'utf-8' })
     ctx.body = { error: 0, data: JSON.parse(file) }
   } catch (error) {
