@@ -17,7 +17,7 @@ npm run build
 
 # build server
 # echo "正在打包Server..."
-# cd ..
+cd ..
 # npm ci
 # npm run build
 
