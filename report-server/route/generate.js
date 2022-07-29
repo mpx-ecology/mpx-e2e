@@ -15,6 +15,7 @@ router.get('/loadCase', async (ctx, next) => {
 		let caseDir = path.resolve(e2erc.projectPath, './minitest');
 		let tasks = await fs.readdir(caseDir);
 		if (tasks.length) {
+			tasks = tasks.filter(i => !/^(test\.config)/g.test(i));
 			let result = await generateSpec({ e2erc,  tasks, write: true });
 			ctx.body = { errno: 0, errmsg: 'ok', e2erc, result };
 		} else {

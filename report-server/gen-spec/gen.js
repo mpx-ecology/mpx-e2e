@@ -11,6 +11,7 @@ const fsExtra = require('fs-extra');
  * @param write <boolean> should write file or not
  * @returns {Promise<*[]>}
  */
+let i = 0;
 module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
   const {
     recordsDir,
@@ -47,9 +48,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
     // 去重获知被 MOCK 的 api 名称及出现顺序
     let recordAPIs = minitestJson?.env?.recordAPIs.length ? [...new Set(minitestJson.env.recordAPIs)] : [];
 
-    let mockRules = minitestJson.commands
-      .filter((i) => i.command === 'mock')
-      .map((i) => i.rule);
+    let mockRules = minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
 
     let cmds = minitestJson.commands.filter(i => !['mock', 'startRecord', 'stopRecord'].includes(i.command));
 
