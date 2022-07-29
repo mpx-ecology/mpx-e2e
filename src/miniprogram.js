@@ -2,6 +2,7 @@ const EPage = require('./page');
 const chalk = require('chalk');
 const { pushImg } = require('./utils');
 const path = require('path');
+const screenshotJS = require('./screenshot')
 
 
 const log = (...str) => console.log(chalk.blue.bgGreenBright.bold('【e2e-sdk】: '), ...str);
@@ -41,7 +42,24 @@ module.exports = class EMiniProgram {
       miniProgram.screenshot = async (options) => {
         await screenshot.call(miniProgram, options)
         const src = path.join(process.cwd(), options.path)
-        pushImg({ path: options.path,  src })
+        let page = ''
+        try {
+          page = await this.currentPagePath()
+        } catch (error) {
+          // e
+        }
+        pushImg({
+          path: options.path,
+          src: options.src || src,
+          time: Date.now(),
+          page
+        })
+      }
+
+      const close = miniProgram.close
+      miniProgram.close = async () => {
+        await close.call(miniProgram)
+        screenshotJS.destroyed()
       }
 
       this.miniProgram = miniProgram

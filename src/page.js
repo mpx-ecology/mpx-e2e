@@ -6,7 +6,7 @@
  * @param componentsName 组件名拆分的数组
  * @returns 返回Promise<元素>
  */
-
+ const screenshotJS = require('./screenshot')
 
 async function $(fn, className, componentsName) {
   if (className[0] === '.') {
@@ -56,12 +56,26 @@ module.exports = class EPage {
     newPage.$ = async (className, componentsName) => {
       if (!componentsName) return new$.call(page, className)
       const element = await $(s => new$.call(page, s), className, componentsName)
+      if (element) {
+        const oldTap = element.tap
+        element.tap = async function (...args) {
+          await oldTap.call(this, ...args)
+          await screenshotJS.tap()
+        }
+      }
       return element ? new EPage(element) : element
     }
     newPage.$$ = async (className, componentsName) => {
       if (!componentsName) return new$$.call(page, className)
       const elements = await $(s => new$$.call(page, s), className, componentsName)
       if (elements && elements.length) {
+        elements.forEach(element => {
+          const oldTap = element.tap
+          element.tap = async function (...args) {
+            await oldTap.call(this, ...args)
+            await screenshotJS.tap()
+          }
+        })
         return elements.map((element) => new EPage(element))
       }
       return elements

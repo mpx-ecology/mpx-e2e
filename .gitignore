@@ -14,3 +14,4 @@ lib/plugin-report.js
 lib/e2ex.js
 lib/testResult.json
 report-server/public/
+src/cache

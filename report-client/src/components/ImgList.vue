@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { onBeforeMount, reactive, computed } from 'vue';
 import axios from 'axios'
-import { ElImage, ElEmpty, ElScrollbar, ElDivider } from 'element-plus'
-import type { Report } from 'src/common/js/apiTypes'
-
-type Img = {
-  path: string,
-  src: string
-}
+import { ElImage, ElEmpty, ElScrollbar, ElDivider, ElTag } from 'element-plus'
+import type { Report, Img } from 'src/common/js/apiTypes'
 
 type BaseData = {
   data: {
@@ -34,9 +29,20 @@ onBeforeMount(() => {
   getData(`${path}/common/imgList`).then((res) => {
     res.forEach(item => {
       if (item.imgList && item.imgList.length) {
+        const imgList: Img[] = item.imgList.map(img => {
+          const title = img.path.split(/\/|\\/).pop() || ''
+          const time = new Date(img.time || 0)
+          // const YY = time.getFullYear()
+          // const MM = time.getMonth() + 1
+          // const DD = time.getDate()
+          const h = time.getHours()
+          const m = time.getMinutes()
+          const s = time.getSeconds()
+          return Object.assign({}, img, { path: title, time: `${h}:${m}:${s}` })
+        })
         state.imgList.push({
           title: item.testFilePath.split(/\/|\\/).pop() || '',
-          list: item.imgList || [],
+          list: imgList,
           preview: item.imgList.map(img => img.src)
         })
       }
@@ -58,7 +64,11 @@ const isEmpty = computed(() => {
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
             <el-image class="image" :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
-            <div class="step">{{ img.path }}</div>
+            <div class="step">
+              <div>{{ img.path }}</div>
+              <el-tag>{{ img.page }}</el-tag>
+              <el-tag style="margin-left: 12px;">{{ img.time }}</el-tag>
+            </div>
           </div>
         </div>
       </el-scrollbar>

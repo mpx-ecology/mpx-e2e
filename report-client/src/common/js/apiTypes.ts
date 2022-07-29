@@ -1,61 +1,43 @@
+
+ export interface Img{
+  path: string,
+  src: string,
+  time: number,
+  page: string
+ }
+
+ export interface PerfStats {
+  end: number,
+  runtime: number,
+  slow: boolean,
+  start: number
+ }
+
+ export interface TestResults {
+  ancestorTitles: string[],
+  duration: number,
+  failureDetails: string[],
+  failureMessages: string[],
+  fullName: string,
+  invocations: number,
+  location: string,
+  status: string,
+  title: string
+ }
+ 
  export type Report = {
-  "leaks": false,
-  "numFailingTests": 0,
-  "numPassingTests": 1,
-  "numPendingTests": 0,
-  "numTodoTests": 0,
-  "openHandles": [],
-  "perfStats": {
-    "end": 1655801731931,
-    "runtime": 15786,
-    "slow": true,
-    "start": 1655801716145
-  },
-  "skipped": false,
-  "snapshot": {
-    "added": 0,
-    "fileDeleted": false,
-    "matched": 0,
-    "unchecked": 0,
-    "uncheckedKeys": [],
-    "unmatched": 0,
-    "updated": 0
-  },
-  "testFilePath": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/components/list.spec.js",
-  "testResults": [
-    {
-      "ancestorTitles": [
-        "index"
-      ],
-      "duration": 85,
-      "failureDetails": [],
-      "failureMessages": [],
-      "fullName": "index desc",
-      "invocations": 1,
-      "location": null,
-      "numPassingAsserts": 0,
-      "status": "passed",
-      "title": "desc"
-    }
-  ],
-  "imgList": [
-    {
-      "path": "test/e2e/screenshot/list1.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list1.png"
-    },
-    {
-      "path": "test/e2e/screenshot/list2.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list2.png"
-    },
-    {
-      "path": "test/e2e/screenshot/liste3.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/liste3.png"
-    },
-    {
-      "path": "test/e2e/screenshot/list4.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list4.png"
-    }
-  ],
-  "failureMessage": null,
-  "expectCount": 0
+  leaks: boolean,
+  numFailingTests: number,
+  numPassingTests: number,
+  numPendingTests: number,
+  numTodoTests: number,
+  openHandles: [],
+  perfStats: PerfStats,
+  skipped: number,
+  // snapshot: any,
+  testFilePath: string,
+  testResults: TestResults[],
+  imgList: Img[],
+  failureMessage: null,
+  expectCount: number
 }
