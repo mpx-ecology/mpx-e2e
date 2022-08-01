@@ -1,12 +1,9 @@
-const fs = require('fs');
-const path = require('path');
 const http = require('http');
 
 const imgList = [];
 
 exports.imgList = imgList;
 exports.pushImg = pushImg;
-exports.emitFile = emitFile;
 exports.pushExpect = pushExpect;
 
 function pushImg (params) {
@@ -24,18 +21,6 @@ function pushImg (params) {
   })
   req.write(JSON.stringify(params))
   req.end()
-}
-
-function emitFile () {
-  try {
-    const dist = path.resolve(__dirname, './testResult.json')
-    const oldFile = fs.readFileSync(dist, 'utf8')
-    const data = JSON.parse(oldFile)
-    data.imgList = imgList
-    fs.writeFileSync(dist, JSON.stringify(data))
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 function pushExpect () {

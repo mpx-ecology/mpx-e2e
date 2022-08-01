@@ -17,9 +17,7 @@ class E2eServer {
     this.cfg = { open: true, port: 8886 }
   }
   apply (cfg) {
-    // eslint-disable-next-line no-undef
-    const dist = path.resolve(__dirname, './testResult.json')
-    fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [] }))
+    this.clearFile()
     this.cfg = Object.assign(this.cfg, cfg)
     const { port = 8886 } = cfg
     if (this.server) {
@@ -39,21 +37,48 @@ class E2eServer {
     app.use(common.routes(), common.allowedMethods());
     app.use(generateRouter.routes());
 
-
     this.connection = app.listen(port, () => {
       // console.log(`Starting up E2E server! ( http://localhost:${port}/ )`)
     });
-    // if (open) {
-    //   openBrowser(`http://localhost:${port}/`)
-    // }
     this.server = app
     this.initWebsocket()
+  }
+  clearFile ()  {
+    const dist = path.resolve(__dirname, './testResult.json')
+    const res = fs.readFileSync(dist, { encoding: 'utf-8' })
+    const data = JSON.parse(res)
+    const imgList = []
+    data.reportList.forEach(item => {
+      item.imgList.forEach(img => {
+        imgList.push(img.src)
+      })
+    })
+    imgList.forEach(item => {
+      try {
+        fs.unlinkSync(item)
+      } catch (error) {
+        // e
+      }
+    })
+    const cache = path.resolve(__dirname, './cache')
+    let isDirectory = false
+    try {
+      const stat = fs.statSync(cache);
+      isDirectory = stat.isDirectory()
+    } catch (error) {
+      // e
+    }
+    if (!isDirectory) {
+      fs.mkdir(cache, () => {})
+    }
+    fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [] }))
   }
   done () {
     if (this.cfg.open) {
       let url = `http://localhost:${this.cfg.port}${ this.cfg.url ? this.cfg.url : '/' }`
       openBrowser(url);
     }
+    console.log(`Starting up E2E server! ( http://localhost:${this.cfg.port}/ )`)
   }
   shutdown () {
     this.connection?.close()

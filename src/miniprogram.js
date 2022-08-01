@@ -41,7 +41,7 @@ module.exports = class EMiniProgram {
       const screenshot = miniProgram.screenshot
       miniProgram.screenshot = async (options) => {
         await screenshot.call(miniProgram, options)
-        const src = path.join(process.cwd(), options.path)
+        const src = path.resolve(process.cwd(), options.path)
         let page = ''
         try {
           page = await this.currentPagePath()
