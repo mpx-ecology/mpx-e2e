@@ -52,6 +52,19 @@ module.exports = class EPage {
     const new$ = page.$
     const new$$ = page.$$
     const newPage = Object.create(page)
+    const newXpath = page.xpath
+    newPage.xpath = async function (...args) {
+      const element = await newXpath.call(this, ...args)
+      if (element) {
+        const oldTap = element.dispatchEvent
+        element.dispatchEvent = async function (...args) {
+          const res = await oldTap.call(this, ...args)
+          await screenshotJS.tap()
+          return res
+        }
+      }
+      return element
+    }
     // 重写page和element的$,$$方法
     newPage.$ = async (className, componentsName) => {
       if (!componentsName) return new$.call(page, className)
@@ -59,8 +72,9 @@ module.exports = class EPage {
       if (element) {
         const oldTap = element.tap
         element.tap = async function (...args) {
-          await oldTap.call(this, ...args)
+          const res = await oldTap.call(this, ...args)
           await screenshotJS.tap()
+          return res
         }
       }
       return element ? new EPage(element) : element
@@ -72,8 +86,9 @@ module.exports = class EPage {
         elements.forEach(element => {
           const oldTap = element.tap
           element.tap = async function (...args) {
-            await oldTap.call(this, ...args)
+            const res = await oldTap.call(this, ...args)
             await screenshotJS.tap()
+            return res
           }
         })
         return elements.map((element) => new EPage(element))

@@ -25,13 +25,13 @@ class ScreenShot {
     }
   }
   async tap () {
-    // 是否启动点击事件自动截图，默认是不开启的，开启之后所有点击事件都会自动截图，并且延迟400毫秒会再次截图
+    // 是否启动点击事件自动截图，默认是不开启的，开启之后所有点击事件都会自动截图
     if (this.miniProgram && this.config.tapSave) {
       await this.save()
-      this.timeout && clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        this.save()
-      }, 300)
+      // this.timeout && clearTimeout(this.timeout)
+      // this.timeout = setTimeout(() => {
+      //   this.save()
+      // }, 300)
     }
   }
   async save () {
@@ -46,7 +46,7 @@ class ScreenShot {
       // console.log(error)
     }
   }
-  created (config) {
+  created (config = {}) {
     let { cacheDirectory } = config || {}
     if (cacheDirectory) {
       cacheDirectory = path.resolve(process.cwd(), config.cacheDirectory)
@@ -65,9 +65,10 @@ class ScreenShot {
     }
     if (!isDirectory) {
       fs.mkdir(cacheDirectory, () => {})
-    }
-    if (this.config.clear) {
-      this.clearFile()
+    } else {
+      if (this.config.clear) {
+        this.clearFile()
+      }
     }
   }
   clearFile ()  {
