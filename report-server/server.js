@@ -49,6 +49,7 @@ class E2eServer {
     const data = JSON.parse(res)
     const imgList = []
     data.reportList.forEach(item => {
+      if (!item.imgList) return
       item.imgList.forEach(img => {
         imgList.push(img.src)
       })
