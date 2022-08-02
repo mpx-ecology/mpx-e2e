@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { onBeforeMount, reactive, computed } from 'vue';
 import axios from 'axios'
-import { ElImage, ElEmpty, ElScrollbar, ElDivider } from 'element-plus'
-import type { Report } from 'src/common/js/apiTypes'
-
-type Img = {
-  path: string,
-  src: string
-}
+import { ElImage, ElEmpty, ElScrollbar, ElDivider, ElTag } from 'element-plus'
+import type { Report, Img } from 'src/common/js/apiTypes'
 
 type BaseData = {
   data: {
@@ -30,13 +25,29 @@ async function getData(url: string) {
 const isDEV = import.meta.env.DEV
 const path = isDEV ? 'http://localhost:8886' : location.origin
 
+const addZero = (num: number) => {
+  return num < 10 ? `0${num}` : `${num}`
+}
+
 onBeforeMount(() => {
   getData(`${path}/common/imgList`).then((res) => {
     res.forEach(item => {
       if (item.imgList && item.imgList.length) {
+        const imgList: Img[] = item.imgList.map(img => {
+          const title = img.path.split(/\/|\\/).pop() || ''
+          const time = new Date(img.time || 0)
+          const YY = time.getFullYear()
+          const MM = addZero(time.getMonth() + 1)
+          const DD = addZero(time.getDate())
+          const h = addZero(time.getHours())
+          const m = addZero(time.getMinutes())
+          const s = addZero(time.getSeconds())
+          const detail = `${YY}-${MM}-${DD} ${h}:${m}:${s}`
+          return Object.assign({}, img, { path: title, time: detail })
+        })
         state.imgList.push({
           title: item.testFilePath.split(/\/|\\/).pop() || '',
-          list: item.imgList || [],
+          list: imgList,
           preview: item.imgList.map(img => img.src)
         })
       }
@@ -58,7 +69,11 @@ const isEmpty = computed(() => {
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
             <el-image class="image" :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
-            <div class="step">{{ img.path }}</div>
+            <div class="info">
+              <div>{{ img.time }}</div>
+              <el-tag>{{ img.page }}</el-tag>
+              <!-- <el-tag style="margin-left: 12px;">{{ img.time }}</el-tag> -->
+            </div>
           </div>
         </div>
       </el-scrollbar>
@@ -77,11 +92,24 @@ const isEmpty = computed(() => {
   height: 300px;
   background: #000;
   border: 1px solid #000;
-  margin-right: 12px;
+  margin: 0 12px;
 }
 
 .step {
   margin-bottom: 20px;
   color: #909399;
+}
+
+.info {
+  margin-bottom: 20px;
+  color: #909399;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.el-tag {
+  font-size: 10px;
+  transform: scale(0.9);
 }
 </style>
