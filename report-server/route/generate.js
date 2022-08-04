@@ -8,16 +8,40 @@ const router = new Router({
 });
 
 router.get('/loadCase', async (ctx, next) => {
+	let { write, preview, jsonName, loadAll } = ctx.query || {};
 	// 加载 minitest.json
 	try {
 		let e2erc = getE2erc();
 		// 不传递 tasks 默认
 		let caseDir = path.resolve(e2erc.projectPath, './minitest');
-		let tasks = await fs.readdir(caseDir);
+		let tasks;
+		if (loadAll) {
+			tasks = await fs.readdir(caseDir)
+		} else {
+			try {
+				let stat = await fs.stat(path.join(caseDir, jsonName));
+				if (stat.isFile()) {
+					tasks = [jsonName]
+				}
+			} catch (e) {
+				ctx.body = {
+					errno: 101,
+					errmsg: e
+				}
+			}
+			return
+		}
+
+		// 去掉 test.config.json 文件
+		tasks = tasks.filter(i => !/^(test\.config)/g.test(i));
+
 		if (tasks.length) {
-			tasks = tasks.filter(i => !/^(test\.config)/g.test(i));
-			let result = await generateSpec({ e2erc,  tasks, write: true });
-			ctx.body = { errno: 0, errmsg: 'ok', e2erc, result };
+			let result = await generateSpec({ e2erc, tasks, write, previewMode: typeof +preview === 'number' && !isNaN(preview) });
+			let res = { errno: 0, errmsg: 'ok', e2erc, tasks };
+			if (typeof +preview === 'number' && !isNaN(preview)) {
+				res.preview = result[preview];
+			}
+			ctx.body = res;
 		} else {
 			ctx.body = {
 				errno: 100,
@@ -34,7 +58,8 @@ router.get('/loadCase', async (ctx, next) => {
 	return await next();
 });
 
-router.get('/caseList', async (ctx, next) => {
+router.get('/currentCaseList', async (ctx, next) => {
+	console.log(ctx.query.params);
 	try {
 		let e2erc = getE2erc();
 		let list = await fs.readdir(e2erc.testSuitsDir);
@@ -42,11 +67,11 @@ router.get('/caseList', async (ctx, next) => {
 		if (list.length) {
 			fileList = list.map(async i => {
 				let filePath = path.resolve(e2erc.testSuitsDir, i);
-				let fileContent = await fs.readFile(filePath, 'utf8');
+				// let fileContent = await fs.readFile(filePath, 'utf8');
 				return {
 					name: i,
 					filePath,
-					fileContent,
+					// fileContent,
 				}
 			})
 		}
@@ -67,6 +92,8 @@ router.get('/caseList', async (ctx, next) => {
 		}
 	}
 	return await next();
-})
+});
+
+router.get('/load')
 
 module.exports = router

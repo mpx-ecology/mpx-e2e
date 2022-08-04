@@ -75,5 +75,5 @@ const mockFunc = function mockFunc() {
   }
 };
 
-exports.mockFn = () => `const mockFunc = ${mockFunc.toString()}`;
+exports.mockFn = ({ previewMode }) => `const mockFunc = ${previewMode ? 'function () { /* previewMode ignored details */ }' :mockFunc.toString()}`;
 

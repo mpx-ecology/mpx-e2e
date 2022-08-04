@@ -76,7 +76,7 @@ class E2eServer {
   }
   done () {
     if (this.cfg.open) {
-      let url = `http://localhost:${this.cfg.port}${ this.cfg.url ? this.cfg.url : '/' }`
+      let url = `http://localhost:${this.cfg.port}${ this.cfg.path ? this.cfg.path : '/' }`
       openBrowser(url);
     }
     console.log(`Starting up E2E server! ( http://localhost:${this.cfg.port}/ )`)

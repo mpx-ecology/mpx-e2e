@@ -12,7 +12,7 @@ const fsExtra = require('fs-extra');
  * @returns {Promise<*[]>}
  */
 let i = 0;
-module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
+module.exports = async function generateSpec ({ previewMode, e2erc, tasks, write = false }) {
   const {
     recordsDir,
     testSuitsDir,
@@ -70,6 +70,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
       cmds: c,
       // macroPath: './macros',
       item: c[0],
+      previewMode,
       connectFirst: e2erc.connectFirst, // automator 优先使用 connect 而非 launch
     };
 

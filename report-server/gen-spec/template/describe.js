@@ -3,12 +3,12 @@ let beforeAll = require('./beforeAll');
 let afterAll = require('./afterAll');
 
 let fn = (renderData) => {
-  let { itName, descName, recordAPIs, cmds, defaultWaitFor } = renderData;
+  let { itName, descName, recordAPIs, cmds, defaultWaitFor, previewMode } = renderData;
   let str = `describe('${ descName }', () => {
   let miniProgram;`;
 
   if (recordAPIs && recordAPIs.length) {
-    str += `${mock.mockFn()};`
+    str += `${mock.mockFn(renderData)};`
   }
   str += beforeAll(renderData);
   str += afterAll(renderData);
@@ -17,7 +17,7 @@ let fn = (renderData) => {
   if (recordAPIs && recordAPIs.length) {
     recordAPIs.forEach(api => {
       let ruleKey = `${api}MockRules`;
-      str += `const ${ruleKey} = ${ JSON.stringify(renderData[ruleKey]) };`
+      str += `const ${ruleKey} = ${ previewMode ? '[`...mockDataIgnoredInPreviewMode...`]' : JSON.stringify(renderData[ruleKey]) };`
       str += `await miniProgram.mockWxMethod('${api}', mockFunc, '${api}', ${ruleKey});`
     })
   }
