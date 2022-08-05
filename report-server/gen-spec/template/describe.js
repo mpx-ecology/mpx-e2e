@@ -1,6 +1,7 @@
 let mock = require('./mock');
 let beforeAll = require('./beforeAll');
 let afterAll = require('./afterAll');
+const operationType = require('../../const/op-type');
 
 let fn = (renderData) => {
   let { itName, descName, recordAPIs, cmds, defaultWaitFor, previewMode } = renderData;
@@ -15,9 +16,11 @@ let fn = (renderData) => {
 
   str += `it('${ itName }', async () => {`
   if (recordAPIs && recordAPIs.length) {
-    recordAPIs.forEach(api => {
+    recordAPIs.forEach((api, index) => {
       let ruleKey = `${api}MockRules`;
-      str += `const ${ruleKey} = ${ previewMode ? '[`...mockDataIgnoredInPreviewMode...`]' : JSON.stringify(renderData[ruleKey]) };`
+      str += `
+      //【${index + 1}】mock 微信原生 API：${api}
+      const ${ruleKey} = ${ previewMode ? '[`...mockDataIgnoredInPreviewMode...`]' : JSON.stringify(renderData[ruleKey]) };`
       str += `await miniProgram.mockWxMethod('${api}', mockFunc, '${api}', ${ruleKey});`
     })
   }
@@ -27,7 +30,10 @@ let fn = (renderData) => {
 
     page = await miniProgram.currentPage();`;
 
-  cmds.forEach(item => {
+  cmds.forEach((item, index) => {
+    str += `
+     //【${recordAPIs.length + 1 + index}】操作：${operationType[item.command]}
+    `;
     if (item.waitfor) {
       str += `
       // 等待时长 ${item.waitfor < 7000 ? item.waitfor : defaultWaitFor}

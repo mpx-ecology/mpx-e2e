@@ -94,6 +94,7 @@ onBeforeMount(() => {
   margin-left: 5px;
 }
 .file-item {
+  padding-left: 20px;
   cursor: pointer;
 }
 .file-item-hl, .file-item:hover {
