@@ -48,12 +48,15 @@ module.exports = class EMiniProgram {
         } catch (error) {
           // e
         }
-        pushImg({
+        const result = {
           path: options.path,
           src: options.src || src,
           time: Date.now(),
-          page
-        })
+          page,
+          ...options.params
+        }
+        pushImg()
+        return result
       }
 
       const close = miniProgram.close

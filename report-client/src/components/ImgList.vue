@@ -12,7 +12,23 @@ type BaseData = {
 }
 
 interface State {
-  imgList: { title: string, list: Img[], preview: string[] }[]
+  imgList: { title: string, list: Info[], preview: string[] }[]
+}
+
+type Info = {
+  time: string,
+  path: string,
+  page: string,
+  imgStyle: {
+    width?: string,
+    height?: string,
+    left?: string,
+    top?: string
+  },
+  wrapStyle: {
+    width?: string,
+    height?: string,
+  }
 }
 
 const state = reactive<State>({ imgList: [] })
@@ -33,7 +49,7 @@ onBeforeMount(() => {
   getData(`${path}/common/imgList`).then((res) => {
     res.forEach(item => {
       if (item.imgList && item.imgList.length) {
-        const imgList: Img[] = item.imgList.map(img => {
+        const imgList: Info[] = item.imgList.map(img => {
           const title = img.path.split(/\/|\\/).pop() || ''
           const time = new Date(img.time || 0)
           const YY = time.getFullYear()
@@ -43,7 +59,23 @@ onBeforeMount(() => {
           const m = addZero(time.getMinutes())
           const s = addZero(time.getSeconds())
           const detail = `${YY}-${MM}-${DD} ${h}:${m}:${s}`
-          return Object.assign({}, img, { path: title, time: detail })
+          const imgStyle = (img.size && img.offset) ? {
+            width: `${img.size.width / 3}px`,
+            height: `${img.size.height / 3}px`,
+            left: `${img.offset.left / 3}px`,
+            top: `${img.offset.top / 3}px`
+          } : {}
+          const wrapStyle = (img.systemInfo) ? {
+            width: `${img.systemInfo.windowWidth / 3}px`,
+            height: `${img.systemInfo.windowHeight / 3}px`
+          } : {}
+          return {
+            path: title,
+            time: detail,
+            page: img.page,
+            imgStyle,
+            wrapStyle
+          }
         })
         state.imgList.push({
           title: item.testFilePath.split(/\/|\\/).pop() || '',
@@ -68,7 +100,14 @@ const isEmpty = computed(() => {
       <el-scrollbar>
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
-            <el-image class="image" :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+            <div class="container">
+              <el-image :style="img.wrapStyle" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+              <div
+                v-if="img.imgStyle.width"
+                :style="img.imgStyle"
+                class="rect">
+              </div>
+            </div>
             <div class="info">
               <div>{{ img.time }}</div>
               <el-tag>{{ img.page }}</el-tag>
@@ -111,5 +150,14 @@ const isEmpty = computed(() => {
 .el-tag {
   font-size: 10px;
   transform: scale(0.9);
+}
+
+.container {
+  position: relative;
+}
+
+.rect {
+  border: 1px solid red;
+  position: absolute;
 }
 </style>

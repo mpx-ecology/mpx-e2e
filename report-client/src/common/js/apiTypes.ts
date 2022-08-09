@@ -3,7 +3,19 @@
   path: string,
   src: string,
   time: number,
-  page: string
+  page: string,
+  size?: {
+    width: number,
+    height: number,
+  },
+  offset?: {
+    left: number,
+    top: number
+  },
+  systemInfo?: {
+    windowWidth: number,
+    windowHeight: number
+  }
  }
 
  export interface PerfStats {

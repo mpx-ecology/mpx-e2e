@@ -58,8 +58,16 @@ module.exports = class EPage {
       if (element) {
         const oldTap = element.dispatchEvent
         element.dispatchEvent = async function (...args) {
+          let offset = { width: 0, height: 0 }
+          let size = { left: 0, top: 0 }
+          try {
+            offset = await element.offset()
+            size = await element.size()
+          } catch (error) {
+            // e
+          }
+          await screenshotJS.tap({ offset, size, type: 'tap' })
           const res = await oldTap.call(this, ...args)
-          await screenshotJS.tap()
           return res
         }
       }
@@ -72,8 +80,16 @@ module.exports = class EPage {
       if (element) {
         const oldTap = element.tap
         element.tap = async function (...args) {
+          let offset = { width: 0, height: 0 }
+          let size = { left: 0, top: 0 }
+          try {
+            offset = await element.offset()
+            size = await element.size()
+          } catch (error) {
+            // e
+          }
+          await screenshotJS.tap({ offset, size, type: 'tap' })
           const res = await oldTap.call(this, ...args)
-          await screenshotJS.tap()
           return res
         }
       }
@@ -86,8 +102,16 @@ module.exports = class EPage {
         elements.forEach(element => {
           const oldTap = element.tap
           element.tap = async function (...args) {
+            let offset = { width: 0, height: 0 }
+            let size = { left: 0, top: 0 }
+            try {
+              offset = await element.offset()
+              size = await element.size()
+            } catch (error) {
+              // e
+            }
+            await screenshotJS.tap({ offset, size, type: 'tap' })
             const res = await oldTap.call(this, ...args)
-            await screenshotJS.tap()
             return res
           }
         })
