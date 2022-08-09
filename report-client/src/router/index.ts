@@ -23,7 +23,7 @@ export const config = [
   {
     path: '/gencase',
     name: 'gencase',
-    component: () => import('../views/GenCaseView.vue'),
+    component: () => import('../views/GenCase/GenCaseView.vue'),
     title: '工作台'
   }
 ]

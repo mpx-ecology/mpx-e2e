@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ImgList from '@/views/ScreenShot/components/ImgList.vue';
+import TabPane from './components/TabPane.vue';
 </script>
 
 <template>
   <div>
-    <ImgList />
+    <TabPane />
   </div>
 </template>
