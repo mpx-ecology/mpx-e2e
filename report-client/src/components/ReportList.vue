@@ -41,7 +41,7 @@ const information = computed(() => {
   if (state.result.length === 0) return {}
   let startTime = state.result[0].perfStats.start
   let endTime = 0
-  const rootDir = state.result[0].testFilePath
+  const rootDir = state.result[0].testFilePath.split('/')!.slice(0, -1)!.join('/')
   state.result.forEach(item => {
     startTime = Math.min(item.perfStats.start, startTime)
     endTime = Math.max(item.perfStats.end, endTime)

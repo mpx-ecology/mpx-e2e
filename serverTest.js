@@ -4,7 +4,10 @@
 const program = require('commander');
 
 program
-  .option('-u, --url <char>', 'open url')
+  .option('-pt, --port <char>', 'port need, default 8886')
+  .option('-d, --debug', 'output debug log')
+  .option('-ph, --path <char>', 'auto open with the path')
+  .option('-o, --open', '')
   .parse(process.argv);
 
 program.url && console.log(`即将自动打开：${program.url}`);
@@ -20,9 +23,9 @@ const app = new PluginReport({
 });
 
 app.apply({
-  port: 8886,
-  open: true,
-  url: program.url
+  port: program.port || 8886,
+  open: program.open || true,
+  path: program.path
 })
 
 app.done()

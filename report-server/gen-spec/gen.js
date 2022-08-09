@@ -4,6 +4,7 @@ const path = require('path');
 const tpl = require('./template');
 const fs = fsOrigin.promises;
 const fsExtra = require('fs-extra');
+const opType = require('../const/op-type');
 /**
  *
  * @param e2erc  .e2erc.js module
@@ -12,7 +13,7 @@ const fsExtra = require('fs-extra');
  * @returns {Promise<*[]>}
  */
 let i = 0;
-module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
+module.exports = async function generateSpec ({ previewMode, e2erc, tasks, write = false }) {
   const {
     recordsDir,
     testSuitsDir,
@@ -36,7 +37,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
   });
 
   let specFileList = [];
-
+  let obj = {};
   if (!files.length) throw new Error(recordsDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
   for (let f of files) {
     // 文件冲突检查 & 复制文件
@@ -45,8 +46,14 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
 
     let minitestJson = require(f.p);
 
+
     // 去重获知被 MOCK 的 api 名称及出现顺序
     let recordAPIs = minitestJson?.env?.recordAPIs.length ? [...new Set(minitestJson.env.recordAPIs)] : [];
+
+    // 输入命令
+    obj[f.o] = {};
+
+    obj[f.o].mock = recordAPIs.slice();
 
     let mockRules = minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
 
@@ -54,6 +61,65 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
 
     // 把文字中的换行符等过滤掉，防止意外换行导致格式化失败
     cmds = cmds.map((i) => /\n|\t|\r\n/g.test(i.text) ? { ...i, text: i.text.replace(/\n|\t|\r\n/g, ' ') } : i);
+
+    obj[f.o].cmds = cmds.map(i => {
+      let { command } = i;
+      let res = {
+        cmd: command,
+      }
+      let fun = opType[command];
+      switch (command) {
+        case 'tap':
+          res.label = fun('标签名：' + i.tagName + ', target xpath ' + i.target)
+          break;
+        case 'assertVisible':
+          res.label = fun(i.target)
+          break;
+        case 'dataSnapshot':
+          res.label = fun();
+          break;
+        case 'wxmlSnapshot':
+          res.label = fun();
+          break;
+        case 'assertTextContent':
+          res.label = fun();
+          break;
+        case 'assertTextLength':
+          res.label = fun();
+          break;
+        case 'assertTextByRegExp':
+          res.label = fun();
+          break;
+        case 'assertElementWidth':
+          res.label = fun();
+          break;
+        case 'assertElementLength':
+          res.label = fun();
+          break;
+        case 'assertResponseContent':
+          res.label = fun();
+          break;
+        case 'waitForSomeTime':
+          res.label = fun();
+          break;
+        case 'waitForExactRouter':
+          res.label = fun();
+          break;
+        case 'waitForApiResponse':
+          res.label = fun();
+          break;
+        case 'operateRouterRelaunch':
+          res.label = fun();
+          break;
+        case 'operateRouterBack':
+          res.label = fun();
+          break;
+        case 'operateRouterSwitchTab':
+          res.label = fun();
+      }
+      return res
+    })
+
 
     let c = cmds;
 
@@ -70,6 +136,7 @@ module.exports = async function generateSpec ({ e2erc, tasks, write = false }) {
       cmds: c,
       // macroPath: './macros',
       item: c[0],
+      previewMode,
       connectFirst: e2erc.connectFirst, // automator 优先使用 connect 而非 launch
     };
 

@@ -14,17 +14,17 @@ export const config = [
     component: () => import('../views/AboutView.vue'),
     title: '截图'
   },
-  {
-    path: '/work',
-    name: 'work',
-    component: () => import('../views/WorkView.vue'),
-    title: '工作台'
-  },
+  // {
+  //   path: '/work',
+  //   name: 'work',
+  //   component: () => import('../views/WorkView.vue'),
+  //   title: '工作台'
+  // },
   {
     path: '/gencase',
     name: 'gencase',
     component: () => import('../views/GenCaseView.vue'),
-    title: '生成测试用例'
+    title: '工作台'
   }
 ]
 const router = createRouter({
