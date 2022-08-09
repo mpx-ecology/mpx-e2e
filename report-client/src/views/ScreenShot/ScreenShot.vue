@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TabPane from './components/TabPane.vue';
+import CommonImage from './components/CommonImage.vue';
 </script>
 
 <template>
   <div>
-    <TabPane />
+    <CommonImage />
   </div>
 </template>
