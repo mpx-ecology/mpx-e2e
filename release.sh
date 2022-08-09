@@ -2,7 +2,6 @@
 
 BRANCH=`git branch -a|grep '.*\*'|sed 's/[*[:space:]]*//g'` # 当前分支
 STATUS=`git status --porcelain` # working tree
-git checkout .
 if [ "$STATUS" ]; then
   echo "❗️请先清理 workingtree 后再进行发布！"
   echo ""
@@ -15,11 +14,11 @@ cd report-client
 # npm ci
 npm run build
 
-# build server
-# echo "正在打包Server..."
 cd ..
 # npm ci
 # npm run build
+
+sleep 3
 
 if [ -z "$1" ]; then
   type='prerelease'

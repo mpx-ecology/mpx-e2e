@@ -1,6 +1,6 @@
 const EPage = require('./page');
 const chalk = require('chalk');
-const { pushImg } = require('./utils');
+const { pushImg, pushJSError } = require('./utils');
 const path = require('path');
 const screenshotJS = require('./screenshot')
 
@@ -39,18 +39,16 @@ module.exports = class EMiniProgram {
       miniProgram.init = (iniCfg) => this.init.call(that, iniCfg)
 
       // 监听报错信息
-      miniProgram.on('exception', err => {
+      miniProgram.on('exception', async(err) => {
         const page = await this.currentPagePath()
-        // const src = path.resolve(process.cwd(), options.path)
-        // screenshotJS.save()
+        const rs = screenshotJS.save()
         console.log(111, err.message)
         // console.log(222, err.stack)
         pushJSError({
-          path: options.path,
-          src: options.src,
           page,
           message: err.message,
-          stack: err.stack
+          stack: err.stack,
+          imgSrc: rs.src
         })
       })
 
@@ -71,7 +69,7 @@ module.exports = class EMiniProgram {
           page,
           ...options.params
         }
-        pushImg()
+        pushImg(result)
         return result
       }
 
