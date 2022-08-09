@@ -56,9 +56,7 @@ const tableData = computed(() => {
 });
 
 function formatUseTime(time: number) {
-  const rs = getFormattedTime(0, time)
-  console.log(typeof rs)
-  return rs
+  return getFormattedTime(0, time)
 }
 
 /** 表格行存在失败case样式 */

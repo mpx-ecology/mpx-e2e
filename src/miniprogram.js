@@ -38,6 +38,22 @@ module.exports = class EMiniProgram {
       miniProgram.addInterceptResponse = (fn) => this.interceptResponseStack.push(fn)
       miniProgram.init = (iniCfg) => this.init.call(that, iniCfg)
 
+      // 监听报错信息
+      miniProgram.on('exception', err => {
+        const page = await this.currentPagePath()
+        // const src = path.resolve(process.cwd(), options.path)
+        // screenshotJS.save()
+        console.log(111, err.message)
+        // console.log(222, err.stack)
+        pushJSError({
+          path: options.path,
+          src: options.src,
+          page,
+          message: err.message,
+          stack: err.stack
+        })
+      })
+
       const screenshot = miniProgram.screenshot
       miniProgram.screenshot = async (options) => {
         await screenshot.call(miniProgram, options)

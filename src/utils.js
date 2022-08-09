@@ -1,13 +1,11 @@
 const http = require('http');
 
-const imgList = [];
-
-exports.imgList = imgList;
 exports.pushImg = pushImg;
 exports.pushExpect = pushExpect;
+exports.pushJSError = pushJSError;
+
 
 function pushImg (params) {
-  imgList.push(params)
   const req = http.request({
     port: 8886,
     method: 'POST',
@@ -36,5 +34,21 @@ function pushExpect () {
     // console.log('发送成功')
   })
   // req.write(JSON.stringify(params))
+  req.end()
+}
+
+function pushJSError (params) {
+  const req = http.request({
+    port: 8886,
+    method: 'POST',
+    hostname: 'localhost',
+    path: '/common/errorList',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }, () => {
+    // console.log('error发送成功')
+  })
+  req.write(JSON.stringify(params))
   req.end()
 }

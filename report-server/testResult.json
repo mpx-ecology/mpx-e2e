@@ -1,1 +1,450 @@
-{"reportList":[],"imgList":[]}
+{
+  "reportList": [
+    {
+      "leaks": false,
+      "numFailingTests": 1,
+      "numPassingTests": 16,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "perfStats": {
+        "end": 1640960210563,
+        "runtime": 230,
+        "slow": false,
+        "start": 1640960210333
+      },
+      "skipped": false,
+      "testFilePath": "/Users/harry.hou/Desktop/harry/test/test/examples-data-merge.test.js",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 1"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 1 a test 0.5042181900569092",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.5042181900569092"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 1"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 1 a test 0.885928131307246",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.885928131307246"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 1"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 1 a test 0.14506808248417058",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.14506808248417058"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 1"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 1 a test 0.7022349183294523",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.7022349183294523"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 1",
+            "title 2"
+          ],
+          "duration": 3,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 1,
+                "expected": 2,
+                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m1\u001b[39m",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.<anonymous> (/Users/harry.hou/Desktop/harry/test/test/examples-data-merge.test.js:18:19)\n    at Promise.then.completed (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n    at _runTest (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:66:9)\n    at _runTestsForDescribeBlock (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:60:9)\n    at _runTestsForDescribeBlock (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:60:9)"
+          ],
+          "fullName": "examples for data merge test title 1 title 2 error",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "failed",
+          "title": "error"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3",
+            "title 4"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 title 4 a test 0.23819716745619535",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.23819716745619535"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3",
+            "title 4"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 title 4 a test 0.916453289630673",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.916453289630673"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3",
+            "title 4"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 title 4 a test 0.89830806272446",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.89830806272446"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3",
+            "title 4"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 title 4 a test 0.763871645973685",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.763871645973685"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 a test 0.4202323322803665",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.4202323322803665"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 a test 0.29825924535484805",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.29825924535484805"
+        },
+        {
+          "ancestorTitles": [
+            "examples for data merge test",
+            "title 3"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for data merge test title 3 a test 0.705722281426997",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.705722281426997"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "a test 0.1047432283531824",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.1047432283531824"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "a test 0.15374654956756317",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.15374654956756317"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "a test 0.3479277363990776",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.3479277363990776"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "a test 0.6762722523021074",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.6762722523021074"
+        },
+        {
+          "ancestorTitles": [],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "a test 0.758811022360399",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "a test 0.758811022360399"
+        }
+      ],
+      "failureMessage": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mexamples for data merge test › title 1 › title 2 › error\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m2\u001b[39m\n    Received: \u001b[31m1\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 16 |\u001b[39m     describe(\u001b[32m'title 2'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 17 |\u001b[39m       test(\u001b[32m\"error\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 18 |\u001b[39m         expect(\u001b[35m1\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m2\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m       })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 20 |\u001b[39m     })\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m   })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtest/examples-data-merge.test.js\u001b[39m\u001b[0m\u001b[2m:18:19)\u001b[22m\u001b[2m\u001b[22m\n",
+      "imgList": [
+        {
+          "path": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333611760.png",
+          "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333611760.png",
+          "time": 1659333611842,
+          "page": "pages/index"
+        },
+        {
+          "path": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333612620.png",
+          "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333612620.png",
+          "time": 1659333612684,
+          "page": "pages/index"
+        },
+        {
+          "path": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333612941.png",
+          "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333612941.png",
+          "time": 1659333613011,
+          "page": "pages/index"
+        },
+        {
+          "path": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333613253.png",
+          "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333613253.png",
+          "time": 1659333613316,
+          "page": "pages/index"
+        },
+        {
+          "path": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333613565.png",
+          "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/node_modules/@mpxjs/e2e/src/cache/1659333613565.png",
+          "time": 1659333613635,
+          "page": "pages/index"
+        }
+      ],
+      "expectCount": 1
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 1,
+      "numPassingTests": 0,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "perfStats": {
+        "end": 1640960210619,
+        "runtime": 45,
+        "slow": false,
+        "start": 1640960210574
+      },
+      "skipped": false,
+      "testFilePath": "/Users/harry.hou/Desktop/harry/test/test/examples-error.test.js",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "examples for error test"
+          ],
+          "duration": 1,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 1,
+                "expected": 2,
+                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m1\u001b[39m",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.<anonymous> (/Users/harry.hou/Desktop/harry/test/test/examples-error.test.js:4:15)\n    at Promise.then.completed (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:218:40)\n    at _runTest (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:66:9)\n    at _runTestsForDescribeBlock (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:60:9)\n    at run (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/Users/harry.hou/Desktop/harry/test/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)"
+          ],
+          "fullName": "examples for error test error",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "failed",
+          "title": "error"
+        }
+      ],
+      "failureMessage": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mexamples for error test › error\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m2\u001b[39m\n    Received: \u001b[31m1\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 2 |\u001b[39m describe(\u001b[32m'examples for error test'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 3 |\u001b[39m   test(\u001b[32m\"error\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 4 |\u001b[39m     expect(\u001b[35m1\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m2\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m   |\u001b[39m               \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 5 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 6 |\u001b[39m })\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 7 |\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtest/examples-error.test.js\u001b[39m\u001b[0m\u001b[2m:4:15)\u001b[22m\u001b[2m\u001b[22m\n"
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "perfStats": {
+        "end": 1640960210669,
+        "runtime": 38,
+        "slow": false,
+        "start": 1640960210631
+      },
+      "skipped": false,
+      "testFilePath": "/Users/harry.hou/Desktop/harry/test/test/examples-test.test.js",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "examples for test"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for test test",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "test"
+        }
+      ],
+      "failureMessage": null
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "perfStats": {
+        "end": 1640960210763,
+        "runtime": 91,
+        "slow": false,
+        "start": 1640960210672
+      },
+      "skipped": false,
+      "testFilePath": "/Users/harry.hou/Desktop/harry/test/test/Attach-image.test.js",
+      "testResults": [
+        {
+          "ancestorTitles": [],
+          "duration": 18,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "《卧龙吟》",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "《卧龙吟》"
+        }
+      ],
+      "failureMessage": null
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 0,
+      "numPendingTests": 0,
+      "numTodoTests": 1,
+      "perfStats": {
+        "end": 1640960210804,
+        "runtime": 38,
+        "slow": false,
+        "start": 1640960210766
+      },
+      "skipped": false,
+      "testFilePath": "/Users/harry.hou/Desktop/harry/test/test/examples-todo.test.js",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "examples for todo test"
+          ],
+          "duration": null,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "examples for todo test todo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "todo",
+          "title": "todo"
+        }
+      ],
+      "failureMessage": null
+    }
+  ]
+}

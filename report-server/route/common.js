@@ -34,6 +34,25 @@ router.get('/imgList', (ctx) => {
   }
 })
 
+// 保存js报错信息到本地
+router.post('/errorList', (ctx) => {
+  try {
+    const dist = path.resolve(__dirname, '../testResult.json')
+    const oldFile = fs.readFileSync(dist, 'utf8')
+    const data = JSON.parse(oldFile)
+    const errorList = data.errorList
+    if (Array.isArray(errorList)) {
+      errorList.push(ctx.request.body)
+    } else {
+      errorList = [ctx.request.body]
+    }
+    fs.writeFileSync(dist, JSON.stringify(data))
+    ctx.body = { error: 0, data: {} }
+  } catch (error) {
+    ctx.body = { error: 500, data: {} }
+  }
+})
+
 router.post('/expectList', (ctx) => {
   try {
     const dist = path.resolve(__dirname, '../testResult.json')
