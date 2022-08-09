@@ -40,7 +40,7 @@ module.exports = class EMiniProgram {
 
       // 监听报错信息
       miniProgram.on('exception', async (err) => {
-        const rs = await screenshotJS.save()
+        const rs = await screenshotJS.save({type: 'error'})
         pushJSError({
           message: err.message,
           stack: err.stack,
