@@ -5,9 +5,9 @@ import { ElTable, ElTableColumn, ElTag, ElIcon, ElButton } from "element-plus";
 import type { Report } from "src/common/js/apiTypes";
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 
-import DetailModal from "./DetailModal.vue"
+import DetailModal from "../../../components/DetailModal.vue"
 
-import { getFormattedTime } from '../utils'
+import { getFormattedTime } from '../../../utils'
 
 type Props = {
   list: Report[];

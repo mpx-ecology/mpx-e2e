@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { ElCard, ElIcon } from 'element-plus'
-import HomeChart from './HomeChart.vue';
-import HomeTable from './HomeTable.vue';
-import { getFormattedTime, timestampToTime } from '../utils'
-import { useCounterStore } from '../stores/counter'
+// import HomeChart from './HomeChart.vue';
+// import HomeTable from './HomeTable.vue';
+import { getFormattedTime, timestampToTime } from '../../../utils'
+import { useCounterStore } from '../../../stores/counter'
 
 const store = useCounterStore()
 
@@ -116,8 +116,8 @@ const fileList = computed(() => {
         </div>
       </div>
     </div>
-    <home-chart :file="fileList" :list="chartList" v-if="chartList.length"></home-chart>
-    <home-table :list="store.reportList"></home-table>
+    <!-- <home-chart :file="fileList" :list="chartList" v-if="chartList.length"></home-chart> -->
+    <!-- <home-table :list="store.reportList"></home-table> -->
   </div>
 </template>
 

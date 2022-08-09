@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import HomeView from '@/views/HomeView/HomeView.vue'
 
 export const config = [
   {
@@ -9,9 +9,9 @@ export const config = [
     title: '报告'
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue'),
+    path: '/screenShot',
+    name: 'screenShot',
+    component: () => import('../views/ScreenShot/ScreenShot.vue'),
     title: '截图'
   },
   // {

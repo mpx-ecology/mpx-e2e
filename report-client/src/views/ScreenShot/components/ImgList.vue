@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { ElImage, ElEmpty, ElScrollbar, ElDivider, ElTag } from 'element-plus'
-import { useCounterStore } from '../stores/counter'
+import { useCounterStore } from '../../../stores/counter'
 const store = useCounterStore()
 
 type ImgList = { title: string, list: Info[], preview: string[] }[]

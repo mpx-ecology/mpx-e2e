@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ImgList from '@/components/ImgList.vue';
+import ImgList from '@/views/ScreenShot/components/ImgList.vue';
 </script>
 
 <template>
