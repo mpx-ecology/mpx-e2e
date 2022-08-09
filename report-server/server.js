@@ -72,7 +72,7 @@ class E2eServer {
     if (!isDirectory) {
       fs.mkdir(cache, () => {})
     }
-    fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [] }))
+    fs.writeFileSync(dist, JSON.stringify({ reportList: [], imgList: [], errorList: [] }))
   }
   done () {
     if (this.cfg.open) {

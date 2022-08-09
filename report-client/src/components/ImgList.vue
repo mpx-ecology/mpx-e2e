@@ -19,6 +19,7 @@ type Info = {
   time: string,
   path: string,
   page: string,
+  src: string,
   imgStyle: {
     width?: string,
     height?: string,
@@ -74,7 +75,8 @@ onBeforeMount(() => {
             time: detail,
             page: img.page,
             imgStyle,
-            wrapStyle
+            wrapStyle,
+            src: img.src
           }
         })
         state.imgList.push({
@@ -101,7 +103,7 @@ const isEmpty = computed(() => {
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
             <div class="container">
-              <el-image :style="img.wrapStyle" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+              <el-image :src="img.src" :style="img.wrapStyle" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
               <div
                 v-if="img.imgStyle.width"
                 :style="img.imgStyle"

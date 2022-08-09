@@ -44,7 +44,7 @@ router.post('/errorList', (ctx) => {
     if (Array.isArray(errorList)) {
       errorList.push(ctx.request.body)
     } else {
-      errorList = [ctx.request.body]
+      data.errorList = [ctx.request.body]
     }
     fs.writeFileSync(dist, JSON.stringify(data))
     ctx.body = { error: 0, data: {} }

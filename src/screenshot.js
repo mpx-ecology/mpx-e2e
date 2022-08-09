@@ -70,7 +70,7 @@ class ScreenShot {
       return await this.miniProgram.screenshot({
         path: path.relative(process.cwd(), src),
         src,
-        params: Object.assign(params, { systemInfo: this.systemInfo })
+        params: Object.assign({}, params, { systemInfo: this.systemInfo })
       })
     } catch (error) {
       // console.log(error)

@@ -26,6 +26,7 @@ class MyCustomReporter {
     const reportList = data.reportList
     testResult.imgList = data.imgList || []
     testResult.expectCount = data.expectCount || 0
+    testResult.errorList = data.errorList || []
     if (Array.isArray(reportList)) {
       reportList.push(testResult)
     } else {
@@ -33,6 +34,7 @@ class MyCustomReporter {
     }
     delete data.imgList
     delete data.expectCount
+    delete data.errorList
     fs.writeFileSync(dist, JSON.stringify(data))
   }
 

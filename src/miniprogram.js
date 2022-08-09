@@ -39,15 +39,12 @@ module.exports = class EMiniProgram {
       miniProgram.init = (iniCfg) => this.init.call(that, iniCfg)
 
       // 监听报错信息
-      miniProgram.on('exception', async(err) => {
-        const page = await this.currentPagePath()
-        const rs = screenshotJS.save()
-        console.log(111, err.message)
-        // console.log(222, err.stack)
+      miniProgram.on('exception', async (err) => {
+        const rs = await screenshotJS.save()
         pushJSError({
-          page,
           message: err.message,
           stack: err.stack,
+          page: rs.page,
           imgSrc: rs.src
         })
       })
