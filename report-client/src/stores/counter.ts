@@ -1,8 +1,23 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
+import type { Report } from 'src/common/js/apiTypes'
+
+type BaseData = {
+  data: {
+    reportList: Report[]
+  },
+  error: number
+}
+
+type State = {
+  reportList: Report[],
+  counter: number
+}
 
 export const useCounterStore = defineStore({
   id: 'counter',
-  state: () => ({
+  state: (): State => ({
+    reportList: [],
     counter: 0
   }),
   getters: {
@@ -11,6 +26,12 @@ export const useCounterStore = defineStore({
   actions: {
     increment() {
       this.counter++
+    },
+    async getData() {
+      const isDEV = import.meta.env.DEV
+      const path = isDEV ? 'http://localhost:8886' : location.origin
+      const response = await axios.get<BaseData>(`${path}/common/testResult`)
+      this.reportList = response.data.data.reportList
     }
   }
 })

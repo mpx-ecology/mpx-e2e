@@ -1,48 +1,31 @@
 <script setup lang="ts">
-import { onBeforeMount, reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { ElCard, ElIcon } from 'element-plus'
-import axios from 'axios'
 import HomeChart from './HomeChart.vue';
 import HomeTable from './HomeTable.vue';
-import type { Report } from 'src/common/js/apiTypes'
 import { getFormattedTime, timestampToTime } from '../utils'
+import { useCounterStore } from '../stores/counter'
 
-type BaseData = {
-  data: {
-    reportList: Report[]
-  },
-  error: number
-}
-
-interface State {
-  result: Report[]
-}
-
-const state = reactive<State>({ result: [] })
-
-async function getData(url: string) {
-  const response = await axios.get<BaseData>(url)
-  return response.data.data.reportList
-}
+const store = useCounterStore()
 
 const dashboardInfo = computed(() => {
   let numFailingTests = 0
   let numPassingTests = 0
   let expectCount = 0
-  state.result.forEach(item => {
+  store.reportList.forEach(item => {
     numFailingTests += item.numFailingTests
     numPassingTests += item.numPassingTests
     expectCount += item.expectCount
   })
-  return { numFailingTests, numPassingTests, total: state.result.length, expectCount }
+  return { numFailingTests, numPassingTests, total: store.reportList.length, expectCount }
 })
 
 const information = computed(() => {
-  if (state.result.length === 0) return {}
-  let startTime = state.result[0].perfStats.start
+  if (store.reportList.length === 0) return {}
+  let startTime = store.reportList[0].perfStats.start
   let endTime = 0
-  const rootDir = state.result[0].testFilePath.split('/')!.slice(0, -1)!.join('/')
-  state.result.forEach(item => {
+  const rootDir = store.reportList[0].testFilePath.split('/')!.slice(0, -1)!.join('/')
+  store.reportList.forEach(item => {
     startTime = Math.min(item.perfStats.start, startTime)
     endTime = Math.max(item.perfStats.end, endTime)
   })
@@ -51,22 +34,13 @@ const information = computed(() => {
 })
 
 const chartList = computed(() => {
-  return state.result.map(item => (item.expectCount || 0))
+  return store.reportList.map(item => (item.expectCount || 0))
 })
 
 const fileList = computed(() => {
-  return state.result.map(item => {
+  return store.reportList.map(item => {
     const list = item.testFilePath.split(/\/|\\/)
     return list[list.length - 1]
-  })
-})
-
-const isDEV = import.meta.env.DEV
-const path = isDEV ? 'http://localhost:8886' : location.origin
-
-onBeforeMount(() => {
-  getData(`${path}/common/testResult`).then((res) => {
-    state.result = res
   })
 })
 
@@ -143,7 +117,7 @@ onBeforeMount(() => {
       </div>
     </div>
     <home-chart :file="fileList" :list="chartList" v-if="chartList.length"></home-chart>
-    <home-table :list="state.result"></home-table>
+    <home-table :list="store.reportList"></home-table>
   </div>
 </template>
 
