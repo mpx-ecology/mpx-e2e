@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, reactive } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { getJsonFiles } from '@/api/workshop'
 import {
   ElCol,
@@ -52,10 +52,10 @@ import {
   ElTooltip,
   ElEmpty
 } from 'element-plus'
-import type { LOAD_CASE_RESPONSE } from '@/types/genCaseType'
-const code: { value: string } = ref('');
-const list: { value: string[] } = ref([]);
-const currentJsonFile: { value: string } = ref('');
+
+const code = ref<string>('');
+const list = ref<string[]>([]);
+const currentJsonFile = ref<string>('');
 
 // setTimeout(() => {
 //   code.value = 'var g = null;'

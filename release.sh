@@ -28,7 +28,7 @@ fi
 
 if [ $BRANCH != "master" ] && [ $type == "patch" ]
 then
-  echo 'error: 请在master上发布path版本!'
+  echo 'error: 请在master上发布patch版本!'
   exit 1
 fi
 

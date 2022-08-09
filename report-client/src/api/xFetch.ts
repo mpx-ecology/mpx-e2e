@@ -1,4 +1,5 @@
-import axios, { AxiosResponse, Method } from 'axios'
+import axios from 'axios'
+import type { AxiosResponse, Method } from 'axios'
 import type { CommonRequestCfg } from '../../types/request'
 
 const ts = function () {
