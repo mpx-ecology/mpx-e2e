@@ -9,6 +9,7 @@ const store = useCounterStore()
 
 onBeforeMount(() => {
   store.getData()
+  store.getSystemInfo()
 })
 
 const chartList = computed(() => {
