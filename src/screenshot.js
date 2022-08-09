@@ -1,4 +1,5 @@
 const path = require('path')
+const { pushSystemInfo } = require('./utils')
 
 class ScreenShot {
   constructor () {
@@ -10,17 +11,9 @@ class ScreenShot {
       cacheDirectory: path.resolve(__dirname, '../report-server/cache'), // 缓存目录
       clear: true, // 清除缓存
       timeout: 3000, // 定时截图
-      tapSave: false, // 点击事件自动截图
-      routeUpdateSave: false, // 路由更新自动截图
-      watchRequest: [{
-        url: 'https://api.hongyibo.com.cn/gulfstream/passenger/v2/core/pMultiEstimatePrice',
-        handler: (newValue, oldValue) => {
-          if (oldValue !== newValue) {
-            return true
-          }
-          return false
-        }
-      }]
+      tapSave: true, // 点击事件自动截图
+      routeUpdateSave: true, // 路由更新自动截图
+      watchRequest: [] // 接口请求自动截图
     }
     this.disable = true
     this.count = 0
@@ -50,6 +43,7 @@ class ScreenShot {
       // eslint-disable-next-line no-undef
       return wx.getSystemInfoSync()
     })
+    pushSystemInfo(systemInfo)
     this.systemInfo.windowWidth = systemInfo.windowWidth
     this.systemInfo.windowHeight = systemInfo.windowHeight
   }
@@ -70,7 +64,7 @@ class ScreenShot {
       return await this.miniProgram.screenshot({
         path: path.relative(process.cwd(), src),
         src,
-        params: Object.assign({}, params, { systemInfo: this.systemInfo })
+        params: Object.assign({}, params)
       })
     } catch (error) {
       // console.log(error)
@@ -82,7 +76,7 @@ class ScreenShot {
       // Do something... 
       this.save({ type: 'route' })
     })
-    this.miniProgram.evaluate(() => {
+    await this.miniProgram.evaluate(() => {
       // eslint-disable-next-line no-undef
       wx.onAppRoute(beforeRouteUpdate)
     })

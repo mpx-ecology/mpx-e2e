@@ -64,6 +64,7 @@ module.exports = class EMiniProgram {
           src: options.src || src,
           time: Date.now(),
           page,
+          type: 'user',
           ...options.params
         }
         pushImg(result)

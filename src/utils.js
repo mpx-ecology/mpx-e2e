@@ -3,6 +3,7 @@ const http = require('http');
 exports.pushImg = pushImg;
 exports.pushExpect = pushExpect;
 exports.pushJSError = pushJSError;
+exports.pushSystemInfo = pushSystemInfo;
 
 
 function pushImg (params) {
@@ -48,6 +49,22 @@ function pushJSError (params) {
     }
   }, () => {
     // console.log('error发送成功')
+  })
+  req.write(JSON.stringify(params))
+  req.end()
+}
+
+function pushSystemInfo (params) {
+  const req = http.request({
+    port: 8886,
+    method: 'POST',
+    hostname: 'localhost',
+    path: '/common/systemInfo',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }, () => {
+    // console.log('发送成功')
   })
   req.write(JSON.stringify(params))
   req.end()

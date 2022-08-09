@@ -6,6 +6,8 @@ const router = new Router({
   prefix: '/common'
 })
 
+let systemInfo = {}
+
 router.post('/imgList', (ctx) => {
   try {
     const dist = path.resolve(__dirname, '../testResult.json')
@@ -24,13 +26,20 @@ router.post('/imgList', (ctx) => {
   }
 })
 
-router.get('/imgList', (ctx) => {
+router.get('/systemInfo', (ctx) => {
   try {
-    const url = path.resolve(__dirname, '../testResult.json')
-    const file = fs.readFileSync(url, { encoding: 'utf-8' })
-    ctx.body = { error: 0, data: JSON.parse(file) }
+    ctx.body = { error: 0, data: systemInfo }
   } catch (error) {
-    ctx.body = { error: 500, data: { reportList: [] } }
+    ctx.body = { error: 500, data: {} }
+  }
+})
+
+router.post('/systemInfo', (ctx) => {
+  try {
+    systemInfo = ctx.request.body
+    ctx.body = { error: 0, data: {} }
+  } catch (error) {
+    ctx.body = { error: 500, data: {} }
   }
 })
 
