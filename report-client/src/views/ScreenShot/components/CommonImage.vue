@@ -106,12 +106,17 @@ const isEmpty = computed(() => {
       <el-scrollbar v-if="item.list.length">
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
-            <div class="container">
-              <el-image :src="img.src" :style="img.wrapStyle" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
-              <div
-                v-if="img.imgStyle.width"
-                :style="img.imgStyle"
-                class="rect">
+            <div class="container" :style="img.wrapStyle">
+              <div class="nav">
+                <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow">
+              </div>
+              <div class="inner">
+                <el-image :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+                <div
+                  v-if="img.imgStyle.width"
+                  :style="img.imgStyle"
+                  class="rect">
+                </div>
               </div>
             </div>
             <div class="info">
@@ -159,8 +164,18 @@ const isEmpty = computed(() => {
 }
 
 .container {
+  margin: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.11);
+}
+
+.inner {
   position: relative;
-  margin: 0 12px
+  overflow: hidden;
+  font-size: 0;
+  z-index: 3;
 }
 
 .rect {
@@ -179,7 +194,16 @@ const isEmpty = computed(() => {
   margin-right: 12px;
 }
 
-.el-image {
-  box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.11);
+.arrow {
+  width: 10px;
+  height: 10px;
+  transform: rotateZ(180deg);
+}
+
+.nav {
+  font-size: 0;
+  padding: 0 6px;
+  position: relative;
+  z-index: 2;
 }
 </style>
