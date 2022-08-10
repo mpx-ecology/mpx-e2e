@@ -41,7 +41,7 @@ const state = computed(() => {
   }
   store.reportList.forEach(item => {
     if (item.imgList && item.imgList.length) {
-      const imgList: Info[] = item.imgList.map(img => {
+      const imgList: Info[] = item.imgList.map((img, idx) => {
         const title = img.path.split(/\/|\\/).pop() || ''
         const time = timestampToTime(img.time || 0)
         const imgStyle = (img.size && img.offset) ? {
@@ -68,10 +68,11 @@ const state = computed(() => {
           type: img.type
         }
       })
+      const filterList = imgList.filter(item => checkList.value.includes(item.type))
       result.push({
         title: item.testFilePath.split(/\/|\\/).pop() || '',
-        list: imgList.filter(item => checkList.value.includes(item.type)),
-        preview: item.imgList.map(img => img.src)
+        list: filterList,
+        preview: filterList.map(img => img.src)
       })
     }
   })
@@ -175,7 +176,6 @@ const isEmpty = computed(() => {
   position: relative;
   overflow: hidden;
   font-size: 0;
-  z-index: 3;
 }
 
 .rect {
@@ -203,7 +203,5 @@ const isEmpty = computed(() => {
 .nav {
   font-size: 0;
   padding: 0 6px;
-  position: relative;
-  z-index: 2;
 }
 </style>

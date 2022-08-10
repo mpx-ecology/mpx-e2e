@@ -74,7 +74,9 @@ class ScreenShot {
     // 是否启动路由更新自动截图，默认是不开启的，开启之后所有路由切换都会自动截图
     await this.miniProgram.exposeFunction('beforeRouteUpdate', () => {
       // Do something... 
-      this.save({ type: 'route' })
+      setTimeout(() => {
+        this.save({ type: 'route' })
+      }, 300)
     })
     await this.miniProgram.evaluate(() => {
       // eslint-disable-next-line no-undef
