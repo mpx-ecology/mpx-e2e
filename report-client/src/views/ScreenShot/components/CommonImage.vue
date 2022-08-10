@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { ElImage, ElEmpty, ElScrollbar, ElDivider, ElTag } from 'element-plus'
+import { computed, ref } from 'vue';
+import { ElImage, ElEmpty, ElScrollbar, ElDivider, ElTag, ElCheckboxGroup, ElCheckbox, ElColorPicker } from 'element-plus'
 import { useCounterStore } from '../../../stores/counter'
+import { timestampToTime } from '../../../utils'
 const store = useCounterStore()
 
 type ImgList = { title: string, list: Info[], preview: string[] }[]
@@ -11,6 +12,7 @@ type Info = {
   path: string,
   page: string,
   src: string,
+  type: string
   imgStyle: {
     width?: string,
     height?: string,
@@ -23,60 +25,64 @@ type Info = {
   }
 }
 
-const addZero = (num: number) => {
-  return num < 10 ? `0${num}` : `${num}`
-}
+const checkList = ref(['timeout', 'tap', 'user', 'route', 'request'])
+
+const color = ref('#409EFF')
 
 const state = computed(() => {
   const result: ImgList = []
+  const mapList: any = {
+    timeout: 0,
+    tap: 0,
+    user: 0,
+    route: 0,
+    request: 0,
+    error: 0
+  }
   store.reportList.forEach(item => {
     if (item.imgList && item.imgList.length) {
-      let prevValue: any = null
-      const imgList: Info[] = item.imgList.map(img => {
+      const imgList: Info[] = item.imgList.map((img, idx) => {
         const title = img.path.split(/\/|\\/).pop() || ''
-        const time = new Date(img.time || 0)
-        const YY = time.getFullYear()
-        const MM = addZero(time.getMonth() + 1)
-        const DD = addZero(time.getDate())
-        const h = addZero(time.getHours())
-        const m = addZero(time.getMinutes())
-        const s = addZero(time.getSeconds())
-        const detail = `${YY}-${MM}-${DD} ${h}:${m}:${s}`
+        const time = timestampToTime(img.time || 0)
         const imgStyle = (img.size && img.offset) ? {
           width: `${img.size.width / 2}px`,
           height: `${img.size.height / 2}px`,
           left: `${img.offset.left / 2}px`,
-          top: `${img.offset.top / 2}px`
+          top: `${img.offset.top / 2}px`,
+          'border-color': color.value
         } : {
           display: 'none'
         }
-        if (!prevValue && img.systemInfo) {
-          prevValue = img.systemInfo
+        const wrapStyle = {
+          width: `${store.systemInfo.windowWidth / 2}px`,
+          height: `${store.systemInfo.windowHeight / 2}px`
         }
-        const wrapStyle = (img.systemInfo) ? {
-          width: `${img.systemInfo.windowWidth / 2}px`,
-          height: `${img.systemInfo.windowHeight / 2}px`
-        } : {
-          width: `${prevValue.windowWidth / 2}px`,
-          height: `${prevValue.windowHeight / 2}px`
-        }
+        mapList[img.type] = mapList[img.type] + 1
         return {
           path: title,
-          time: detail,
+          time,
           page: img.page,
           imgStyle,
           wrapStyle,
-          src: img.src
+          src: img.src,
+          type: img.type
         }
       })
+      const filterList = imgList.filter(item => checkList.value.includes(item.type))
       result.push({
         title: item.testFilePath.split(/\/|\\/).pop() || '',
-        list: imgList,
-        preview: item.imgList.map(img => img.src)
+        list: filterList,
+        preview: filterList.map(img => img.src)
       })
     }
   })
-  return result
+  const filterMapList: any = {}
+  for (const key in mapList) {
+    if (key !== 'error' && mapList[key]) {
+      filterMapList[key] = `${key}(${mapList[key]})`
+    }
+  }
+  return { result, filterMapList }
 })
 
 const isEmpty = computed(() => {
@@ -87,26 +93,41 @@ const isEmpty = computed(() => {
 
 <template>
   <div>
-    <div class="step" v-for="(item, index) in state" :key="index">
+    <div class="header">
+      <el-checkbox-group v-model="checkList">
+        <el-checkbox v-for="(item, key) in state.filterMapList" :key="key" :label="key">{{item}}</el-checkbox>
+      </el-checkbox-group>
+      <div>
+        <span class="border-color">border-color</span>
+        <el-color-picker v-model="color" />
+      </div>
+    </div>
+    <div class="step" v-for="(item, index) in state.result" :key="index">
       <el-divider content-position="left">{{item.title}}</el-divider>
-      <el-scrollbar>
+      <el-scrollbar v-if="item.list.length">
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
-            <div class="container">
-              <el-image :src="img.src" :style="img.wrapStyle" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
-              <div
-                v-if="img.imgStyle.width"
-                :style="img.imgStyle"
-                class="rect">
+            <div class="container" :style="img.wrapStyle">
+              <div class="nav">
+                <!-- <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow"> -->
+              </div>
+              <div class="inner">
+                <el-image :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+                <div
+                  v-if="img.imgStyle.width"
+                  :style="img.imgStyle"
+                  class="rect">
+                </div>
               </div>
             </div>
             <div class="info">
               <div>{{ img.time }}</div>
-              <el-tag>{{ img.page }}</el-tag>
+              <el-tag v-if="img.page">{{ img.page }}</el-tag>
             </div>
           </div>
         </div>
       </el-scrollbar>
+      <el-empty v-else description="No Data" />
     </div>
     <el-empty v-if="isEmpty" description="No Data" />
   </div>
@@ -144,12 +165,43 @@ const isEmpty = computed(() => {
 }
 
 .container {
+  margin: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.11);
+}
+
+.inner {
   position: relative;
-  margin: 0 12px
+  overflow: hidden;
+  font-size: 0;
 }
 
 .rect {
-  border: 1px solid red;
+  border: 1px solid transparent;
   position: absolute;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.border-color {
+  color: #909399;
+  margin-right: 12px;
+}
+
+.arrow {
+  width: 10px;
+  height: 10px;
+  transform: rotateZ(180deg);
+}
+
+.nav {
+  font-size: 0;
+  padding: 0 6px;
 }
 </style>

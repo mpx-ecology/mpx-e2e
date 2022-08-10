@@ -1,9 +1,11 @@
+export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
 
  export interface Img{
   path: string,
   src: string,
   time: number,
   page: string,
+  type: ImgType
   size?: {
     width: number,
     height: number,
@@ -52,4 +54,9 @@
   imgList: Img[],
   failureMessage: null,
   expectCount: number
+}
+
+export type SystemInfo = {
+  windowWidth: number,
+  windowHeight: number
 }
