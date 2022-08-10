@@ -108,7 +108,7 @@ const isEmpty = computed(() => {
           <div v-for="(img, idx) in item.list" :key="idx">
             <div class="container" :style="img.wrapStyle">
               <div class="nav">
-                <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow">
+                <!-- <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow"> -->
               </div>
               <div class="inner">
                 <el-image :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
