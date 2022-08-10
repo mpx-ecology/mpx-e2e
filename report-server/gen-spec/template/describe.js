@@ -32,7 +32,7 @@ let fn = (renderData) => {
 
   cmds.forEach((item, index) => {
     str += `
-     //【${recordAPIs.length + 1 + index}】操作：${operationType[item.command]}
+     //【${recordAPIs.length + 1 + index}】操作：${operationType[item.command](item.tagName)}
     `;
     if (item.waitfor) {
       str += `
@@ -80,6 +80,19 @@ let fn = (renderData) => {
       str += `} else {
           console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
         }`
+    } else if (item.command === 'tap') {
+      str += ` if (element) {
+      // 触发 ${ item.tagName } > ${ item.text } 的 ${ item.command } 事件
+      `;
+      if (item.eventData) {
+        str += ` await element.dispatchEvent({ eventName: '${ item.command }', eventData: ${ JSON.stringify(item.eventData) } });`
+      } else {
+        str += `await element.touchmove();
+          }`
+      }
+      str += `} else {
+          console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
+        }`
     } else if (item.command === 'assertVisible') {
       str += `expect(element).not.toBeNull();`
     } else if (item.command === 'assertPath') {
@@ -95,6 +108,11 @@ let fn = (renderData) => {
     element = await page?.$('page');
     actualResult = await element?.outerWxml();
     expect(expectResult).toBe(actualResult);`
+    } else if (item.command === 'navigateLeft') {
+      str += `
+         // ${item.command}
+         await miniProgram.navigateBack();
+      `
     }
   })
 

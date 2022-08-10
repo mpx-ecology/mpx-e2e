@@ -34,6 +34,11 @@ class E2eServer {
     app.use(handleImg);
     app.use(getE2erc(cfg)); // ctx 挂载 e2erc
 
+    app.use(async (ctx, next) => {
+      ctx.debugg = cfg.debug;
+      return next()
+    })
+
     app.use(common.routes(), common.allowedMethods());
     app.use(generateRouter.routes());
 
