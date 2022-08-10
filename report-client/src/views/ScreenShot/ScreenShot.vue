@@ -3,7 +3,5 @@ import CommonImage from './components/CommonImage.vue';
 </script>
 
 <template>
-  <div>
-    <CommonImage />
-  </div>
+  <CommonImage />
 </template>

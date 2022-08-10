@@ -23,8 +23,14 @@ export const config = [
   {
     path: '/gencase',
     name: 'gencase',
-    component: () => import('../views/GenCase/GenCaseView.vue'),
+    component: () => import('../views/GenCase/GenCase.vue'),
     title: '工作台'
+  },
+  {
+    path: '/JSError',
+    name: 'JSError',
+    component: () => import('../views/JSError/JSError.vue'),
+    title: 'JS报错'
   }
 ]
 const router = createRouter({

@@ -3,7 +3,5 @@ import { ElEmpty } from 'element-plus'
 </script>
 
 <template>
-  <div>
-    <el-empty description="No Data" />
-  </div>
+  <el-empty description="No Data" />
 </template>

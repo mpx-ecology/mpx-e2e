@@ -1,6 +1,6 @@
 export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
 
- export interface Img{
+export interface ImgItem {
   path: string,
   src: string,
   time: number,
@@ -18,6 +18,14 @@ export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
     windowWidth: number,
     windowHeight: number
   }
+ }
+
+ export interface ErrorItem {
+   message: string,
+   stack: string,
+   page: string,
+   src: string,
+   file?: string
  }
 
  export interface PerfStats {
@@ -48,10 +56,10 @@ export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
   openHandles: [],
   perfStats: PerfStats,
   skipped: number,
-  // snapshot: any,
   testFilePath: string,
   testResults: TestResults[],
-  imgList: Img[],
+  imgList: ImgItem[],
+  errorList: ErrorItem[]
   failureMessage: null,
   expectCount: number
 }
