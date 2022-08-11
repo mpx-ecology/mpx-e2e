@@ -2,18 +2,18 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import initSocket from './common/js/socket'
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
-import 'highlight.js/styles/monokai-sublime.css'
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-import hljsVuePlugin from "@highlightjs/vue-plugin";
+// import 'highlight.js/styles/monokai-sublime.css'
+// import hljs from 'highlight.js/lib/core';
+// import javascript from 'highlight.js/lib/languages/javascript';
+// import hljsVuePlugin from "@highlightjs/vue-plugin";
 
 import App from './App.vue';
 import router from './router';
 
-hljs.registerLanguage('javascript', javascript);
+// hljs.registerLanguage('javascript', javascript);
 
 const app = createApp(App)
-app.component('HighlightJs', hljsVuePlugin.component);
+// app.component('HighlightJs', hljsVuePlugin.component);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
