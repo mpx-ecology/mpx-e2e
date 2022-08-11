@@ -2,8 +2,13 @@
 import { computed, ref, reactive } from "@vue/reactivity";
 import { ElTable, ElTableColumn, ElTag } from "element-plus";
 
+import { useCounterStore } from '../../../stores/counter'
+
+
 import type { ErrorItem } from "src/common/js/apiTypes";
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
+
+const store = useCounterStore()
 
 type Props = {
   list: ErrorItem[];
@@ -23,13 +28,13 @@ const tableData = computed(() => {
   return rs;
 });
 
+const imgStyle = computed(() => {
+  return `width:${store.systemInfo.screenWidth}px;height:${store.systemInfo.screenHeight}px`
+})
 
-/** 表格行存在失败case样式 */
-function tableRowClassName({ row }: { row: ErrorItem }) {
-  // console.log(row);
-  let classes = ''
-  return classes
-}
+const smallImgStyle = computed(() => {
+  return `width:${store.systemInfo.screenWidth/5}px;height:${store.systemInfo.screenHeight/5}px`
+})
 
 /** 列样式 */
 function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, column: TableColumnCtx<ErrorItem>, columnIndex: number }) {
@@ -37,7 +42,7 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
   // console.log(column, columnIndex)
   let className = ''
   columnIndex === 0 ? className = 'expand-column' : void 0
-  column.label === 'Detail' ? className = 'detail' : void 0
+  column.label === 'Stack' ? className = 'stack' : void 0
   column.label === 'Message' ? className = 'message' : void 0
   return className
 }
@@ -46,8 +51,8 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
 
 <template>
   <el-table :data="tableData" style="width: 100%; margin-bottom: 20px" header-row-class-name="header-row"
-    :row-class-name="tableRowClassName" class="el-table" :cell-class-name="tableCellClassName">
-    <el-table-column :label="file">
+    class="el-table" :cell-class-name="tableCellClassName">
+    <el-table-column :label="file" label-class-name="file">
 
       <el-table-column type="expand">
         <template #default="scope">
@@ -57,7 +62,7 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
               <pre class="stack" v-html="scope.row.stack"></pre>
             </div>
             <div class="right">
-              <img class="image" :src="scope.row.src" />
+              <img class="image" :style="imgStyle" :src="scope.row.src" />
             </div>
           </div>
         </template>
@@ -69,16 +74,16 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
         </template>
       </el-table-column>
 
-      <el-table-column label="Detail" min-width="500">
+      <el-table-column label="Stack" min-width="500">
         <template #default="scope">
           <div class="page">页面路径：{{scope.row.page}}</div>
           <pre class="stack" v-html="scope.row.stack"></pre>
         </template>
       </el-table-column>
 
-      <el-table-column label="Src" width="130">
+      <el-table-column label="Thumbnail" width="130">
         <template #default="scope">
-          <img class="small-image" :src="scope.row.src" />
+          <img :style="smallImgStyle" :src="scope.row.src" />
         </template>
       </el-table-column>
 
@@ -88,17 +93,7 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
 </template>
 
 <style lang="scss" scoped>
-// 正常行hover
-:deep(.el-table__body) {
-  tr:hover>td.el-table__cell {
-    // background-color: #9beded
-  }
-}
-
 .el-table{
-  .small-image {
-    width: 100px;
-  }
 
   .page{
     font-weight: 700;
@@ -138,7 +133,7 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
 }
 
 // 详情列样式
-:deep(.detail) {
+:deep(.stack) {
   .cell {
     position: relative;
     height: 104px;
@@ -164,9 +159,15 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
   }
   .right{
     margin-right: 50px;
-    .image{
-      width: 375px
-    }
+  }
+}
+
+// spec文件名
+:deep(.file){
+  .cell {
+    font-size: 18px;
+    font-weight: 700;
+    color: #008c8c;
   }
 }
 </style>

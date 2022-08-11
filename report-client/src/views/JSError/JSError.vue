@@ -5,19 +5,20 @@ import { useCounterStore } from '../../stores/counter'
 import type { ErrorItem } from "src/common/js/apiTypes";
 
 import ErrorTable from './components/ErrorTable.vue';
+import InfoCard from './components/InfoCard.vue'
 
 const store = useCounterStore()
 
-interface errorTabel {
+interface errorTable {
   lists: ErrorItem[],
-  file: string
+  file: string,
 }
 
 /** 表格数据处理 */
 const tableData = computed(() => {
-  const result: errorTabel[] = [];
+  const result: errorTable[] = [];
   store.reportList.forEach((i) => {
-    const temp: errorTabel = {lists: [],file:''}
+    const temp: errorTable = {lists: [],file:''}
     if (i.errorList?.length > 0) {
       temp.lists = i.errorList
       temp.file = i.testFilePath.split(/\/|\\/).pop() || ''
@@ -30,7 +31,8 @@ const tableData = computed(() => {
 </script>
 
 <template>
+  <InfoCard />
   <template v-for="item in tableData">
-    <ErrorTable :list="item.lists" :file="item.file"/>
+    <ErrorTable :list="item.lists" :file="item.file" />
   </template>
 </template>

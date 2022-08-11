@@ -14,12 +14,6 @@ export const config = [
     component: () => import('../views/ScreenShot/ScreenShot.vue'),
     title: '截图'
   },
-  // {
-  //   path: '/work',
-  //   name: 'work',
-  //   component: () => import('../views/WorkView.vue'),
-  //   title: '工作台'
-  // },
   {
     path: '/gencase',
     name: 'gencase',

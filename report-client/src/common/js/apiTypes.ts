@@ -65,6 +65,10 @@ export interface ImgItem {
 }
 
 export type SystemInfo = {
-  windowWidth: number,
-  windowHeight: number
+  brand: string,
+  model: string,
+  platform: string,
+  screenHeight: number,
+  screenWidth: number,
+  system: string,
 }
