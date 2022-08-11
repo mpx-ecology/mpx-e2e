@@ -1,5 +1,4 @@
 import moment from "moment";
-
 export const InsuranceNumber = (number: number, minLength = 2) => {
   const len = number.toString().length;
   if (len < minLength) {
@@ -37,3 +36,4 @@ export function timestampToTime(timestamp:number) {
   const s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
   return Y + M + D + h + m + s;
 }
+

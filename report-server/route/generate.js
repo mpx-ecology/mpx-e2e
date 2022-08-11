@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const path = require('path');
 const { promises: fs } = require('fs');
-const generateSpec = require('../gen-spec/gen');
+const { generateSpec } = require('../gen-spec/gen');
 const { getE2erc } = require('../util');
 const router = new Router({
 	prefix: '/gen'
@@ -15,31 +15,29 @@ router.get('/loadCase', async (ctx, next) => {
 		// 不传递 tasks 默认
 		let caseDir = path.resolve(e2erc.projectPath, './minitest');
 		let tasks;
-		if (loadAll) {
+		if (+loadAll) {
 			tasks = await fs.readdir(caseDir)
 		} else {
-			try {
-				let stat = await fs.stat(path.join(caseDir, jsonName));
-				if (stat.isFile()) {
-					tasks = [jsonName]
-				}
-			} catch (e) {
-				ctx.body = {
-					errno: 101,
-					errmsg: e
-				}
-			}
-			return
+			await fs.stat(path.join(caseDir, jsonName));
+			tasks = [jsonName]
 		}
 
 		// 去掉 test.config.json 文件
 		tasks = tasks.filter(i => !/^(test\.config)/g.test(i));
 
+		let previewMode = typeof +preview === 'number' && !isNaN(preview);
 		if (tasks.length) {
-			let result = await generateSpec({ e2erc, tasks, write, previewMode: typeof +preview === 'number' && !isNaN(preview) });
+			let result = await generateSpec({
+				e2erc,
+				tasks,
+				write,
+				previewMode
+			});
 			let res = { errno: 0, errmsg: 'ok', e2erc, tasks };
-			if (typeof +preview === 'number' && !isNaN(preview)) {
-				res.preview = result[preview];
+			if (previewMode) {
+				let thePreviewItem = result[tasks[preview]];
+				res.preview = thePreviewItem.spec;
+				res.originData = thePreviewItem.originData;
 			}
 			ctx.body = res;
 		} else {

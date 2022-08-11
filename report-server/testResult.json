@@ -55,14 +55,7 @@
         }
       ],
       "expectCount": 2,
-      "errorList": [
-        {
-          "message": "3333 is not defin都撒到大三大四的撒在实打实",
-          "stack": "ReferenceError: e1 is not defined\n    at Bo.handleClose (http://127.0.0.1:13927/appservice/components/list2271575d/index.js?t=wechat&s=1660025908676&v=f0d823d0e46223fadd2d014747e9e6bc:1:2877)\n    at Object.i.safeCallback (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:448032)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641127\n    at vn (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:581440)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641048\n    at J (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531481)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531938\n    at http://127.0.0.1:13927/appservice/__dev__/WAServiceMainContext.js?t=wechat&s=1660025908676&v=2.25.2:1:759400\n    at a (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79418)\n    at c (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79529)",
-          "page": "pages2/index",
-          "src": "https://gift-static.hongyibo.com.cn/static/kfpub/2895/大促-氛围bg@2x.png"
-        }
-      ]
+      "errorList": []
     },
     {
       "leaks": false,
@@ -158,7 +151,6 @@
         {
           "path": "node_modules/@mpxjs/e2e/report-server/cache/1660025919257.png",
           "src": "/Users/didi/Downloads/e2e-examples-master/node_modules/@mpxjs/e2e/report-server/cache/1660025919257.png",
-          "type": "error",
           "time": 1660025919346,
           "page": "pages/index",
           "systemInfo": {
@@ -213,7 +205,6 @@
         {
           "path": "node_modules/@mpxjs/e2e/report-server/cache/1660025920058.png",
           "src": "/Users/didi/Downloads/e2e-examples-master/node_modules/@mpxjs/e2e/report-server/cache/1660025920058.png",
-          "type": "error",
           "time": 1660025920149,
           "page": "pages/index",
           "systemInfo": {
@@ -250,13 +241,13 @@
           "message": "e1 is not defined",
           "stack": "ReferenceError: e1 is not defined\n    at Bo.handleClose (http://127.0.0.1:13927/appservice/components/list2271575d/index.js?t=wechat&s=1660025908676&v=f0d823d0e46223fadd2d014747e9e6bc:1:2877)\n    at Object.i.safeCallback (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:448032)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641127\n    at vn (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:581440)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641048\n    at J (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531481)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531938\n    at http://127.0.0.1:13927/appservice/__dev__/WAServiceMainContext.js?t=wechat&s=1660025908676&v=2.25.2:1:759400\n    at a (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79418)\n    at c (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79529)",
           "page": "pages/index",
-          "src": "https://gift-static.hongyibo.com.cn/static/kfpub/2895/大促-氛围bg@2x.png"
+          "src": "/Users/didi/Downloads/e2e-examples-master/node_modules/@mpxjs/e2e/report-server/cache/1660025919257.png"
         },
         {
           "message": "e1 is not defined",
           "stack": "ReferenceError: e1 is not defined\n    at Bo.handleClose (http://127.0.0.1:13927/appservice/components/list2271575d/index.js?t=wechat&s=1660025908676&v=f0d823d0e46223fadd2d014747e9e6bc:1:2877)\n    at Object.i.safeCallback (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:448032)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641127\n    at vn (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:581440)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:641048\n    at J (http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531481)\n    at http://127.0.0.1:13927/appservice/__dev__/WASubContext.js?t=wechat&s=1660025908676&v=2.25.2:1:531938\n    at http://127.0.0.1:13927/appservice/__dev__/WAServiceMainContext.js?t=wechat&s=1660025908676&v=2.25.2:1:759400\n    at a (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79418)\n    at c (http://127.0.0.1:13927/appservice/__dev__/asdebug.js:10:79529)",
           "page": "pages/index",
-          "src": "https://gift-static.hongyibo.com.cn/static/kfpub/2895/nodata@3x.png"
+          "src": "/Users/didi/Downloads/e2e-examples-master/node_modules/@mpxjs/e2e/report-server/cache/1660025920058.png"
         }
       ]
     }
