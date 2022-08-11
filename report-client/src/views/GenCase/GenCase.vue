@@ -51,19 +51,20 @@
       </div>
     </el-col>
     <el-col :span="13">
-      <div class="code-limit">
-        <highlight-js
-            autodectect
-            language="js"
-            :code="code"
-        />
-      </div>
+<!--      <div class="code-limit">-->
+<!--        <highlight-js-->
+<!--            autodectect-->
+<!--            language="js"-->
+<!--            :code="code"-->
+<!--        />-->
+<!--      </div>-->
+      <div id="container" class="code-limit"></div>
     </el-col>
   </el-row>
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, reactive, computed } from 'vue'
+import { ref, onBeforeMount, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { getJsonFiles } from '@/api/workshop'
 import { cmdToLabel, getCmds, getMockedApisWithoutDuplicate } from "@/views/GenCase/genCase";
 import {
@@ -76,6 +77,33 @@ import {
   ElCard
 } from 'element-plus';
 
+import * as monaco from 'monaco-editor'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'json') {
+      return new jsonWorker()
+    }
+    if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    }
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker()
+    }
+    return new editorWorker()
+  }
+}
+
+
+
 const code = ref<string>('');
 const list = ref<string[]>([]);
 const currentJsonFileName = ref<string>('');
@@ -86,6 +114,7 @@ const cmdToLabels = computed(() => {
   let mocks = getMockedApisWithoutDuplicate(currentJson).map(i => ({ label: `mock 微信原生 API：${i}`}))
   return [...mocks, ...cmdToLabel(cmds.value)]
 });
+let editor: monaco.editor.IStandaloneCodeEditor;
 
 const updateCurrentJsonFileName = (n: string, idx: number) => {
   if (currentJsonFileName.value === n || isNaN(idx)) return (currentJsonFileName.value = n);
@@ -106,14 +135,34 @@ const getAndPreview = (write = 0, preview = 0, loadAll = 1, jsonName = '') => ge
   }
 
   code.value = res.preview;
+  editor.setValue(res.preview);
   updateCurrentJsonFileName(res.tasks[0], NaN);
   currentJson = res.originData;
   cmds.value = getCmds(currentJson)
 });
 
+
 onBeforeMount(getAndPreview);
 
+onMounted(() => {
+  editor = monaco.editor.create(document.getElementById('container') as HTMLElement, {
+    value: '',
+    language: 'javascript',
+    automaticLayout: true, // 自适应布局
+    theme: 'vs-dark',
+    renderLineHighlight: 'all', // 行亮
+    selectOnLineNumbers: true, // 显示行号
+    minimap:{
+      enabled: true,
+    },
+    readOnly: true, // 只读
+    fontSize: 16, // 字体大小
+    scrollBeyondLastLine: false, // 取消代码后面一大段空白
+    overviewRulerBorder: false, // 不要滚动条的边框
+  })
+});
 
+onUnmounted(() => editor.dispose());
 
 </script>
 
