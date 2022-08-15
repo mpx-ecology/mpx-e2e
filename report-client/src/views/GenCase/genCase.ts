@@ -24,12 +24,16 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 		let { command } = i;
 		let res = {
 			cmd: command,
-			label: ''
+			label: '',
+			tag: i.tagName,
+			path: i.path,
+			text: i.text,
+			xpath: i.target
 		}
 		let fun = opType[command as opTypes];
 		switch (command) {
 			case 'tap':
-				res.label = fun(i.tagName + ' ' + i.text)
+				res.label = fun('')
 				break;
 			case 'assertVisible':
 				res.label = fun(i.target)

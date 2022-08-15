@@ -124,7 +124,7 @@ async function genSpecString (minitestJson, renderCfg) {
     defaultWaitFor, // 默认 waitFor 等待时长
     wsEndpoint, // wsEndPoint
     cmds,
-    previewMode,
+    previewMode: false,
     connectFirst, // automator 优先使用 connect 而非 launch
   };
 
@@ -191,7 +191,17 @@ async function generateSpec ({ previewMode, e2erc, tasks, write = false }) {
     if (write) {
       await fs.writeFile(f.n, res.renderStr);
     }
+    let renderStr = res.renderStr;
+    let lineNums = {};
+    let tokenList = renderStr.split(/\n/m).forEach((t, i) => {
+      let rank = /【(\d+)】/.exec(t);
+      if (rank && rank[1]) {
+        lineNums[rank[1]] = i;
+      }
+    })
     result[f.o].spec = res.renderStr;
+    result[f.o].lineNums = lineNums;
+    tokenList = null;
   }
   return result
 }

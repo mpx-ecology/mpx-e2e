@@ -37,6 +37,7 @@ router.get('/loadCase', async (ctx, next) => {
 			if (previewMode) {
 				let thePreviewItem = result[tasks[preview]];
 				res.preview = thePreviewItem.spec;
+				res.lineNums = thePreviewItem.lineNums;
 				res.originData = thePreviewItem.originData;
 			}
 			ctx.body = res;

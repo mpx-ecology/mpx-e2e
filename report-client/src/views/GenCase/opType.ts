@@ -1,6 +1,6 @@
 const opGenerator = {
-	tap: (s:string) => `触发 tap 事件，标签名：${s ? s : ''}`,
-	touchmove: (s:string) => `触发 touchmove 事件，标签名 ${s ? s : ''}`,
+	tap: (s:string) => `触发 tap 事件${s ? s : ''}`,
+	touchmove: (s:string) => `触发 touchmove 事件${s ? s : ''}`,
 	assertVisible: (s:string) => `断言 ${s}元素是否存在`,
 	dataSnapshot: (s = '') => `断言数据快照`,
 	wxmlSnapshot: (s = '') => `断言 wxml 快照`,

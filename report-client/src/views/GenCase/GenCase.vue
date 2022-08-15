@@ -31,23 +31,33 @@
     </el-col>
     <el-col :span="8">
       <div class="grid-content ep-bg-purple">
-        <el-row v-for="(item, index) in cmdToLabels" :key="index">
-          <el-card class="box-card" shadow="hover">
-            <div class="card-cnt">
-              <h3 class="card-cnt-text">
-                <el-button class="bg-mg">
-                  <el-icon><CirclePlus /></el-icon>
-                </el-button>
-                【{{ index + 1 }}】{{item.label}}
-              </h3>
-              <el-button class="button" text>
-                编辑
-                <el-icon><Edit /></el-icon>
+        <div v-for="(item, index) in cmdToLabels" :key="index" @click="goEditorLine(index + 1)"
+            class="card-cnt">
+          <div class="card-cnt-left">
+            <p class="card-cnt-menu">
+              <el-button class="bg-mg">
+                <el-icon><CirclePlus /></el-icon>
               </el-button>
+              【{{ index + 1 }}】
+            </p>
+            <div class="card-cnt-info">
+              <div class="cnt-info-mock" v-if="item.type === 'mockAPI'">{{item.label}}</div>
+              <div class="cnt-info-normal" v-else>
+                <p>
+                  <span>操作: {{item.label}}</span>
+                </p>
+                <p>
+                  <span>页面：{{item.path}}</span>
+                  <span v-if="item.tag">标签名：{{item.tag}}</span>
+                </p>
+              </div>
             </div>
-          </el-card>
-
-        </el-row>
+          </div>
+          <el-button class="button" text if="item.byPlatform">
+            编辑
+            <el-icon><Edit /></el-icon>
+          </el-button>
+        </div>
       </div>
     </el-col>
     <el-col :span="13">
@@ -102,16 +112,15 @@ self.MonacoEnvironment = {
   }
 }
 
-
-
 const code = ref<string>('');
 const list = ref<string[]>([]);
 const currentJsonFileName = ref<string>('');
 let currentJson = reactive<Record<any, any>>({});
+let lineNums = reactive<Record<string, number>>({});
 
 const cmds = ref<Record<any, any>[]>([]);
 const cmdToLabels = computed(() => {
-  let mocks = getMockedApisWithoutDuplicate(currentJson).map(i => ({ label: `mock 微信原生 API：${i}`}))
+  let mocks = getMockedApisWithoutDuplicate(currentJson).map(i => ({ type: 'mockAPI', label: `mock 微信原生 API：${i}`}))
   return [...mocks, ...cmdToLabel(cmds.value)]
 });
 let editor: monaco.editor.IStandaloneCodeEditor;
@@ -130,6 +139,8 @@ const getAndPreview = (write = 0, preview = 0, loadAll = 1, jsonName = '') => ge
       jsonName
     }
 ).then((res: any) => {
+  editor.setScrollPosition({scrollTop: 0});
+
   if (loadAll) {
     list.value = res.tasks;
   }
@@ -138,8 +149,14 @@ const getAndPreview = (write = 0, preview = 0, loadAll = 1, jsonName = '') => ge
   editor.setValue(res.preview);
   updateCurrentJsonFileName(res.tasks[0], NaN);
   currentJson = res.originData;
+  lineNums = res.lineNums;
   cmds.value = getCmds(currentJson)
 });
+
+const goEditorLine = (key:string) => {
+  let line = lineNums[key];
+  editor.revealLineInCenter(line);
+}
 
 
 onBeforeMount(getAndPreview);
@@ -153,8 +170,10 @@ onMounted(() => {
     renderLineHighlight: 'all', // 行亮
     selectOnLineNumbers: true, // 显示行号
     minimap:{
-      enabled: true,
+      enabled: false,
     },
+    wordWrap: 'on', // 自动折行
+    folding: true,
     readOnly: true, // 只读
     fontSize: 16, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
@@ -208,21 +227,34 @@ onUnmounted(() => editor.dispose());
   height: 800px;
   overflow: scroll;
 }
-.box-card {
-  width: 100%;
-}
+
 .card-cnt {
+  box-sizing: border-box;
+  border: 1px solid #999999;
+  height: 50px;
+  margin-top: 5px;
+  border-radius: 4px;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
-.card-cnt-text {
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
+.card-cnt-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-cnt-menu {
+  flex-shrink: 0;
 }
 .grid-content {
   max-height: 800px;
   overflow: scroll;
+}
+
+.cnt-info-normal span {
+  margin-left: 5px
 }
 </style>
