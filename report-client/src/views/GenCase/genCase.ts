@@ -20,15 +20,18 @@ interface cmdItem {
 }
 
 export function cmdToLabel (cmds:Record<any, any>[]) {
+	if (!cmds) return []
 	return cmds.map(i => {
 		let { command } = i;
 		let res = {
 			cmd: command,
 			label: '',
+			cmdIndex: i.cmdIndex,
 			tag: i.tagName,
 			path: i.path,
 			text: i.text,
-			xpath: i.target
+			xpath: i.target,
+			byPlatform: i.byPlatform
 		}
 		let fun = opType[command as opTypes];
 		switch (command) {
@@ -84,10 +87,10 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 				res.label = fun('');
 				break;
 			case 'touchmove':
-				res.label = fun(i.tagName + ' ' + i.text)
+				res.label = fun('')
 				break;
 			case 'scroll':
-				res.label = fun(i.tagName + ' ' + i.text)
+				res.label = fun('')
 		}
 		return res
 	})
@@ -99,8 +102,20 @@ export function getMockRules (minitestJson: Record<any, any>) {
 }
 
 export function getCmds (minitestJson: Record<any, any>, excludeRules = []) {
-	if (!minitestJson || !Array.isArray(minitestJson.commands)) throw new TypeError('json.commands must be an Array');
-	return minitestJson.commands.filter(i => !['mock', 'startRecord', 'stopRecord', ...excludeRules].includes(i.command));
+	if (!minitestJson || !Array.isArray(minitestJson.commands)) {
+		console.warn('json.commands must be an Array');
+		return []
+	}
+	let result = []
+	minitestJson.commands.forEach((item, index) => {
+		if (!['mock', 'startRecord', 'stopRecord', ...excludeRules].includes(item.command)) {
+			result.push({
+				cmdIndex: index,
+				...item
+			})
+		}
+	});
+	return result
 }
 
 export function getMockedApisWithoutDuplicate (minitestJson: Record<any, any>) {
