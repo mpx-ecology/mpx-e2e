@@ -20,7 +20,7 @@
       <div class="mgnt20" v-else>
         <p class="lh20 file-item"
            @click="updateCurrentJsonFileName(item, index)"
-           :class="currentJsonFileName === item ? 'file-item-hl' : ''"
+           :class="currentHighlightIdx === index ? 'file-item-hl' : ''"
            v-for="(item, index) in list" :key="index">
           <el-icon class="vtln">
             <Document/>
@@ -46,7 +46,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item v-for="(menuItem, menuIdx) in menus"
-                                      :command="{ index: item.cmdIndex, ...menuItem }"
+                                      :command="{ menuIdx, cmdIdx: item.cmdIndex, ...menuItem }"
                                       :key="menuIdx">{{ menuItem.title }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -85,29 +85,34 @@
   </el-row>
   <el-dialog v-model="dialogFlag" :title="currentMenu.title + currentMenu.action">
     <el-form :model="e2eExtendsForm[currentMenu.action]">
-      <div v-if="e2eExtendsForm[currentMenu.action].inputOptions">
-        <el-form-item v-for="(iItem, iIdx) in e2eExtendsForm[currentMenu.action].inputOptions"
-                      :key="iIdx"
-                      :label="e2eExtendsForm[currentMenu.action][iItem + 'Label'] || iItem.defaultLabel"
-                      :label-width="formLabelWidth">
-          <el-input v-model="e2eExtendsForm[currentMenu.action][iItem]" autocomplete="off"/>
-        </el-form-item>
-      </div>
-      <div v-else>
-        <el-form-item label="操作类型：" :label-width="formLabelWidth">
+      <div>
+        <el-form-item v-if="e2eExtendsForm[currentMenu.action].selectOptions"
+                      label="操作类型：" :label-width="formLabelWidth">
           <el-select v-model="e2eExtendsForm[currentMenu.action].selectedValue"
                      placeholder="选择操作类型">
-            <el-option v-for="(rItem, rIdx) in e2eExtendsForm[currentMenu.action].listOptions"
+            <el-option v-for="(rItem, rIdx) in e2eExtendsForm[currentMenu.action].selectOptions"
                        :key="rIdx"
                        :label="rItem.label"
                        :value="rItem.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item  :label-width="formLabelWidth"
-            :label="e2eExtendsForm[currentMenu.action][e2eExtendsForm[currentMenu.action].selectedValue + 'Label'] || e2eExtendsForm[currentMenu.action].defaultLabel">
-          <el-input v-model="e2eExtendsForm[currentMenu.action][e2eExtendsForm[currentMenu.action].selectedValue + 'Val']"
-                    autocomplete="off"/>
-        </el-form-item>
+        <div v-for="(iVal, iKey) in e2eExtendsForm[currentMenu.action].inputOptions"
+             :data-some="iKey"
+             :key="iKey"
+        >
+          <div v-if="typeof e2eExtendsForm[currentMenu.action].selectedValue === 'undefined' || iKey === e2eExtendsForm[currentMenu.action].selectedValue">
+            <el-form-item  v-for="(iItem, iIdx) in iVal"
+                           :key="iIdx"
+                           :label-width="formLabelWidth"
+                           :label="iItem.label">
+              <el-input
+                  :data-s="iItem"
+                  v-model="iItem.value"
+                  :placeholder="iItem.placeholder"
+                  autocomplete="off"/>
+            </el-form-item>
+          </div>
+        </div>
       </div>
     </el-form>
     <template #footer>
@@ -120,8 +125,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onBeforeMount, reactive, computed, onMounted, onUnmounted} from 'vue'
-import {getJsonFiles} from '@/api/workshop'
+import {ref, onBeforeMount, reactive, computed, onMounted, onUnmounted } from 'vue'
+import {getJsonFiles, previewAfterExtended} from '@/api/workshop'
 import {cmdToLabel, getCmds, getMockedApisWithoutDuplicate} from '@/views/GenCase/genCase';
 import {
   menus,
@@ -175,26 +180,39 @@ self.MonacoEnvironment = {
   }
 }
 
-const formLabelWidth = '100px';
-const code = ref<string>('');
-const list = ref<string[]>([]);
-const dialogFlag = ref<boolean>(false);
-const currentJsonFileName = ref<string>('');
-let originJsonData = reactive({});
-let lineNums = reactive({});
-let currentMenu = reactive<Record<any, any>>({
-  index: 0,
+let currentHighlightIdx = ref<number>(0)
+const formLabelWidth = '120px'
+const code = ref<string>('')
+const list = ref<string[]>([])
+const dialogFlag = ref<boolean>(false)
+const currentJsonFileName = ref<string>('')
+const originJsonData = reactive({})
+const lineNums = reactive({})
+const currentMenu = reactive<Record<any, any>>({
+  cmdIdx: 0,
+  menuIdx: 0,
   action: ACTION_GET_DOM,
   title: '获取 DOM 元素'
 });
-let e2eExtendsForm = reactive({
+const e2eExtendsForm = reactive({
   [ACTION_GET_DOM]: {
-    inputOptions: ['clazzName', 'compName'],
-    clazzNameLabel: '元素类名：',
-    compNameLabel: '组件名：'
+    inputOptions: {
+      clazzName: [
+        {
+          label: '元素类名：',
+          value: ''
+        }
+      ],
+      compName: [
+        {
+          label: '组件名：',
+          value: ''
+        }
+      ]
+    }
   },
   [ACTION_WAIT_FOR]: {
-    listOptions: [
+    selectOptions: [
       {
         label: 'waitFor 时间',
         value: 'waitForSomeTime'
@@ -209,15 +227,29 @@ let e2eExtendsForm = reactive({
       }
     ],
     selectedValue: 'waitForSomeTime',
-    waitForSomeTimeVal: 10000,
-    waitForApiResponseVal: '',
-    waitForExactRouterVal: '',
-    waitForSomeTimeLabel: '时长：',
-    waitForExactRouterLabel: '页面 path：',
-    waitForApiResponseLabel: '接口 path：'
+    inputOptions: {
+      waitForSomeTime: [
+        {
+          value: 10000,
+          label: '时长：'
+        }
+      ],
+      waitForExactRouter: [
+        {
+          value: '',
+          label: '页面 path：'
+        }
+      ],
+      waitForApiResponse: [
+        {
+          value: '',
+          label: '接口 path：'
+        }
+      ]
+    }
   },
   [ACTION_ROUTER_OPERATED]: {
-    listOptions: [
+    selectOptions: [
       {
         label: 'navigateBack',
         value: 'operateRouterNavigateBack'
@@ -240,15 +272,36 @@ let e2eExtendsForm = reactive({
       }
     ],
     selectedValue: 'operateRouterNavigateBack',
-    operateRouterNavigateBackVal: '',
-    operateRouterRelaunchVal: '',
-    operateRouterNavigateToVal: '',
-    operateRouterRedirectToVal: '',
-    operateRouterSwitchTabVal: '',
-    defaultLabel: 'path：'
+    inputOptions: {
+      operateRouterNavigateBack: [],
+      operateRouterRelaunch: [
+        {
+          value: '',
+          label: 'ReLaunch Url:'
+        }
+      ],
+      operateRouterNavigateTo: [
+        {
+          value: '',
+          label: 'NavigateTo Url:'
+        }
+      ],
+      operateRouterRedirectTo: [
+        {
+          value: '',
+          label: 'RedirectTo Url:'
+        }
+      ],
+      operateRouterSwitchTab: [
+        {
+          value: '',
+          label: 'SwitchTab Url:'
+        }
+      ],
+    }
   },
   [ACTION_ASSERTION_ADDED]: {
-    listOptions: [
+    selectOptions: [
       {
         label: '断言元素文案内容',
         value: 'assertTextContent'
@@ -266,8 +319,8 @@ let e2eExtendsForm = reactive({
         value: 'assertElementWidth'
       },
       {
-        label: '断言元素长度',
-        value: 'assertElementLength'
+        label: '断言元素高度',
+        value: 'assertElementHeight'
       },
       {
         label: '断言元素是否存在',
@@ -279,28 +332,85 @@ let e2eExtendsForm = reactive({
       }
     ],
     selectedValue: 'assertTextContent',
-    assertTextContentVal: '',
-    assertTextContentLabel: '预期文案：',
-    assertTextLengthVal: '',
-    assertTextLengthLabel: '预期文案长度：',
-    assertTextByRegExpVal: '',
-    assertTextByRegExpLabel: '匹配正则：',
-    assertElementWidthVal: '',
-    assertElementWidthLabel: '预期宽度：',
-    assertElementLengthVal: '',
-    assertElementLengthLabel: '预期长度：',
-    assertElementExistenceVal: '',
-    assertElementExistenceLabel: '元素存在否：',
-    assertResponseFiledValueVal: '',
-    assertResponseFiledValueLabel: '取值表达式：'
+    inputOptions: {
+      assertTextContent: [
+        {
+          value: '',
+          label: '预期文案：'
+        }
+      ],
+      assertTextLength: [
+        {
+          value: '',
+          label: '预期文案长度：',
+        }
+      ],
+      assertTextByRegExp: [
+        {
+          value: '',
+          label: '正则元字符：'
+        },
+        {
+          value: '',
+          label: '正则修饰符：'
+        }
+      ],
+      assertElementWidth: [
+        {
+          value: '',
+          label: '操作符：',
+          placeholder: '===, >=, <='
+        },
+        {
+          value: '',
+          label: '预期宽度：'
+        }
+      ],
+      assertElementHeight: [
+        {
+          value: '',
+          label: '操作符：',
+          placeholder: '===, >=, <='
+        },
+        {
+          value: '',
+          label: '预期高度：'
+        }
+      ],
+      assertElementExistence: [],
+      assertResponseFiledValue: [
+        {
+          value: '',
+          label: '取值表达式：'
+        },
+        {
+          value: '',
+          label: '比较操作符：'
+        },
+        {
+          value: '',
+          label: '返回值预期：'
+        }
+      ]
+    }
   },
   [ACTION_SCREENSHOT_ADDED]: {
-    inputOptions: ['fileName', 'savePath'],
-    fileNameLabel: '文件名：',
-    savePathLabel: '保存路径：'
+    inputOptions: {
+      fileName: [
+        {
+          value: '',
+          label: '文件名：'
+        }
+      ],
+      savePath: [
+        {
+          value: '',
+          label: '保存路径：'
+        }
+      ]
+    }
   }
 })
-
 const cmds = computed(() => {
   return getCmds(originJsonData)
 })
@@ -310,38 +420,34 @@ const cmdToLabels = computed(() => {
   return [...mocks, ...cmdToLabel(cmds.value)]
 });
 
-const updateCurrentJsonFileName = (n: string, idx: number) => {
-  if (currentJsonFileName.value === n || isNaN(idx)) return (currentJsonFileName.value = n);
-  currentJsonFileName.value = n;
-  getAndPreview(0, 0, 0, n)
+const updateCurrentJsonFileName = (j: string, n: number) => {
+  if (currentHighlightIdx.value === n) return
+  currentJsonFileName.value = j
+  currentHighlightIdx.value = n
+  getAndPreview(0, currentJsonFileName.value)
 };
 
 const handleMenuCommand = (command: Record<any, any>) => {
-  console.log(command);
   Object.assign(currentMenu, command)
   dialogFlag.value = true
 }
 
-const getAndPreview = (write = 0, preview = 0, loadAll = 1, jsonName = '') => getJsonFiles(
-    {
-      write,
-      preview,
-      loadAll: !jsonName ? 1 : 0,
-      jsonName
-    }
-).then((res: any) => {
+const updateCurrentPreview = (res, loadAll) => {
   editor.setScrollPosition({scrollTop: 0});
-
   if (loadAll) {
     list.value = res.tasks;
   }
 
   code.value = res.preview;
   editor.setValue(res.preview);
-  updateCurrentJsonFileName(res.tasks[0], NaN);
-  Object.assign(originJsonData, res.originData)
+  Object.assign(originJsonData, res.minitestJson)
   Object.assign(lineNums, res.lineNums)
-});
+}
+
+const getAndPreview = async (loadAll = 1, jsonName = '') => {
+  let res = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
+  updateCurrentPreview(res, loadAll)
+}
 
 const goEditorLine = (key: string) => {
   let line = lineNums[key];
@@ -353,24 +459,27 @@ const currentSpecFileName = computed(() => {
   return name.replace('.json', '.spec.js')
 });
 
-const addToCmds = e => {
-  let idx = currentMenu.index;
+const addToCmds = async e => {
+  let cmdIdx = currentMenu.cmdIdx ?? 0;
   let action = currentMenu.action;
-  let isSimpleCmd = [ACTION_GET_DOM, ACTION_SCREENSHOT_ADDED].includes(action);
+  let isSimpleCmd = typeof e2eExtendsForm[action].selectedValue === 'undefined' // 没有 select 的算简单命令
   let command = isSimpleCmd ? action : e2eExtendsForm[action].selectedValue
-  let cmdItem = { command, byPlatform: true }
+  let cmdItem = {command, byPlatform: true, timestamp: Date.now(), action, ...currentMenu}
   if (isSimpleCmd) {
-    let ops = e2eExtendsForm[command].inputOptions;
-    ops.forEach(i => {
-      cmdItem[i] = ops[i]
-    })
+    cmdItem.data = e2eExtendsForm[action].inputOptions
   } else {
-    let key = command + 'Val'
-    cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
+    // let key = command + 'Val'
+    // cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
+    cmdItem.data = e2eExtendsForm[action].inputOptions[command]
   }
-  console.log(idx)
-  originJsonData.commands.splice(idx + 1, 0, cmdItem)
+  console.log(cmdItem);
+  // 因为语义化开头是被 mock 的 wx api，所以 cmdIdx 为 undefined
+  // 所以不能向后面增加操作，所以这个时候相当于是 commands 的开头 unshift 一项
+  const intoIdx = command ? cmdIdx + 1 : 0
+  originJsonData.commands.splice(intoIdx, 0, cmdItem);
   dialogFlag.value = false
+  const res = await previewAfterExtended({jsonName: currentJsonFileName.value, originJsonData})
+  updateCurrentPreview(res, 0)
 }
 
 onBeforeMount(getAndPreview);
