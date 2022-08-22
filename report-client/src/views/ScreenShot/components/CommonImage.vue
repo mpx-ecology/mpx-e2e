@@ -53,7 +53,8 @@ const state = computed(() => {
           height: `${img.size.height / 2}px`,
           left: `${img.offset.left / 2}px`,
           top: `${img.offset.top / 2}px`,
-          'background': color.value,
+          'background': 'none',
+          'border': `1px solid ${color.value}`,
           'border-radius': '0'
         } : {
           display: 'none'
@@ -67,6 +68,7 @@ const state = computed(() => {
             left: `${(item.clientX) / 2 - 10}px`,
             top: `${(img.offset.top) / 2}px`,
             'background': color.value,
+            'border': 'none',
             'border-radius': '50%'
           }
         }
