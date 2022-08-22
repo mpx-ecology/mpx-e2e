@@ -11,7 +11,7 @@ export interface EventData {
   screenY: number,
 }
 
- export interface Img{
+export interface ImgItem {
   path: string,
   src: string,
   time: number,
@@ -36,6 +36,14 @@ export interface EventData {
       changedTouches?: EventData[]
     }
   }
+ }
+
+ export interface ErrorItem {
+   message: string,
+   stack: string,
+   page: string,
+   src: string,
+   file?: string
  }
 
  export interface PerfStats {
@@ -66,15 +74,19 @@ export interface EventData {
   openHandles: [],
   perfStats: PerfStats,
   skipped: number,
-  // snapshot: any,
   testFilePath: string,
   testResults: TestResults[],
-  imgList: Img[],
+  imgList: ImgItem[],
+  errorList: ErrorItem[]
   failureMessage: null,
   expectCount: number
 }
 
 export type SystemInfo = {
-  windowWidth: number,
-  windowHeight: number
+  brand: string,
+  model: string,
+  platform: string,
+  screenHeight: number,
+  screenWidth: number,
+  system: string,
 }

@@ -87,8 +87,7 @@ function tabelCellClassName({ row, column, columnIndex }: { row: parent | childr
       classes.push('status')
       break
   }
-  // eslint-disable-next-line no-prototype-builtins
-  if (columnIndex === 0 && row.hasOwnProperty('children')) { // 父级行第一列
+  if (columnIndex === 0 && Object.prototype.hasOwnProperty.call(row, 'children')) { // 父级行第一列
     classes.push('parent')
   }
   if (columnIndex === 2 && row.status === 'passed') {

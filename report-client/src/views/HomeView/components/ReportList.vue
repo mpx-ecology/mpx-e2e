@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { ElCard, ElIcon } from 'element-plus'
-// import HomeChart from './HomeChart.vue';
-// import HomeTable from './HomeTable.vue';
 import { getFormattedTime, timestampToTime } from '../../../utils'
 import { useCounterStore } from '../../../stores/counter'
+
+import { ElCard, ElIcon } from 'element-plus'
 
 const store = useCounterStore()
 
@@ -33,91 +32,76 @@ const information = computed(() => {
   return { startTime: timestampToTime(startTime), endTime: timestampToTime(endTime), duration, rootDir }
 })
 
-const chartList = computed(() => {
-  return store.reportList.map(item => (item.expectCount || 0))
-})
-
-const fileList = computed(() => {
-  return store.reportList.map(item => {
-    const list = item.testFilePath.split(/\/|\\/)
-    return list[list.length - 1]
-  })
-})
-
 </script>
 
 <template>
-  <div>
-    <div class="dashboard">
-      <div class="small-card">
-        <el-card>
-          <template #header>
-            <div class="card-title">Total Tests</div>
-          </template>
-          <div class="count dark">{{ dashboardInfo.total }}</div>
-        </el-card>
+  <div class="dashboard">
+    <div class="small-card">
+      <el-card>
+        <template #header>
+          <div class="card-title">Total Tests</div>
+        </template>
+        <div class="count dark">{{ dashboardInfo.total }}</div>
+      </el-card>
+    </div>
+    <div class="small-card">
+      <el-card>
+        <template #header>
+          <div class="card-title">Passed Tests</div>
+        </template>
+        <div class="count">{{ dashboardInfo.numPassingTests }}</div>
+      </el-card>
+    </div>
+    <div class="small-card">
+      <el-card>
+        <template #header>
+          <div class="card-title">Failed Tests</div>
+        </template>
+        <div class="count fail">{{ dashboardInfo.numFailingTests }}</div>
+      </el-card>
+    </div>
+    <div class="small-card">
+      <el-card>
+        <template #header>
+          <div class="card-title">Total Expect</div>
+        </template>
+        <div class="count">{{ dashboardInfo.expectCount }}</div>
+      </el-card>
+    </div>
+  </div>
+  <div class="info">
+    <div class="left">
+      <div class="info-item">
+        <el-icon>
+          <VideoPlay />
+        </el-icon>
+        <span class="label">StartTime</span>
+        <span class="message">{{ information.startTime }}</span>
       </div>
-      <div class="small-card">
-        <el-card>
-          <template #header>
-            <div class="card-title">Passed Tests</div>
-          </template>
-          <div class="count">{{ dashboardInfo.numPassingTests }}</div>
-        </el-card>
-      </div>
-      <div class="small-card">
-        <el-card>
-          <template #header>
-            <div class="card-title">Failed Tests</div>
-          </template>
-          <div class="count fail">{{ dashboardInfo.numFailingTests }}</div>
-        </el-card>
-      </div>
-      <div class="small-card">
-        <el-card>
-          <template #header>
-            <div class="card-title">Total Expect</div>
-          </template>
-          <div class="count">{{ dashboardInfo.expectCount }}</div>
-        </el-card>
+      <div class="info-item">
+        <el-icon>
+          <SwitchButton />
+        </el-icon>
+        <span class="label">EndTime</span>
+        <span class="message">{{ information.endTime }}</span>
       </div>
     </div>
-    <div class="info">
-      <div class="left">
-        <div class="info-item">
-          <el-icon>
-            <VideoPlay />
-          </el-icon>
-          <span class="label">StartTime</span>
-          <span class="message">{{ information.startTime }}</span>
-        </div>
-        <div class="info-item">
-          <el-icon>
-            <SwitchButton />
-          </el-icon>
-          <span class="label">EndTime</span>
-          <span class="message">{{ information.endTime }}</span>
-        </div>
+    <div class="right">
+      <div class="info-item">
+        <el-icon>
+          <Clock />
+        </el-icon>
+        <span class="label">Duration</span>
+        <span class="message">{{ information.duration }}</span>
       </div>
-      <div class="right">
-        <div class="info-item">
-          <el-icon>
-            <Clock />
-          </el-icon>
-          <span class="label">Duration</span>
-          <span class="message">{{ information.duration }}</span>
-        </div>
-        <div class="info-item">
-          <el-icon>
-            <Folder />
-          </el-icon>
-          <span class="label">RootDir</span>
-          <span class="message">{{ information.rootDir }}</span>
-        </div>
+      <div class="info-item">
+        <el-icon>
+          <Folder />
+        </el-icon>
+        <span class="label">RootDir</span>
+        <span class="message">{{ information.rootDir }}</span>
       </div>
     </div>
-    <!-- <home-chart :file="fileList" :list="chartList" v-if="chartList.length"></home-chart> -->
-    <!-- <home-table :list="store.reportList"></home-table> -->
   </div>
 </template>
 

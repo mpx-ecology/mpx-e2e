@@ -92,7 +92,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div ref="main" style="width: 800px; height: 300px;" id="main"></div>
-  </div>
+  <div ref="main" style="width: 800px; height: 300px;" id="main"></div>
 </template>

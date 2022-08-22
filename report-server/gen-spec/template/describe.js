@@ -32,7 +32,7 @@ let fn = (renderData) => {
 
   cmds.forEach((item, index) => {
     str += `
-     //【${recordAPIs.length + 1 + index}】操作：${operationType[item.command](item.tagName)}
+     //【${recordAPIs.length + 1 + index}】操作：${operationType[item.command](item.tagName + ' >> ' + item.text)}
     `;
     if (item.waitfor) {
       str += `

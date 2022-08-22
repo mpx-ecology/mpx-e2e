@@ -26,8 +26,12 @@ export const useCounterStore = defineStore({
     reportList: [],
     counter: 0,
     systemInfo: {
-      windowWidth: 414,
-      windowHeight: 762
+      brand: "devtools",
+      model: "iPhone X",
+      platform: "devtools",
+      screenHeight: 812,
+      screenWidth: 375,
+      system: "iOS 10.0.1",
     }
   }),
   getters: {
