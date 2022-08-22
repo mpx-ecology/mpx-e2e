@@ -1,5 +1,13 @@
 const path = require('path')
-const { pushSystemInfo } = require('./utils')
+const { pushSystemInfo, e2erc } = require('./utils')
+
+const defaultConfig = {
+  cacheDirectory: path.resolve(__dirname, '../report-server/cache'), // 缓存目录
+  timeoutSave: 3000, // 定时截图
+  tapSave: true, // 点击事件自动截图
+  routeUpdateSave: true, // 路由更新自动截图
+  watchResponse: [] // 接口请求自动截图
+}
 
 class ScreenShot {
   constructor () {
@@ -7,14 +15,7 @@ class ScreenShot {
     this.timer = null
     this.timeout = null
     this.miniProgram = null
-    this.config = {
-      cacheDirectory: path.resolve(__dirname, '../report-server/cache'), // 缓存目录
-      clear: true, // 清除缓存
-      timeout: 3000, // 定时截图
-      tapSave: true, // 点击事件自动截图
-      routeUpdateSave: true, // 路由更新自动截图
-      watchRequest: [] // 接口请求自动截图
-    }
+    this.config = Object.assign({}, defaultConfig, e2erc)
     this.disable = true
     this.count = 0
     this.prevValue = []
@@ -27,14 +28,16 @@ class ScreenShot {
   init () {
     if (this.miniProgram) {
       this.getSystemInfo()
-      this.timer = setInterval(() => {
-        this.save({ type: 'timeout' })
-      }, this.config.timeout)
+      if (this.config.timeoutSave) {
+        this.timer = setInterval(() => {
+          this.save({ type: 'timeout' })
+        }, this.config.timeoutSave)
+      }
       if (this.config.routeUpdateSave) {
         this.routeUpdate()
       }
-      if (this.config.watchRequest) {
-        this.watchRequest()
+      if (this.config.watchResponse) {
+        this.watchResponse()
       }
     }
   }
@@ -59,7 +62,7 @@ class ScreenShot {
   }
   async save (params) {
     try {
-      const name = `${Date.now()}.png`
+      const name = `${params.type}${Date.now()}.png`
       const src = path.resolve(this.config.cacheDirectory, name)
       return await this.miniProgram.screenshot({
         path: path.relative(process.cwd(), src),
@@ -83,10 +86,10 @@ class ScreenShot {
       wx.onAppRoute(beforeRouteUpdate)
     })
   }
-  async watchRequest () {
+  async watchResponse () {
     await this.miniProgram.exposeFunction('beforeRequestUpdate', (options) => {
       // Do something... 
-      this.config.watchRequest.forEach((item, index) => {
+      this.config.watchResponse.forEach((item, index) => {
         if (options.requestConfig.url.includes(item.url)) {
           if (item.handler) {
             const res = item.handler(options.data, this.prevValue[index])

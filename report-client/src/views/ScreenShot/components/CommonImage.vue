@@ -25,6 +25,9 @@ type Info = {
   }
 }
 
+const isDEV = import.meta.env.DEV
+const devPath = isDEV ? 'http://localhost:8886' : location.origin
+
 const checkList = ref(['timeout', 'tap', 'user', 'route', 'request'])
 
 const color = ref('#409EFF')
@@ -44,18 +47,34 @@ const state = computed(() => {
       const imgList: Info[] = item.imgList.map((img, idx) => {
         const title = img.path.split(/\/|\\/).pop() || ''
         const time = timestampToTime(img.time || 0)
-        const imgStyle = (img.size && img.offset) ? {
+        // 绘制点击位置
+        let imgStyle = (img.size && img.offset) ? {
           width: `${img.size.width / 2}px`,
           height: `${img.size.height / 2}px`,
           left: `${img.offset.left / 2}px`,
           top: `${img.offset.top / 2}px`,
-          'border-color': color.value
+          'background': 'none',
+          'border': `1px solid ${color.value}`,
+          'border-radius': '0'
         } : {
           display: 'none'
+        };
+        const firstTouch = img.event?.eventData.changedTouches
+        if (firstTouch?.length && firstTouch[0] && img.offset) {
+          const item = firstTouch[0]
+          imgStyle = {
+            width: `20px`,
+            height: `20px`,
+            left: `${(item.clientX) / 2 - 10}px`,
+            top: `${(img.offset.top) / 2}px`,
+            'background': color.value,
+            'border': 'none',
+            'border-radius': '50%'
+          }
         }
         const wrapStyle = {
-          width: `${store.systemInfo.windowWidth / 2}px`,
-          height: `${store.systemInfo.windowHeight / 2}px`
+          width: `${store.systemInfo.screenWidth / 2}px`,
+          height: `${store.systemInfo.screenHeight / 2}px`
         }
         mapList[img.type] = mapList[img.type] + 1
         return {
@@ -64,7 +83,7 @@ const state = computed(() => {
           page: img.page,
           imgStyle,
           wrapStyle,
-          src: img.src,
+          src: `${devPath}${img.src}`,
           type: img.type
         }
       })
@@ -98,7 +117,7 @@ const isEmpty = computed(() => {
         <el-checkbox v-for="(item, key) in state.filterMapList" :key="key" :label="key">{{item}}</el-checkbox>
       </el-checkbox-group>
       <div>
-        <span class="border-color">border-color</span>
+        <span class="rect-demo" :style="{background: color}"></span>
         <el-color-picker v-model="color" />
       </div>
     </div>
@@ -112,7 +131,7 @@ const isEmpty = computed(() => {
                 <!-- <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow"> -->
               </div>
               <div class="inner">
-                <el-image :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+                <el-image lazy :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
                 <div
                   v-if="img.imgStyle.width"
                   :style="img.imgStyle"
@@ -181,6 +200,20 @@ const isEmpty = computed(() => {
 .rect {
   border: 1px solid transparent;
   position: absolute;
+  /* background: rgba(0, 0, 0); */
+  opacity: 0.5;
+}
+
+.rect-demo {
+  display: inline-block;
+  border: 1px solid transparent;
+  /* background: rgba(0, 0, 0); */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  opacity: 0.5;
+  margin-right: 12px;
+  vertical-align: -4px;
 }
 
 .header {

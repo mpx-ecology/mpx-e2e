@@ -66,7 +66,7 @@ module.exports = class EPage {
           } catch (error) {
             // e
           }
-          await screenshotJS.tap({ offset, size, type: 'tap' })
+          await screenshotJS.tap({ offset, size, type: 'tap', event: args[0] })
           const res = await oldTap.call(this, ...args)
           return res
         }
@@ -88,7 +88,7 @@ module.exports = class EPage {
           } catch (error) {
             // e
           }
-          await screenshotJS.tap({ offset, size, type: 'tap' })
+          await screenshotJS.tap({ offset, size, type: 'tap', event: args[0] })
           const res = await oldTap.call(this, ...args)
           return res
         }

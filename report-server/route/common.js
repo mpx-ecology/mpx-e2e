@@ -6,7 +6,43 @@ const router = new Router({
   prefix: '/common'
 })
 
-let systemInfo = {}
+let systemInfo = {
+  SDKVersion: "2.25.1",
+  batteryLevel: 100,
+  benchmarkLevel: 1,
+  bluetoothEnabled: true,
+  brand: "devtools",
+  cameraAuthorized: true,
+  deviceOrientation: "portrait",
+  devicePixelRatio: 2,
+  enableDebug: false,
+  fontSizeSetting: 16,
+  language: "zh_CN",
+  locationAuthorized: true,
+  locationEnabled: true,
+  microphoneAuthorized: true,
+  mode: "default",
+  model: "iPhone 6/7/8",
+  notificationAuthorized: true,
+  pixelRatio: 2,
+  platform: "devtools",
+  safeArea: {
+    bottom: 667,
+    height: 647,
+    left: 0,
+    right: 375,
+    top: 20,
+    width: 375
+  },
+  screenHeight: 667,
+  screenWidth: 375,
+  statusBarHeight: 20,
+  system: "iOS 10.0.1",
+  version: "8.0.5",
+  wifiEnabled: true,
+  windowHeight: 667,
+  windowWidth: 375
+}
 
 router.post('/imgList', (ctx) => {
   try {
