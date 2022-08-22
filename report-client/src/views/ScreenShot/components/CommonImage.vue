@@ -25,6 +25,9 @@ type Info = {
   }
 }
 
+const isDEV = import.meta.env.DEV
+const devPath = isDEV ? 'http://localhost:8886' : location.origin
+
 const checkList = ref(['timeout', 'tap', 'user', 'route', 'request'])
 
 const color = ref('#409EFF')
@@ -56,13 +59,13 @@ const state = computed(() => {
           display: 'none'
         };
         const firstTouch = img.event?.eventData.changedTouches
-        if (firstTouch?.length && firstTouch[0]) {
+        if (firstTouch?.length && firstTouch[0] && img.offset) {
           const item = firstTouch[0]
           imgStyle = {
             width: `20px`,
             height: `20px`,
-            left: `${item.clientX / 2 - 10}px`,
-            top: `${item.clientY / 2 - 10}px`,
+            left: `${(item.clientX) / 2 - 10}px`,
+            top: `${(img.offset.top) / 2}px`,
             'background': color.value,
             'border-radius': '50%'
           }
@@ -78,7 +81,7 @@ const state = computed(() => {
           page: img.page,
           imgStyle,
           wrapStyle,
-          src: img.src,
+          src: `${devPath}${img.src}`,
           type: img.type
         }
       })
