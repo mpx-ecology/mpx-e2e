@@ -1,5 +1,16 @@
 export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
 
+export interface EventData {
+  clientX: number,
+  clientY: number,
+  pageX: number,
+  pageY: number,
+  radiusX: number,
+  radiusY: number,
+  screenX: number,
+  screenY: number,
+}
+
  export interface Img{
   path: string,
   src: string,
@@ -17,6 +28,13 @@ export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
   systemInfo?: {
     windowWidth: number,
     windowHeight: number
+  },
+  event?: {
+    eventName: string,
+    eventData: {
+      detail?: Record<string, unknown>,
+      changedTouches?: EventData[]
+    }
   }
  }
 
