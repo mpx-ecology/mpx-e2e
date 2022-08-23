@@ -3,7 +3,7 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const { generateSpec } = require('../gen-spec/gen');
 const { getE2erc, genFileMeta } = require('../util');
-const fsExtra = require('fs-extra')
+const fsExtra = require('fs-extra');
 const router = new Router({
 	prefix: '/gen'
 });
@@ -75,7 +75,6 @@ router.get('/loadCase', async (ctx, next) => {
 router.post('/editAndPreviewCase', async (ctx, next) => {
 	let e2erc = getE2erc();
 	// 不传递 tasks 默认
-	let caseDir = path.resolve(e2erc.projectPath, './minitest');
 	const { originJsonData: minitestJson, jsonName } = ctx.request.body;
 	const file = genFileMeta(e2erc, jsonName, minitestJson);
 	let result = await generateSpec({ e2erc, file });
@@ -88,43 +87,33 @@ router.post('/editAndPreviewCase', async (ctx, next) => {
 		minitestJson
 	}
 	await next()
-})
+});
 
-router.get('/currentCaseList', async (ctx, next) => {
-	console.log(ctx.query.params);
+router.post('/saveSpecAndJson', async (ctx, next) => {
+	let e2erc = getE2erc();
+	let caseDir = path.resolve(process.cwd(), e2erc.testSuitsDir);
+	let jsonCpDir = path.resolve(process.cwd(), e2erc.jsonCaseCpDir);
+	const { originJsonData, codeStr, jsonFileName, specFileName } = ctx.request.body;
+	ctx.debugg && console.log(path.join(caseDir, specFileName));
+	ctx.debugg && console.log(path.join(jsonCpDir, jsonFileName));
 	try {
-		let e2erc = getE2erc();
-		let list = await fs.readdir(e2erc.testSuitsDir);
-		let fileList;
-		if (list.length) {
-			fileList = list.map(async i => {
-				let filePath = path.resolve(e2erc.testSuitsDir, i);
-				// let fileContent = await fs.readFile(filePath, 'utf8');
-				return {
-					name: i,
-					filePath,
-					// fileContent,
-				}
-			})
-		}
-
-		let r = await Promise.all(fileList)
+		await fs.writeFile(path.join(caseDir, specFileName), codeStr);
+		await fs.writeFile(path.join(jsonCpDir, jsonFileName), JSON.stringify(originJsonData));
 		ctx.body = {
 			errno: 0,
 			errmsg: 'ok',
-			data: { fileList: r }
+			data: null
 		}
-		list = fileList = e2erc = null;
 	} catch (e) {
-		console.error(e);
 		ctx.body = {
-			errno: 100,
-			errmsg: 'get case list faile',
-			err: e.toString()
+			errno: -1,
+			errmsg: 'save json or spec failed',
+			data: JSON.stringify(e)
 		}
 	}
-	return await next();
-});
+
+	await next();
+})
 
 router.get('/load')
 

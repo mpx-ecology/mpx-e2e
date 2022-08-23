@@ -22,8 +22,8 @@ interface cmdItem {
 export function cmdToLabel (cmds:Record<any, any>[]) {
 	if (!cmds) return []
 	return cmds.map(i => {
-		let { command } = i;
-		let res = {
+		const { command } = i;
+		const res = {
 			cmd: command,
 			label: '',
 			cmdIndex: i.cmdIndex,
@@ -33,7 +33,7 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 			xpath: i.target,
 			byPlatform: i.byPlatform
 		}
-		let fun = opType[command as opTypes];
+		const fun = opType[command as opTypes];
 		// switch (command) {
 		// 	case 'tap':
 		// 		res.label = fun('')
@@ -107,7 +107,7 @@ export function getCmds (minitestJson: Record<any, any>, excludeRules = []) {
 		console.warn('json.commands must be an Array');
 		return []
 	}
-	let result = []
+	const result = []
 	minitestJson.commands.forEach((item, index) => {
 		if (!['mock', 'startRecord', 'stopRecord', ...excludeRules].includes(item.command)) {
 			result.push({

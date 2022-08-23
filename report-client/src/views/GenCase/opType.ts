@@ -21,8 +21,8 @@ const opGenerator = {
 	assertElementWidth: (s) => `断言元素宽度${s}`,
 	assertElementHeight: (s = '') => `断言元素长度`,
 	assertElementExistence: (s) => `断言元素是否存在：${s ? s : ''}`,
-	assertResponseFiledValue: (s) => `断言接口${s}返回值`,
-	screenshotAddedByEnhanced: (s) => `截图${s.data[0].value && s.data[1].value ? s.data[1].value + '/' + s.data[0].value : ''}`
+	assertResponseFiledValue: (s: any) => `断言接口${s}返回值`,
+	screenshotAddedByEnhanced: (s: any) => `截图${s.data.fileName[0].value && s.data.savePath[0].value ? s.data.savePath[0].value + '/' + s.data.fileName[0].value : ''}`
 }
 
 export type opTypes = 'tap' | 'assertVisible' | 'dataSnapshot' | 'wxmlSnapshot' | 'assertTextContent' | 'assertTextLength' | 'assertTextByRegExp' | 'assertElementWidth' | 'assertElementLength' | 'assertResponseContent' | 'waitForSomeTime' | 'waitForExactRouter' | 'waitForApiResponse' | 'operateRouterRelaunch' | 'operateRouterBack' | 'operateRouterSwitchTab' | 'navigateLeft' | 'scroll'

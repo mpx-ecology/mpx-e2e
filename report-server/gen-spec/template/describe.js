@@ -6,6 +6,25 @@ const operationType = require('../../const/op-type');
 let fn = (renderData) => {
   let { itName, descName, recordAPIs, cmds, defaultWaitFor, previewMode } = renderData;
   let str = `describe('${ descName }', () => {
+  function getValueByPath (object, prop) {
+    prop = prop || '';
+    const paths = prop.split(/\\.|\\[/g).map(i => i.replace(/\\]/g, ''));
+    let current = object;
+    let result = null;
+    for (let i = 0, j = paths.length; i < j; i++) {
+      const path = paths[i];
+      if (!current) break;
+  
+      // 当到达指定的属性名时，返回它的属性值
+      if (i === j - 1) {
+        result = current[path];
+        break;
+      }
+      // 否则继续往下遍历
+      current = current[path];
+    }
+  return result;
+};
   let miniProgram;`;
 
   if (recordAPIs && recordAPIs.length) {
@@ -27,26 +46,6 @@ let fn = (renderData) => {
 
 
   str += `let page, element, expectResult, actualResult, apiResponse, textContent, elementWidth, elementHeight;
-
-function getValueByPath (object, prop) {
-  prop = prop || '';
-  const paths = prop.split(/\\.|\\[/g).map(i => i.replace(/\\]/g, ''));
-  let current = object;
-  let result = null;
-  for (let i = 0, j = paths.length; i < j; i++) {
-    const path = paths[i];
-    if (!current) break;
-
-    // 当到达指定的属性名时，返回它的属性值
-    if (i === j - 1) {
-      result = current[path];
-      break;
-    }
-    // 否则继续往下遍历
-    current = current[path];
-  }
-  return result;
-};
     page = await miniProgram.currentPage();`;
 
   cmds.forEach((item, index) => {

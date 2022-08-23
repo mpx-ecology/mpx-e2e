@@ -19,7 +19,7 @@
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
       <div class="mgnt20" v-else>
         <p class="lh20 file-item"
-           @click="updateCurrentJsonFileName(item, index)"
+           @click="updateCurrentJsonFileNameAndPreview(item, index)"
            :class="currentHighlightIdx === index ? 'file-item-hl' : ''"
            v-for="(item, index) in list" :key="index">
           <el-icon class="vtln">
@@ -81,6 +81,21 @@
     <el-col :span="13">
       <!--      <h3 class="txt-center">{{currentSpecFileName}}</h3>-->
       <div id="container" class="code-limit"></div>
+      <div class="save-btn-wrapper">
+        <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="'将' + currentSpecFileName + '保存到 case 目录' "
+            placement="right-start"
+        >
+          <el-button type="success" style="background: #77CD9E;" @click="saveSpec">
+            保存
+            <el-icon>
+              <QuestionFilled/>
+            </el-icon>
+          </el-button>
+        </el-tooltip>
+      </div>
     </el-col>
   </el-row>
   <el-dialog v-model="dialogFlag" :title="currentMenu.title + currentMenu.action">
@@ -126,7 +141,7 @@
 
 <script setup lang="ts">
 import {ref, onBeforeMount, reactive, computed, onMounted, onUnmounted } from 'vue'
-import {getJsonFiles, previewAfterExtended} from '@/api/workshop'
+import {getJsonFiles, previewAfterExtended, saveSpecFileAndJSON} from '@/api/workshop'
 import {cmdToLabel, getCmds, getMockedApisWithoutDuplicate} from '@/views/GenCase/genCase';
 import {
   menus,
@@ -416,14 +431,18 @@ const cmds = computed(() => {
 })
 
 const cmdToLabels = computed(() => {
-  let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({type: 'mockAPI', label: `mock 微信原生 API：${i}`}))
+  let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({type: 'mockAPI', label: `mock 微信原生 API：${i}`, cmdIndex: void 0}))
   return [...mocks, ...cmdToLabel(cmds.value)]
 });
 
-const updateCurrentJsonFileName = (j: string, n: number) => {
-  if (currentHighlightIdx.value === n) return
+const updateCurrentJsonFileName = (j:string, n = currentHighlightIdx.value) => {
+  if (currentHighlightIdx.value === n && currentJsonFileName.value === j) return
   currentJsonFileName.value = j
   currentHighlightIdx.value = n
+}
+
+const updateCurrentJsonFileNameAndPreview = (j: string, n: number) => {
+  updateCurrentJsonFileName(j, n);
   getAndPreview(0, currentJsonFileName.value)
 };
 
@@ -446,6 +465,7 @@ const updateCurrentPreview = (res, loadAll) => {
 
 const getAndPreview = async (loadAll = 1, jsonName = '') => {
   let res = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
+  updateCurrentJsonFileName(res.tasks[0])
   updateCurrentPreview(res, loadAll)
 }
 
@@ -482,6 +502,16 @@ const addToCmds = async e => {
   updateCurrentPreview(res, 0)
 }
 
+const saveSpec = () => {
+  let codeStr = editor.getValue()
+  saveSpecFileAndJSON({
+    codeStr,
+    originJsonData,
+    jsonFileName: currentJsonFileName.value,
+    specFileName: currentSpecFileName.value
+  })
+}
+
 onBeforeMount(getAndPreview);
 
 onMounted(() => {
@@ -493,11 +523,11 @@ onMounted(() => {
     renderLineHighlight: 'all', // 行亮
     selectOnLineNumbers: true, // 显示行号
     minimap: {
-      enabled: false,
+      enabled: true,
     },
     wordWrap: 'on', // 自动折行
     folding: true,
-    readOnly: true, // 只读
+    readOnly: false, // 只读
     fontSize: 16, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
     overviewRulerBorder: false, // 不要滚动条的边框
@@ -553,8 +583,15 @@ onUnmounted(() => editor.dispose());
 }
 
 .code-limit {
-  height: 800px;
+  height: 790px;
   overflow: scroll;
+}
+
+.save-btn-wrapper {
+  margin-top: 10px;
+  height: 40px;
+  display: flex;
+  box-sizing: border-box;
 }
 
 .card-cnt {

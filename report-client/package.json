@@ -6,7 +6,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",

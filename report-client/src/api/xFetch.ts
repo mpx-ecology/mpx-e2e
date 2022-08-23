@@ -26,7 +26,7 @@ const http = {
 				reject(err)
 			}).then(res => {
 				if (!res || (+res.status !== 200 || !res.data)) return reject(res)
-				let { data } = res
+				const { data } = res
 				resolve(data)
 			})
 		})
