@@ -88,6 +88,17 @@ function cmdToLabel (cmds) {
   })
 }
 
+function calcLineNums(renderStr) {
+  let lineNums = {};
+  renderStr.split(/\n/m)?.forEach((t, i) => {
+    let rank = /【(\d+)】/.exec(t);
+    if (rank && rank[1]) {
+      lineNums[rank[1]] = i;
+    }
+  });
+  return lineNums
+}
+
 async function genSpecString (minitestJson, renderCfg) {
 
   const {
@@ -98,7 +109,6 @@ async function genSpecString (minitestJson, renderCfg) {
     connectFirst,
     descName, // spec.js
     itName,
-    previewMode,
     e2ercjestTimeout = 30000000
   } = renderCfg;
 
@@ -124,7 +134,7 @@ async function genSpecString (minitestJson, renderCfg) {
     defaultWaitFor, // 默认 waitFor 等待时长
     wsEndpoint, // wsEndPoint
     cmds,
-    previewMode: false,
+    previewMode: false, // previewMode 暂时关闭，编辑器可以承受
     connectFirst, // automator 优先使用 connect 而非 launch
   };
 
@@ -144,65 +154,52 @@ async function genSpecString (minitestJson, renderCfg) {
   }
 }
 
-async function generateSpec ({ previewMode, e2erc, tasks, write = false }) {
-  const {
-    recordsDir,
-    testSuitsDir,
-    projectPath,
-    jsonCaseCpDir,
-    wsEndpoint,
-    defaultWaitFor = 6000,
-    needRealMachine = false,
-    e2ercjestTimeout = 30000000
-  } = e2erc;
+async function generateSpec ({ file, e2erc }) {
+  // const {
+  //   recordsDir,
+  //   testSuitsDir,
+  //   jsonCaseCpDir,
+  //   file
+  // } = e2erc;
 
-  if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
+  // if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
 
-  let files = tasks.map((i) => {
-    return {
-      o: i, // original name of json file
-      we: i.replace('.json', ''), // filename  without '.json' extension name
-      p: path.join(recordsDir, i), // absolute path of json file
-      n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js' // target spec file full name
-    }
-  });
-
+  // let files = tasks.map((i) => {
+  //   return {
+  //     o: i, // original name of json file
+  //     we: i.replace('.json', ''), // filename  without '.json' extension name
+  //     p: path.join(recordsDir, i), // absolute path of json file
+  //     n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js' // target spec file full name
+  //   }
+  // });
+  //
   // 结果集
   let result = {};
+  //
+  // if (!files.length) throw new Error(recordsDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
+  // for (let f of files) {
+  //   result[f.o] = {};
+  //   // 文件冲突检查 & 复制文件
+  //   // 复制 minitest/*.json 到 e2erc.jsonCaseCpDir
+  //   if (jsonCaseCpDir && write) await fsExtra.copy(f.p, `${jsonCaseCpDir}/${f.o}`);
+  //
+  //   let minitestJson = require(f.p);
+  //
+  //
+  // }
 
-  if (!files.length) throw new Error(recordsDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
-  for (let f of files) {
-    result[f.o] = {};
-    // 文件冲突检查 & 复制文件
-    // 复制 minitest/*.json 到 e2erc.jsonCaseCpDir
-    if (jsonCaseCpDir) await fsExtra.copy(f.p, `${jsonCaseCpDir}/${f.o}`);
+  let res = await genSpecString(file.minitestJson, {
+    descName: file.we,
+    itName: file.we,
+    ...e2erc,
+  })
 
-    let minitestJson = require(f.p);
-
-    result[f.o].originData = minitestJson;
-
-    let res = await genSpecString(minitestJson, {
-      previewMode,
-      descName: f.we,
-      itName: f.we,
-      ...e2erc,
-    })
-
-    if (write) {
-      await fs.writeFile(f.n, res.renderStr);
-    }
-    let renderStr = res.renderStr;
-    let lineNums = {};
-    let tokenList = renderStr.split(/\n/m).forEach((t, i) => {
-      let rank = /【(\d+)】/.exec(t);
-      if (rank && rank[1]) {
-        lineNums[rank[1]] = i;
-      }
-    })
-    result[f.o].spec = res.renderStr;
-    result[f.o].lineNums = lineNums;
-    tokenList = null;
-  }
+  // if (write) {
+  //   await fs.writeFile(f.n, res.renderStr);
+  // }
+  let renderStr = res.renderStr;
+  result.spec = renderStr;
+  result.lineNums = calcLineNums(renderStr);
   return result
 }
 

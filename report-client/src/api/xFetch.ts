@@ -8,8 +8,8 @@ const ts = function () {
 
 const http = {
 	commonRequest (method: Method, url: string, {
-		noCache,
-		cancelToken ,
+		noCache= true,
+		cancelToken = null,
 		headers = {},
 		data = {},
 		params = {}
@@ -26,7 +26,7 @@ const http = {
 				reject(err)
 			}).then(res => {
 				if (!res || (+res.status !== 200 || !res.data)) return reject(res)
-				let { data } = res
+				const { data } = res
 				resolve(data)
 			})
 		})
@@ -34,7 +34,7 @@ const http = {
 	get (url: string, params?: Record<any, any>, cfg?: CommonRequestCfg) {
 		return http.commonRequest('GET', url, Object.assign({ params }, cfg))
 	},
-	post (url: string, data: Record<any, any>, cfg: CommonRequestCfg) {
+	post (url: string, data: Record<any, any>, cfg?: CommonRequestCfg) {
 		return http.commonRequest('POST', url, Object.assign({ data } , cfg))
 	}
 }

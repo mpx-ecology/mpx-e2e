@@ -37,7 +37,18 @@ exports.handleImg = async function handleImg (ctx, next) {
   }
 }
 
-exports.getE2erc = () => {
+exports.genFileMeta = (e2erc, task, minitestJson) => {
+  const taskPath = path.join(e2erc.recordsDir, task);
+  return {
+    minitestJson: minitestJson ? minitestJson : require(taskPath),
+    o: task, // original name of json file
+    we: task.replace('.json', ''), // filename  without '.json' extension name
+    p: taskPath, // absolute path of json file
+    n: path.resolve(process.cwd(), `${e2erc.testSuitsDir}`, task.replace(/\.json/, '')) + '.spec.js' // target spec file full name
+  }
+};
+
+function getE2erc () {
   const cwd = process.cwd();
   let e2erc = require(path.join(cwd, './.e2erc.js'));
   try {
@@ -51,3 +62,5 @@ exports.getE2erc = () => {
   }
   return e2erc
 }
+
+exports.getE2erc = getE2erc;
