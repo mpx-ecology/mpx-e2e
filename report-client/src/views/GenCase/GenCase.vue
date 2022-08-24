@@ -69,7 +69,7 @@
               </div>
             </div>
           </div>
-          <el-button class="button" text v-if="item.byPlatform">
+          <el-button class="button" text v-if="item.byPlatform" @click="editItem(item)">
             编辑
             <el-icon>
               <Edit/>
@@ -132,7 +132,7 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogFlag = false">取消</el-button>
+        <el-button @click="dlgCancel">取消</el-button>
         <el-button type="primary" @click="addToCmds">确认</el-button>
       </span>
     </template>
@@ -143,14 +143,17 @@
 import {ref, onBeforeMount, reactive, computed, onMounted, onUnmounted } from 'vue'
 import {getJsonFiles, previewAfterExtended, saveSpecFileAndJSON} from '@/api/workshop'
 import {cmdToLabel, getCmds, getMockedApisWithoutDuplicate} from '@/views/GenCase/genCase';
+import _ from 'lodash'
 import {
   menus,
   ACTION_SCREENSHOT_ADDED,
   ACTION_ROUTER_OPERATED,
   ACTION_ASSERTION_ADDED,
   ACTION_WAIT_FOR,
-  ACTION_GET_DOM
+  ACTION_GET_DOM,
+  formCfg
 } from './menu'
+
 import {
   ElCol,
   ElRow,
@@ -209,226 +212,11 @@ const currentMenu = reactive<Record<any, any>>({
   action: ACTION_GET_DOM,
   title: '获取 DOM 元素'
 });
-const e2eExtendsForm = reactive({
-  [ACTION_GET_DOM]: {
-    inputOptions: {
-      clazzName: [
-        {
-          label: '元素类名：',
-          value: ''
-        }
-      ],
-      compName: [
-        {
-          label: '组件名：',
-          value: ''
-        }
-      ]
-    }
-  },
-  [ACTION_WAIT_FOR]: {
-    selectOptions: [
-      {
-        label: 'waitFor 时间',
-        value: 'waitForSomeTime'
-      },
-      {
-        label: 'waitFor 页面路由',
-        value: 'waitForExactRouter'
-      },
-      {
-        label: 'waitFor 接口',
-        value: 'waitForApiResponse'
-      }
-    ],
-    selectedValue: 'waitForSomeTime',
-    inputOptions: {
-      waitForSomeTime: [
-        {
-          value: 10000,
-          label: '时长：'
-        }
-      ],
-      waitForExactRouter: [
-        {
-          value: '',
-          label: '页面 path：'
-        }
-      ],
-      waitForApiResponse: [
-        {
-          value: '',
-          label: '接口 path：'
-        }
-      ]
-    }
-  },
-  [ACTION_ROUTER_OPERATED]: {
-    selectOptions: [
-      {
-        label: 'navigateBack',
-        value: 'operateRouterNavigateBack'
-      },
-      {
-        label: 'reLaunch',
-        value: 'operateRouterRelaunch'
-      },
-      {
-        label: 'navigateTo',
-        value: 'operateRouterNavigateTo'
-      },
-      {
-        label: 'redirectTo',
-        value: 'operateRouterRedirectTo'
-      },
-      {
-        label: 'switchTab',
-        value: 'operateRouterSwitchTab'
-      }
-    ],
-    selectedValue: 'operateRouterNavigateBack',
-    inputOptions: {
-      operateRouterNavigateBack: [],
-      operateRouterRelaunch: [
-        {
-          value: '',
-          label: 'ReLaunch Url:'
-        }
-      ],
-      operateRouterNavigateTo: [
-        {
-          value: '',
-          label: 'NavigateTo Url:'
-        }
-      ],
-      operateRouterRedirectTo: [
-        {
-          value: '',
-          label: 'RedirectTo Url:'
-        }
-      ],
-      operateRouterSwitchTab: [
-        {
-          value: '',
-          label: 'SwitchTab Url:'
-        }
-      ],
-    }
-  },
-  [ACTION_ASSERTION_ADDED]: {
-    selectOptions: [
-      {
-        label: '断言元素文案内容',
-        value: 'assertTextContent'
-      },
-      {
-        label: '断言元素文案长度',
-        value: 'assertTextLength'
-      },
-      {
-        label: '断言元素文案符合RegExp',
-        value: 'assertTextByRegExp'
-      },
-      {
-        label: '断言元素宽度',
-        value: 'assertElementWidth'
-      },
-      {
-        label: '断言元素高度',
-        value: 'assertElementHeight'
-      },
-      {
-        label: '断言元素是否存在',
-        value: 'assertElementExistence'
-      },
-      {
-        label: '断言接口返回字段',
-        value: 'assertResponseFiledValue'
-      }
-    ],
-    selectedValue: 'assertTextContent',
-    inputOptions: {
-      assertTextContent: [
-        {
-          value: '',
-          label: '预期文案：'
-        }
-      ],
-      assertTextLength: [
-        {
-          value: '',
-          label: '预期文案长度：',
-        }
-      ],
-      assertTextByRegExp: [
-        {
-          value: '',
-          label: '正则元字符：'
-        },
-        {
-          value: '',
-          label: '正则修饰符：'
-        }
-      ],
-      assertElementWidth: [
-        {
-          value: '',
-          label: '操作符：',
-          placeholder: '===, >=, <='
-        },
-        {
-          value: '',
-          label: '预期宽度：'
-        }
-      ],
-      assertElementHeight: [
-        {
-          value: '',
-          label: '操作符：',
-          placeholder: '===, >=, <='
-        },
-        {
-          value: '',
-          label: '预期高度：'
-        }
-      ],
-      assertElementExistence: [],
-      assertResponseFiledValue: [
-        {
-          value: '',
-          label: '取值表达式：'
-        },
-        {
-          value: '',
-          label: '比较操作符：'
-        },
-        {
-          value: '',
-          label: '返回值预期：'
-        }
-      ]
-    }
-  },
-  [ACTION_SCREENSHOT_ADDED]: {
-    inputOptions: {
-      fileName: [
-        {
-          value: '',
-          label: '文件名：'
-        }
-      ],
-      savePath: [
-        {
-          value: '',
-          label: '保存路径：'
-        }
-      ]
-    }
-  }
-})
+const e2eExtendsForm = reactive(_.cloneDeep(formCfg))
 const cmds = computed(() => {
   return getCmds(originJsonData)
 })
+let isCreate = true
 
 const cmdToLabels = computed(() => {
   let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({type: 'mockAPI', label: `mock 微信原生 API：${i}`, cmdIndex: void 0}))
@@ -448,6 +236,7 @@ const updateCurrentJsonFileNameAndPreview = (j: string, n: number) => {
 
 const handleMenuCommand = (command: Record<any, any>) => {
   Object.assign(currentMenu, command)
+  isCreate = true
   dialogFlag.value = true
 }
 
@@ -492,14 +281,16 @@ const addToCmds = async e => {
     // cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
     cmdItem.data = e2eExtendsForm[action].inputOptions[command]
   }
-  console.log(cmdItem);
+  // console.log(cmdItem);
   // 因为语义化开头是被 mock 的 wx api，所以 cmdIdx 为 undefined
   // 所以不能向后面增加操作，所以这个时候相当于是 commands 的开头 unshift 一项
+  console.log(cmdItem);
   const intoIdx = command ? cmdIdx + 1 : 0
-  originJsonData.commands.splice(intoIdx, 0, cmdItem);
+  originJsonData.commands.splice(intoIdx, isCreate ? 0 : 1, cmdItem);
   dialogFlag.value = false
   const res = await previewAfterExtended({jsonName: currentJsonFileName.value, originJsonData})
   updateCurrentPreview(res, 0)
+  Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
 }
 
 const saveSpec = () => {
@@ -510,6 +301,26 @@ const saveSpec = () => {
     jsonFileName: currentJsonFileName.value,
     specFileName: currentSpecFileName.value
   })
+}
+
+const editItem = (item) => {
+  isCreate = false
+  let { cmdIndex, command } = item
+  let cmdItem = originJsonData.commands[cmdIndex]
+  if ([ACTION_GET_DOM, ACTION_SCREENSHOT_ADDED].includes(command)) {
+    Object.assign(e2eExtendsForm,  { [command]: { inputOptions: cmdItem.data } })
+  } else {
+    let { action, data } = cmdItem;
+    let formItem = e2eExtendsForm[action]
+    formItem.selectedValue = command
+    formItem.inputOptions[command] = data
+  }
+  dialogFlag.value = true
+}
+
+const dlgCancel = () => {
+  dialogFlag.value = false
+  Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
 }
 
 onBeforeMount(getAndPreview);

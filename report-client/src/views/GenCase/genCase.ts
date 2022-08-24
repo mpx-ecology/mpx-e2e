@@ -24,7 +24,7 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 	return cmds.map(i => {
 		const { command } = i;
 		const res = {
-			cmd: command,
+			command,
 			label: '',
 			cmdIndex: i.cmdIndex,
 			tag: i.tagName,
