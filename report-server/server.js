@@ -17,8 +17,10 @@ class E2eServer {
     this.cfg = { open: true, port: 8886 }
   }
   apply (cfg) {
-    this.clearFile()
-    this.cfg = Object.assign(this.cfg, cfg)
+    this.cfg = Object.assign({}, this.cfg, cfg)
+    if (!this.cfg.preview) {
+      this.clearFile()
+    }
     const { port = 8886 } = cfg
     if (this.server) {
       // console.warn('the last server has been shutdown!!! a new server will start soon!!!');
