@@ -3,10 +3,10 @@ import { useCounterStore } from '../../../stores/counter'
 const store = useCounterStore()
 
 </script>
- 
+
 <template>
   <div class="info">
-    <div class="info-item" v-for="[key, value] of Object.entries(store.systemInfo)">
+    <div class="info-item" v-for="[key, value] of Object.entries(store.systemInfo)" :key="key">
       <span class="label">{{key}}:</span>
       <span class="message">{{value}}</span>
     </div>

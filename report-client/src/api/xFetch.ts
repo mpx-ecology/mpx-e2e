@@ -7,15 +7,15 @@ const ts = function () {
 }
 
 const http = {
-	commonRequest (method: Method, url: string, {
+	commonRequest <T>(method: Method, url: string, {
 		noCache= true,
-		cancelToken = null,
+		cancelToken,
 		headers = {},
 		data = {},
 		params = {}
-	} = ({} as CommonRequestCfg)) {
-		return new Promise((resolve, reject) => {
-			axios.request<AxiosResponse>({
+	}: Record<any, any>) {
+		return new Promise<T>((resolve, reject) => {
+			axios.request<T>({
 				url: noCache ? url : (url + ts()),
 				data,
 				params,
@@ -31,11 +31,11 @@ const http = {
 			})
 		})
 	},
-	get (url: string, params?: Record<any, any>, cfg?: CommonRequestCfg) {
-		return http.commonRequest('GET', url, Object.assign({ params }, cfg))
+	get <G>(url: string, params?: any, cfg?: Record<any, any>) {
+		return http.commonRequest<G>('GET', url, { params, ...cfg })
 	},
-	post (url: string, data: Record<any, any>, cfg?: CommonRequestCfg) {
-		return http.commonRequest('POST', url, Object.assign({ data } , cfg))
+	post <G>(url: string, data: Record<any, any>, cfg?: Partial<CommonRequestCfg>) {
+		return http.commonRequest<G>('POST', url, Object.assign({ data } , cfg))
 	}
 }
 

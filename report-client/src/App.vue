@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { ElHeader, ElMain, ElContainer, ElAside, ElFooter, ElScrollbar } from 'element-plus'
+import { ElHeader, ElMain, ElContainer, ElFooter, ElScrollbar } from 'element-plus'
 import MenuList from './components/MenuList.vue'
 </script>
 

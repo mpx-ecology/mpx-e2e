@@ -44,7 +44,7 @@ const state = computed(() => {
   }
   store.reportList.forEach(item => {
     if (item.imgList && item.imgList.length) {
-      const imgList: Info[] = item.imgList.map((img, idx) => {
+      const imgList: Info[] = item.imgList.map((img) => {
         const title = img.path.split(/\/|\\/).pop() || ''
         const time = timestampToTime(img.time || 0)
         // 绘制点击位置

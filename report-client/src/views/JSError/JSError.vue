@@ -32,7 +32,7 @@ const tableData = computed(() => {
 
 <template>
   <InfoCard />
-  <template v-for="item in tableData">
+  <template v-for="(item, index) in tableData" :key="index">
     <ErrorTable :list="item.lists" :file="item.file" />
   </template>
 </template>

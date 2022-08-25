@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, reactive } from "@vue/reactivity";
+import { computed } from "@vue/reactivity";
 import { ElTable, ElTableColumn, ElTag } from "element-plus";
 
 import { useCounterStore } from '../../../stores/counter'
@@ -37,7 +37,7 @@ const smallImgStyle = computed(() => {
 })
 
 /** 列样式 */
-function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, column: TableColumnCtx<ErrorItem>, columnIndex: number }) {
+function tableCellClassName({ column, columnIndex }: { row: ErrorItem, column: TableColumnCtx<ErrorItem>, columnIndex: number }) {
   // console.log(row);
   // console.log(column, columnIndex)
   let className = ''
@@ -100,7 +100,7 @@ function tableCellClassName({ row, column, columnIndex }: { row: ErrorItem, colu
     font-size: 20px;
     color: #df7774;
   }
-  
+
   .stack{
     padding: 0.4em;
     white-space: pre-wrap;

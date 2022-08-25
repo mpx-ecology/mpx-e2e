@@ -123,7 +123,7 @@
               <el-input
                   :data-s="iItem"
                   v-model="iItem.value"
-                  :placeholder="iItem.placeholder"
+                  :placeholder="iItem?.placeholder"
                   autocomplete="off"/>
             </el-form-item>
           </div>
@@ -179,6 +179,14 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
+import type {
+  LOAD_CASE_RESPONSE,
+  MENU_TYPE,
+  TYPE_CMD_BY_PLATFORM,
+  TYPE_ORIGIN_JSON,
+  TYPE_SEMANTIC_ITEM
+} from '../../types/genCaseType'
+
 let editor: monaco.editor.IStandaloneCodeEditor;
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -204,8 +212,8 @@ const code = ref<string>('')
 const list = ref<string[]>([])
 const dialogFlag = ref<boolean>(false)
 const currentJsonFileName = ref<string>('')
-const originJsonData = reactive({})
-const lineNums = reactive({})
+const originJsonData = reactive<TYPE_ORIGIN_JSON>({ commands: [] })
+const lineNums = reactive<Record<any, any>>({})
 const currentMenu = reactive<Record<any, any>>({
   cmdIdx: 0,
   menuIdx: 0,
@@ -218,8 +226,17 @@ const cmds = computed(() => {
 })
 let isCreate = true
 
-const cmdToLabels = computed(() => {
-  let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({type: 'mockAPI', label: `mock 微信原生 API：${i}`, cmdIndex: void 0}))
+const cmdToLabels = computed<TYPE_SEMANTIC_ITEM[]>(() => {
+  let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({
+    type: 'mockAPI',
+    label: `mock 微信原生 API：${i}`,
+    cmdIndex: undefined,
+    text: undefined,
+    tag: undefined,
+    path: undefined,
+    byPlatform: false,
+    command: undefined
+  }))
   return [...mocks, ...cmdToLabel(cmds.value)]
 });
 
@@ -240,7 +257,7 @@ const handleMenuCommand = (command: Record<any, any>) => {
   dialogFlag.value = true
 }
 
-const updateCurrentPreview = (res, loadAll) => {
+const updateCurrentPreview = (res: LOAD_CASE_RESPONSE, loadAll: number) => {
   editor.setScrollPosition({scrollTop: 0});
   if (loadAll) {
     list.value = res.tasks;
@@ -253,12 +270,12 @@ const updateCurrentPreview = (res, loadAll) => {
 }
 
 const getAndPreview = async (loadAll = 1, jsonName = '') => {
-  let res = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
+  let res: LOAD_CASE_RESPONSE = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
   updateCurrentJsonFileName(res.tasks[0])
-  updateCurrentPreview(res, loadAll)
+  updateCurrentPreview(res as LOAD_CASE_RESPONSE, loadAll)
 }
 
-const goEditorLine = (key: string) => {
+const goEditorLine = (key: number|string) => {
   let line = lineNums[key];
   editor.revealLineInCenter(line);
 }
@@ -268,12 +285,12 @@ const currentSpecFileName = computed(() => {
   return name.replace('.json', '.spec.js')
 });
 
-const addToCmds = async e => {
+const addToCmds = async () => {
   let cmdIdx = currentMenu.cmdIdx ?? 0;
   let action = currentMenu.action;
   let isSimpleCmd = typeof e2eExtendsForm[action].selectedValue === 'undefined' // 没有 select 的算简单命令
   let command = isSimpleCmd ? action : e2eExtendsForm[action].selectedValue
-  let cmdItem = {command, byPlatform: true, timestamp: Date.now(), action, ...currentMenu}
+  let cmdItem = { command, byPlatform: true, timestamp: Date.now(), action, ...currentMenu, data: {} } as TYPE_CMD_BY_PLATFORM
   if (isSimpleCmd) {
     cmdItem.data = e2eExtendsForm[action].inputOptions
   } else {
@@ -289,7 +306,7 @@ const addToCmds = async e => {
   originJsonData.commands.splice(intoIdx, isCreate ? 0 : 1, cmdItem);
   dialogFlag.value = false
   const res = await previewAfterExtended({jsonName: currentJsonFileName.value, originJsonData})
-  updateCurrentPreview(res, 0)
+  updateCurrentPreview(res as LOAD_CASE_RESPONSE, 0)
   Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
 }
 
@@ -303,16 +320,17 @@ const saveSpec = () => {
   })
 }
 
-const editItem = (item) => {
+const editItem = (item: TYPE_SEMANTIC_ITEM) => {
   isCreate = false
   let { cmdIndex, command } = item
+  if (typeof cmdIndex === 'undefined' || typeof command === 'undefined') return new TypeError('cmdIndex must be number, but got undefined')
   let cmdItem = originJsonData.commands[cmdIndex]
-  if ([ACTION_GET_DOM, ACTION_SCREENSHOT_ADDED].includes(command)) {
+  if (ACTION_GET_DOM === command || ACTION_SCREENSHOT_ADDED === command) {
     Object.assign(e2eExtendsForm,  { [command]: { inputOptions: cmdItem.data } })
   } else {
-    let { action, data } = cmdItem;
+    let { action, data } = cmdItem
     let formItem = e2eExtendsForm[action]
-    formItem.selectedValue = command
+    formItem.selectedValue = command as MENU_TYPE
     formItem.inputOptions[command] = data
   }
   dialogFlag.value = true

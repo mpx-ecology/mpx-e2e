@@ -1,4 +1,4 @@
-export const addPostFix = i => `${i}ByEnhanced`
+export const addPostFix = (i = '') => `${i}ByEnhanced`
 export const ACTION_GET_DOM = addPostFix('getDOM')
 export const ACTION_WAIT_FOR = addPostFix('waitFor')
 export const ACTION_ASSERTION_ADDED = addPostFix('assertionAdded');
@@ -28,7 +28,7 @@ export const menus = [
 	}
 ]
 
-export const formCfg = {
+export const formCfg:Record<any, any> = {
 	[ACTION_GET_DOM]: {
 		inputOptions: {
 			clazzName: [
