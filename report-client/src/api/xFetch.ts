@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosResponse, Method } from 'axios'
+import type { Method } from 'axios'
 import type { CommonRequestCfg } from '../../types/request'
 
 const ts = function () {
@@ -32,7 +32,7 @@ const http = {
 		})
 	},
 	get <G>(url: string, params?: any, cfg?: Record<any, any>) {
-		return http.commonRequest<G>('GET', url, { params, ...cfg })
+		return http.commonRequest<G>('GET', url, { params, noCache: true, ...cfg })
 	},
 	post <G>(url: string, data: Record<any, any>, cfg?: Partial<CommonRequestCfg>) {
 		return http.commonRequest<G>('POST', url, Object.assign({ data } , cfg))

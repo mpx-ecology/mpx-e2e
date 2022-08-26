@@ -57,27 +57,31 @@ let fn = (renderData) => {
       // 等待时长 ${item.waitfor < 7000 ? item.waitfor : defaultWaitFor}
     await page.waitFor(${item.waitfor < 7000 ? item.waitfor : defaultWaitFor});`
     } else {
-      str += `
-      // 默认等待时长 ${defaultWaitFor}
-    await page.waitFor(${defaultWaitFor});
-    `
+    //   str += `
+    //   // 默认等待时长 ${defaultWaitFor}
+    // await page.waitFor(${defaultWaitFor});
+    // `
     }
 
     str += `page = await miniProgram.currentPage();`;
 
-    if (item.command === 'tap') {
+    if (['tap', 'longpress', 'touchstart', 'touchmove','touchend', 'input'].includes(item.command)) {
       str += ` if (element) {
-      // 触发 ${ item.tagName } > ${ item.text } 的 ${ item.command } 事件
+      // 触发 ${ item.tagName ? item.tagName + '>' + item.text + '的' + item.command : item.command } 事件
       `;
       if (item.eventData) {
         str += ` await element.dispatchEvent({ eventName: '${ item.command }', eventData: ${ JSON.stringify(item.eventData) } });`
       } else {
-        str += `await element.tap();
-          }`
+        str += `await element.${item.command}(${item.data[0].value});`
       }
       str += `} else {
           console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
         }`
+    } else if (item.command === 'trigger') {
+      str += `
+      // trigger 元素 ${item.data[0].value} 事件
+      await element.trigger({ type: '${item.data[0].value}', detail: ${item.data[1].value} })
+      `
     } else if (item.command === 'assertVisible') {
       str += `expect(element).not.toBeNull();`
     } else if (item.command === 'assertPath') {
@@ -95,19 +99,31 @@ let fn = (renderData) => {
     expect(expectResult).toBe(actualResult);`
     } else if (item.command === 'navigateLeft' || item.command === 'operateRouterNavigateBack') {
       str += `
-      
          // 路由回退：${item.command}
          await miniProgram.navigateBack();
       `
-    } else if (item.command === 'getDOMByEnhanced') {
+    } else if (item.command === 'getDOMIndependently') {
+      let compName = item.data[1].value;
+      let clazzName = item.data[0].value;
       str += `
       // getEle by class + componentName
-      let compName = '${item.data.compName[0].value}';
-      let clazzName = '${item.data.clazzName[0].value}';
-      element = await page.$(clazzName, compName);`
-    } else if (item.command === 'screenshotAddedByEnhanced') {
-      let savePath = item.data.savePath[0].value;
-      let fileName = item.data.fileName[0].value;
+      element = await page.$('${clazzName}', '${compName}');`
+    } else if (item.command === 'getDOMList') {
+      let compName = item.data[1].value;
+      let clazzName = item.data[0].value;
+      let assignIndex = item.data[2].value;
+      str += `
+      // getEle by class + componentName
+      element = await page.$$('${clazzName}', '${compName}');`
+      if (assignIndex) {
+        str += `
+        // 从列表中获取 索引为 ${assignIndex} 的元素
+        element = element[${assignIndex}];
+        `
+      }
+    } else if (item.command === 'screenshotFileSave') {
+      let savePath = item.data[1].value;
+      let fileName = item.data[0].value;
       str += `
          // 增加截图：
            await miniProgram.screenshot({
@@ -128,7 +144,6 @@ let fn = (renderData) => {
       str += `
         // 等待接口响应：${item.data[0].value}
         apiResponse = await miniProgram.wait('${item.data[0].value}')
-        // 取接口返回值？
       `
     } else if (item.command === 'assertTextContent') {
       str += `
@@ -163,7 +178,7 @@ let fn = (renderData) => {
     } else if (item.command === 'assertElementExistence') {
       str += `
         // 断言元素是否存在：
-        expect(element).notToBe(null);
+        expect(element).not.toBeNull();
       `
     } else if (item.command === 'assertResponseFiledValue') {
       str += `

@@ -1,6 +1,6 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="3">
+  <el-row :gutter="20" v-loading="loadingFlag">
+    <el-col :span="2">
       <div>
         <el-tooltip
             class="box-item"
@@ -8,7 +8,7 @@
             content="将IDE录制回放的json进行导入，例 minitest-1.json"
             placement="right-start"
         >
-          <el-button type="success" style="background: #77CD9E;">
+          <el-button type="success" style="background: #77CD9E;" @click="loadMinitest">
             JSON 导入
             <el-icon>
               <QuestionFilled/>
@@ -16,8 +16,7 @@
           </el-button>
         </el-tooltip>
       </div>
-      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
-      <div class="mgnt20" v-else>
+      <div class="mgnt20" else>
         <p class="lh20 file-item"
            @click="updateCurrentJsonFileNameAndPreview(item, index)"
            :class="currentHighlightIdx === index ? 'file-item-hl' : ''"
@@ -29,7 +28,8 @@
         </p>
       </div>
     </el-col>
-    <el-col :span="8">
+    <el-col :span="9">
+      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels"
              :key="index"
@@ -60,7 +60,7 @@
               <div class="cnt-info-normal" v-else>
                 <div class="cnt-info-normal-line">
                   <p class="info-left" :title="item.label">操作: {{ item.label }}</p>
-                  <p class="info-right">标签名：{{ item.tag ? item.tag : '--' }}</p>
+                  <p class="info-right" v>标签名：{{ item.tag ? item.tag : '--' }}</p>
                 </div>
                 <div class="cnt-info-normal-line right-wider">
                   <p class="info-left" :title="item.text">文案：{{ item.text ? item.text : '--' }}</p>
@@ -134,6 +134,7 @@
       <span class="dialog-footer">
         <el-button @click="dlgCancel">取消</el-button>
         <el-button type="primary" @click="addToCmds">确认</el-button>
+        <el-button v-show="!isCreate" type="danger" @click="delFromCmds">删除</el-button>
       </span>
     </template>
   </el-dialog>
@@ -147,9 +148,6 @@ import _ from 'lodash'
 import {
   menus,
   ACTION_SCREENSHOT_ADDED,
-  ACTION_ROUTER_OPERATED,
-  ACTION_ASSERTION_ADDED,
-  ACTION_WAIT_FOR,
   ACTION_GET_DOM,
   formCfg
 } from './menu'
@@ -169,7 +167,8 @@ import {
   ElInput,
   ElSelect,
   ElOption,
-  ElFormItem
+  ElFormItem,
+  ElMessage
 } from 'element-plus';
 
 import * as monaco from 'monaco-editor'
@@ -210,6 +209,7 @@ let currentHighlightIdx = ref<number>(0)
 const formLabelWidth = '120px'
 const code = ref<string>('')
 const list = ref<string[]>([])
+const loadingFlag = ref<boolean>(true)
 const dialogFlag = ref<boolean>(false)
 const currentJsonFileName = ref<string>('')
 const originJsonData = reactive<TYPE_ORIGIN_JSON>({ commands: [] })
@@ -224,7 +224,13 @@ const e2eExtendsForm = reactive(_.cloneDeep(formCfg))
 const cmds = computed(() => {
   return getCmds(originJsonData)
 })
-let isCreate = true
+const isCreate = ref(true)
+
+let currentEditIndex = 0
+
+const updateIsCrateFlag = (f = false) => {
+  isCreate.value = f
+}
 
 const cmdToLabels = computed<TYPE_SEMANTIC_ITEM[]>(() => {
   let mocks = getMockedApisWithoutDuplicate(originJsonData).map(i => ({
@@ -253,7 +259,7 @@ const updateCurrentJsonFileNameAndPreview = (j: string, n: number) => {
 
 const handleMenuCommand = (command: Record<any, any>) => {
   Object.assign(currentMenu, command)
-  isCreate = true
+  updateIsCrateFlag(true)
   dialogFlag.value = true
 }
 
@@ -270,9 +276,16 @@ const updateCurrentPreview = (res: LOAD_CASE_RESPONSE, loadAll: number) => {
 }
 
 const getAndPreview = async (loadAll = 1, jsonName = '') => {
+  updateLoading()
   let res: LOAD_CASE_RESPONSE = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
-  updateCurrentJsonFileName(res.tasks[0])
-  updateCurrentPreview(res as LOAD_CASE_RESPONSE, loadAll)
+  if (res.errno === 0) {
+    updateCurrentJsonFileName(res.tasks[0])
+    updateCurrentPreview(res as LOAD_CASE_RESPONSE, loadAll);
+  } else {
+    console.error(res)
+    ElMessage.error('没有找到 JSON 文件，请先录制 json')
+  }
+  updateLoading(false)
 }
 
 const goEditorLine = (key: number|string) => {
@@ -291,61 +304,96 @@ const addToCmds = async () => {
   let isSimpleCmd = typeof e2eExtendsForm[action].selectedValue === 'undefined' // 没有 select 的算简单命令
   let command = isSimpleCmd ? action : e2eExtendsForm[action].selectedValue
   let cmdItem = { command, byPlatform: true, timestamp: Date.now(), action, ...currentMenu, data: {} } as TYPE_CMD_BY_PLATFORM
-  if (isSimpleCmd) {
-    cmdItem.data = e2eExtendsForm[action].inputOptions
-  } else {
-    // let key = command + 'Val'
-    // cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
-    cmdItem.data = e2eExtendsForm[action].inputOptions[command]
-  }
-  // console.log(cmdItem);
+  // if (isSimpleCmd) {
+  //   cmdItem.data = e2eExtendsForm[action].inputOptions
+  // } else {
+  //   // let key = command + 'Val'
+  //   // cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
+  // }
+  cmdItem.data = e2eExtendsForm[action].inputOptions[command]
   // 因为语义化开头是被 mock 的 wx api，所以 cmdIdx 为 undefined
   // 所以不能向后面增加操作，所以这个时候相当于是 commands 的开头 unshift 一项
   console.log(cmdItem);
   const intoIdx = command ? cmdIdx + 1 : 0
-  originJsonData.commands.splice(intoIdx, isCreate ? 0 : 1, cmdItem);
+  originJsonData.commands.splice(intoIdx, isCreate.value ? 0 : 1, cmdItem);
   dialogFlag.value = false
+  updateLoading()
   const res = await previewAfterExtended({jsonName: currentJsonFileName.value, originJsonData})
   updateCurrentPreview(res as LOAD_CASE_RESPONSE, 0)
   Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
+  updateLoading(false)
 }
 
-const saveSpec = () => {
+const saveSpec = async () => {
+  updateLoading()
   let codeStr = editor.getValue()
-  saveSpecFileAndJSON({
+  let res = await saveSpecFileAndJSON({
     codeStr,
     originJsonData,
     jsonFileName: currentJsonFileName.value,
     specFileName: currentSpecFileName.value
   })
+  if (res.errno === 0) {
+    updateLoading(false)
+    ElMessage({
+      message: currentSpecFileName.value + '保存成功',
+      type: 'success',
+    })
+  } else {
+    ElMessage.error(currentSpecFileName.value.vlaue + '保存失败！' + res.errmsg)
+  }
 }
 
 const editItem = (item: TYPE_SEMANTIC_ITEM) => {
-  isCreate = false
+  updateIsCrateFlag(false)
   let { cmdIndex, command } = item
   if (typeof cmdIndex === 'undefined' || typeof command === 'undefined') return new TypeError('cmdIndex must be number, but got undefined')
+  currentEditIndex = cmdIndex
   let cmdItem = originJsonData.commands[cmdIndex]
-  if (ACTION_GET_DOM === command || ACTION_SCREENSHOT_ADDED === command) {
-    Object.assign(e2eExtendsForm,  { [command]: { inputOptions: cmdItem.data } })
-  } else {
-    let { action, data } = cmdItem
-    let formItem = e2eExtendsForm[action]
-    formItem.selectedValue = command as MENU_TYPE
-    formItem.inputOptions[command] = data
-  }
+  let { action, data, menuIdx } = cmdItem
+  console.log(item);
+  console.log(cmdItem);
+  // 更新弹窗内容
+  Object.assign(currentMenu, {
+    cmdIndex,
+    action,
+    menuIdx,
+    title: menus[menuIdx].title
+  })
+  e2eExtendsForm[action].selectedValue = command as MENU_TYPE
+  e2eExtendsForm[action].inputOptions[command] = data
+  console.log(e2eExtendsForm);
   dialogFlag.value = true
+}
+
+const delFromCmds = async () => {
+  originJsonData.commands.splice(currentEditIndex, 1)
+  const res = await previewAfterExtended({ jsonName: currentJsonFileName.value, originJsonData })
+  updateCurrentPreview(res as LOAD_CASE_RESPONSE, 0)
+  Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
+  updateLoading(false)
+  dialogFlag.value = false
 }
 
 const dlgCancel = () => {
   dialogFlag.value = false
   Object.assign(e2eExtendsForm, _.cloneDeep(formCfg))
 }
+if (import.meta.env.DEV) {
+  onBeforeMount(getAndPreview);
+}
+const loadMinitest = () => {
+  getAndPreview()
+}
 
-onBeforeMount(getAndPreview);
+const updateLoading = (f = true) => {
+  loadingFlag.value = f
+}
+
 
 onMounted(() => {
   editor = monaco.editor.create(document.getElementById('container') as HTMLElement, {
-    value: '',
+    value: '// E2E Test Designed by 乘客前端/花小猪小程序 ',
     language: 'javascript',
     automaticLayout: true, // 自适应布局
     theme: 'vs-dark',
@@ -454,9 +502,11 @@ onUnmounted(() => editor.dispose());
   max-height: 800px;
   overflow: scroll;
 }
-
+.card-cnt-info {
+  cursor: pointer
+}
 .cnt-info-normal {
-  max-width: 440px;
+  max-width: 540px;
 }
 
 .cnt-info-normal-line {
@@ -471,10 +521,10 @@ onUnmounted(() => editor.dispose());
 }
 
 .cnt-info-normal-line .info-left {
-  width: 200px;
+  width: 250px;
 }
 
 .cnt-info-normal-line .info-right {
-  width: 240px;
+  width: 290px;
 }
 </style>

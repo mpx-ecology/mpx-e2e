@@ -4,11 +4,16 @@ export const ACTION_WAIT_FOR = addPostFix('waitFor')
 export const ACTION_ASSERTION_ADDED = addPostFix('assertionAdded');
 export const ACTION_ROUTER_OPERATED = addPostFix('routerOperated')
 export const ACTION_SCREENSHOT_ADDED = addPostFix('screenshotAdded')
+export const ACTION_ELEMENT_OPERATION = addPostFix('elementOperate')
 
 export const menus = [
 	{
 		title: '获取 DOM 元素',
 		action: ACTION_GET_DOM
+	},
+	{
+		title: '操作元素',
+		action: ACTION_ELEMENT_OPERATION
 	},
 	{
 		title: '支持 WaitFor',
@@ -30,19 +35,72 @@ export const menus = [
 
 export const formCfg:Record<any, any> = {
 	[ACTION_GET_DOM]: {
+		selectOptions: [
+			{
+				label: '单个元素',
+				value: 'getDOMIndependently'
+			},
+			{
+				label: '列表元素',
+				value: 'getDOMList'
+			}
+		],
+		selectedValue: 'getDOMIndependently',
 		inputOptions: {
-			clazzName: [
-				{
-					label: '元素类名：',
-					value: ''
-				}
+			getDOMIndependently: [
+				{ value: '', label: '类名：' },
+				{ value: '', label: '组件名：' }
 			],
-			compName: [
-				{
-					label: '组件名：',
-					value: ''
-				}
+			getDOMList: [
+				{ value: '', label: '类名：' },
+				{ value: '', label: '组件名：' },
+				{ value: '0', label: '目标元素索引：' }
 			]
+		}
+	},
+	[ACTION_ELEMENT_OPERATION]: {
+		selectOptions: [
+			{
+				value: 'tap',
+				label: '触发tap事件'
+			},
+			{
+				value: 'longpress',
+				label: '触发longpress事件'
+			},
+			{
+				value: 'touchstart',
+				label: ' 触发touchstart 事件'
+			},
+			{
+				value: 'touchmove',
+				label: '触发 touchmove 事件'
+			},
+			{
+				value: 'touchend',
+				label: '触发 touchend 事件'
+			},
+			{
+				label: '触发 input 事件',
+				value: 'input'
+			},
+			{
+				value: 'trigger',
+				label: 'trigger 元素事件'
+			},
+		],
+		selectedValue: 'tap',
+		inputOptions: {
+			tap: [ { value: '', label: '参数：', placeholder: 'tap 事件对象' }],
+			longpress: [ { value: '', label: '参数：', placeholder: 'longpress 事件对象' }],
+			touchstart: [ { value: '', label: '参数：', placeholder: 'touchstart 事件对象' }],
+			touchmove: [ { value: '', label: '参数：', placeholder: 'touchmove 事件对象' }],
+			touchend: [ { value: '', label: '参数：', placeholder: 'touchend 事件对象' }],
+			trigger: [
+				{ value: '', label: '事件名：', placeholder: 'element.trigger(type: string, detail?: Object): Promise<void>' },
+				{ value: '', label: '事件参数：', placeholder: 'element.trigger(type: string, detail?: Object): Promise<void>' }
+			],
+			input: [ { value: '', label: '输入值：', placeholder: 'element.input(value: string): Promise<void>' }]
 		}
 	},
 	[ACTION_WAIT_FOR]: {
@@ -215,7 +273,8 @@ export const formCfg:Record<any, any> = {
 			assertResponseFiledValue: [
 				{
 					value: '',
-					label: '取值表达式：'
+					label: '取值表达式：',
+					placeholder: '{ options: { data: 返回值 }, url: 请求接口 }, options.data.xxx'
 				},
 				{
 					value: '',
@@ -229,14 +288,13 @@ export const formCfg:Record<any, any> = {
 		}
 	},
 	[ACTION_SCREENSHOT_ADDED]: {
+		selectedValue: 'screenshotFileSave',
 		inputOptions: {
-			fileName: [
+			screenshotFileSave: [
 				{
 					value: '',
 					label: '文件名：'
-				}
-			],
-			savePath: [
+				},
 				{
 					value: '',
 					label: '保存路径：'
