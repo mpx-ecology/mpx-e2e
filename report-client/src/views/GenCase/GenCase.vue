@@ -46,23 +46,23 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item v-for="(menuItem, menuIdx) in menus"
-                                      :command="{ menuIdx, cmdIdx: item.cmdIndex, ...menuItem }"
+                                      :command="{ menuIdx, cmdIndex: item.cmdIndex, ...menuItem }"
                                       :key="menuIdx">{{ menuItem.title }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
 
-              【{{ index + 1 }}】
+              【{{ index + 1 }}】{{item.cmdIndex}}
             </div>
             <div class="card-cnt-info" @click="goEditorLine(index + 1)">
               <div class="cnt-info-mock" v-if="item.type === 'mockAPI'">{{ item.label }}</div>
               <div class="cnt-info-normal" v-else>
                 <div class="cnt-info-normal-line">
-                  <p class="info-left" :title="item.label">操作: {{ item.label }}</p>
-                  <p class="info-right" v>标签名：{{ item.tag ? item.tag : '--' }}</p>
+                  <p :class="!item.byPlatform ? 'info-left' : 'info-left-full'" :title="item.label">操作: {{ item.label }}</p>
+                  <p class="info-right" v-if="!item.byPlatform">标签名：{{ item.tag ? item.tag : '--' }}</p>
                 </div>
-                <div class="cnt-info-normal-line right-wider">
+                <div class="cnt-info-normal-line right-wider" v-if="!item.byPlatform">
                   <p class="info-left" :title="item.text">文案：{{ item.text ? item.text : '--' }}</p>
                   <p class="info-right" :title="item.path">页面：{{ item.path }}</p>
                 </div>
@@ -215,14 +215,14 @@ const currentJsonFileName = ref<string>('')
 const originJsonData = reactive<TYPE_ORIGIN_JSON>({ commands: [] })
 const lineNums = reactive<Record<any, any>>({})
 const currentMenu = reactive<Record<any, any>>({
-  cmdIdx: 0,
+  cmdIndex: 0,
   menuIdx: 0,
   action: ACTION_GET_DOM,
   title: '获取 DOM 元素'
 });
 const e2eExtendsForm = reactive(_.cloneDeep(formCfg))
 const cmds = computed(() => {
-  return getCmds(originJsonData)
+  return getCmds(originJsonData.commands)
 })
 const isCreate = ref(true)
 
@@ -299,22 +299,21 @@ const currentSpecFileName = computed(() => {
 });
 
 const addToCmds = async () => {
-  let cmdIdx = currentMenu.cmdIdx ?? 0;
-  let action = currentMenu.action;
-  let isSimpleCmd = typeof e2eExtendsForm[action].selectedValue === 'undefined' // 没有 select 的算简单命令
-  let command = isSimpleCmd ? action : e2eExtendsForm[action].selectedValue
-  let cmdItem = { command, byPlatform: true, timestamp: Date.now(), action, ...currentMenu, data: {} } as TYPE_CMD_BY_PLATFORM
-  // if (isSimpleCmd) {
-  //   cmdItem.data = e2eExtendsForm[action].inputOptions
-  // } else {
-  //   // let key = command + 'Val'
-  //   // cmdItem[key] = e2eExtendsForm[currentMenu.action][key]
-  // }
-  cmdItem.data = e2eExtendsForm[action].inputOptions[command]
-  // 因为语义化开头是被 mock 的 wx api，所以 cmdIdx 为 undefined
+  let { menuIdx, action, cmdIndex = 0} = currentMenu
+  let command = e2eExtendsForm[action].selectedValue
+  const intoIdx = command ? isCreate.value ? cmdIndex + 1 : cmdIndex : 0
+  let cmdItem = {
+    command,
+    byPlatform: true,
+    timestamp: Date.now(),
+    action,
+    menuIdx,
+    data: e2eExtendsForm[action].inputOptions[command]
+  } as TYPE_CMD_BY_PLATFORM
+  // 因为语义化开头是被 mock 的 wx api，所以 cmdIndex 为 undefined
   // 所以不能向后面增加操作，所以这个时候相当于是 commands 的开头 unshift 一项
-  console.log(cmdItem);
-  const intoIdx = command ? cmdIdx + 1 : 0
+  // 如果是编辑，则不是操作 cmdIndex + 1，而是操作 cmdIndex 自身
+  console.log('addToCmds', isCreate.value, cmdItem);
   originJsonData.commands.splice(intoIdx, isCreate.value ? 0 : 1, cmdItem);
   dialogFlag.value = false
   updateLoading()
@@ -506,7 +505,7 @@ onUnmounted(() => editor.dispose());
   cursor: pointer
 }
 .cnt-info-normal {
-  max-width: 540px;
+  max-width: 500px;
 }
 
 .cnt-info-normal-line {
@@ -523,7 +522,9 @@ onUnmounted(() => editor.dispose());
 .cnt-info-normal-line .info-left {
   width: 250px;
 }
-
+.cnt-info-normal-line .info-left-full {
+  width: 100%;
+}
 .cnt-info-normal-line .info-right {
   width: 290px;
 }

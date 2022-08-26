@@ -21,7 +21,7 @@ interface cmdItem {
 
 export function cmdToLabel (cmds:Record<any, any>[]) {
 	if (!cmds) return []
-	return cmds.map(i => {
+	return cmds.map((i, idx) => {
 		const { command } = i;
 		const res = {
 			type: 'operate',
@@ -44,13 +44,13 @@ export function getMockRules (minitestJson: Record<any, any>) {
 	return minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
 }
 
-export function getCmds (minitestJson: Record<any, any>, excludeRules = []) {
-	if (!minitestJson || !Array.isArray(minitestJson.commands)) {
+export function getCmds (commands: any[], excludeRules = []) {
+	if (!commands || !Array.isArray(commands)) {
 		console.warn('json.commands must be an Array');
 		return []
 	}
 	const result:any[] = []
-	minitestJson.commands.forEach((item, index) => {
+	commands.forEach((item, index) => {
 		if (!['mock', 'startRecord', 'stopRecord', ...excludeRules].includes(item.command)) {
 			result.push({
 				cmdIndex: index,
