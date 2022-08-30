@@ -1,6 +1,7 @@
 const http = require('http');
 const path = require('path')
 const e2erc = require(path.join(process.cwd(), './.e2erc.js'));
+const net = require('net')
 
 exports.pushImg = pushImg;
 exports.pushExpect = pushExpect;
@@ -10,7 +11,30 @@ exports.e2erc = e2erc
 
 const port = e2erc.devServer.port || 8886
 
-function pushImg (params) {
+let cache = 0
+let isCheck = false
+function checkPortUsable(port) {
+  if (isCheck) return cache
+  return new Promise((resolve) => {
+    const server = net.createConnection({ port });
+    server.on('connect', () => {
+      server.end();
+      // reject(`Port ${port} is not available!`);
+      isCheck = true
+      cache = port
+      resolve(port)
+    });
+    server.on('error', () => {
+      isCheck = true
+      cache = 0
+      resolve(0);
+    });
+  });
+}
+
+async function pushImg (params) {
+  const hasServer = await checkPortUsable(port)
+  if (!hasServer) return
   const req = http.request({
     port: port,
     method: 'POST',
@@ -26,7 +50,9 @@ function pushImg (params) {
   req.end()
 }
 
-function pushExpect () {
+async function pushExpect () {
+  const hasServer = await checkPortUsable(port)
+  if (!hasServer) return
   const req = http.request({
     port: port,
     method: 'POST',
@@ -42,7 +68,9 @@ function pushExpect () {
   req.end()
 }
 
-function pushJSError (params) {
+async function pushJSError (params) {
+  const hasServer = await checkPortUsable(port)
+  if (!hasServer) return
   const req = http.request({
     port: port,
     method: 'POST',
@@ -58,7 +86,9 @@ function pushJSError (params) {
   req.end()
 }
 
-function pushSystemInfo (params) {
+async function pushSystemInfo (params) {
+  const hasServer = await checkPortUsable(port)
+  if (!hasServer) return
   const req = http.request({
     port: port,
     method: 'POST',
