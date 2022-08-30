@@ -2,7 +2,7 @@ const koaStatic = require('koa-static');
 const path = require('path');
 const Koa = require('koa');
 const openBrowser = require('open');
-const { handleCors, handleImg } = require('./util');
+const { handleCors, handleImg, checkPortUsable } = require('./util');
 const { WebSocketServer } = require('ws');
 const common = require('./route/common');
 const fs = require('fs');
@@ -16,8 +16,13 @@ class E2eServer {
     this.isServer = true;
     this.cfg = { open: true, port: 8886 }
   }
-  apply (cfg) {
+  async apply (cfg) {
     this.cfg = Object.assign({}, this.cfg, cfg)
+    const refresh = await checkPortUsable(this.cfg.port)
+    if (!refresh) {
+      console.log(`address already in use :::${this.cfg.port}`)
+      return
+    }
     if (!this.cfg.preview) {
       this.clearFile()
     }

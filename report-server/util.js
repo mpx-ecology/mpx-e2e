@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const process = require('process')
+const net = require('net')
 // interface Img {
 //   path: string,
 //   src: string
@@ -63,4 +65,34 @@ function getE2erc () {
   return e2erc
 }
 
+function checkPortUsable(port) {
+  return new Promise((resolve) => {
+    const server = net.createConnection({ port });
+    server.on('connect', () => {
+      server.end();
+      // reject(`Port ${port} is not available!`);
+      resolve(0)
+    });
+    server.on('error', () => {
+      resolve(port);
+    });
+  });
+}
+
+function randomNumByRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function findUsablePort(port, minPort = 8080, maxPort = 9000) {
+  const retry = () => {
+    const port = randomNumByRange(minPort, maxPort);
+    return findUsablePort(port, minPort, maxPort);
+  };
+  return checkPortUsable(port)
+    .then(() => port)
+    .catch(retry);
+}
+
 exports.getE2erc = getE2erc;
+exports.checkPortUsable = checkPortUsable
+exports.findUsablePort = findUsablePort
