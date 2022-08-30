@@ -1,6 +1,6 @@
 <template>
   <el-row :gutter="20" v-loading="loadingFlag">
-    <el-col :span="2">
+    <el-col :span="3">
       <div>
         <el-tooltip
             class="box-item"
@@ -8,7 +8,7 @@
             content="将IDE录制回放的json进行导入，例 minitest-1.json"
             placement="right-start"
         >
-          <el-button type="success" style="background: #77CD9E;" @click="loadMinitest">
+          <el-button type="success" class="mpx-btn" @click="loadMinitest">
             JSON 导入
             <el-icon>
               <QuestionFilled/>
@@ -28,7 +28,7 @@
         </p>
       </div>
     </el-col>
-    <el-col :span="9">
+    <el-col :span="8">
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels"
@@ -53,7 +53,7 @@
                 </template>
               </el-dropdown>
 
-              【{{ index + 1 }}】{{item.cmdIndex}}
+              【{{ index + 1 }}】
             </div>
             <div class="card-cnt-info" @click="goEditorLine(index + 1)">
               <div class="cnt-info-mock" v-if="item.type === 'mockAPI'">{{ item.label }}</div>
@@ -88,7 +88,7 @@
             :content="'将' + currentSpecFileName + '保存到 case 目录' "
             placement="right-start"
         >
-          <el-button type="success" style="background: #77CD9E;" @click="saveSpec">
+          <el-button type="success" class="bg-mg"  @click="saveSpec">
             保存
             <el-icon>
               <QuestionFilled/>
@@ -132,8 +132,8 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dlgCancel">取消</el-button>
-        <el-button type="primary" @click="addToCmds">确认</el-button>
+        <el-button @click="dlgCancel" class="normal-btn">取消</el-button>
+        <el-button @click="addToCmds" class="bg-mg">确认</el-button>
         <el-button v-show="!isCreate" type="danger" @click="delFromCmds">删除</el-button>
       </span>
     </template>
@@ -209,7 +209,7 @@ let currentHighlightIdx = ref<number>(0)
 const formLabelWidth = '120px'
 const code = ref<string>('')
 const list = ref<string[]>([])
-const loadingFlag = ref<boolean>(true)
+const loadingFlag = ref<boolean>(false)
 const dialogFlag = ref<boolean>(false)
 const currentJsonFileName = ref<string>('')
 const originJsonData = reactive<TYPE_ORIGIN_JSON>({ commands: [] })
@@ -277,13 +277,18 @@ const updateCurrentPreview = (res: LOAD_CASE_RESPONSE, loadAll: number) => {
 
 const getAndPreview = async (loadAll = 1, jsonName = '') => {
   updateLoading()
-  let res: LOAD_CASE_RESPONSE = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
-  if (res.errno === 0) {
-    updateCurrentJsonFileName(res.tasks[0])
-    updateCurrentPreview(res as LOAD_CASE_RESPONSE, loadAll);
-  } else {
-    console.error(res)
-    ElMessage.error('没有找到 JSON 文件，请先录制 json')
+  try {
+    let res: LOAD_CASE_RESPONSE = await getJsonFiles({loadAll: !jsonName ? 1 : 0, jsonName})
+    if (res.errno === 0) {
+      updateCurrentJsonFileName(res.tasks[0])
+      updateCurrentPreview(res as LOAD_CASE_RESPONSE, loadAll);
+    } else {
+      console.error(res)
+      ElMessage.error('没有找到 JSON 文件，请先录制 json')
+    }
+  } catch (e) {
+    console.error(e);
+    ElMessage.error(JSON.stringify(e).slice(0, 100))
   }
   updateLoading(false)
 }
@@ -309,7 +314,7 @@ const addToCmds = async () => {
     action,
     menuIdx,
     data: e2eExtendsForm[action].inputOptions[command]
-  } as TYPE_CMD_BY_PLATFORM
+  } as unknown as TYPE_CMD_BY_PLATFORM
   // 因为语义化开头是被 mock 的 wx api，所以 cmdIndex 为 undefined
   // 所以不能向后面增加操作，所以这个时候相当于是 commands 的开头 unshift 一项
   // 如果是编辑，则不是操作 cmdIndex + 1，而是操作 cmdIndex 自身
@@ -332,23 +337,23 @@ const saveSpec = async () => {
     jsonFileName: currentJsonFileName.value,
     specFileName: currentSpecFileName.value
   })
-  if (res.errno === 0) {
+  if (res?.errno === 0) {
     updateLoading(false)
     ElMessage({
       message: currentSpecFileName.value + '保存成功',
       type: 'success',
     })
   } else {
-    ElMessage.error(currentSpecFileName.value.vlaue + '保存失败！' + res.errmsg)
+    ElMessage.error(currentSpecFileName.value + '保存失败！' + res.errmsg)
   }
 }
 
 const editItem = (item: TYPE_SEMANTIC_ITEM) => {
   updateIsCrateFlag(false)
   let { cmdIndex, command } = item
-  if (typeof cmdIndex === 'undefined' || typeof command === 'undefined') return new TypeError('cmdIndex must be number, but got undefined')
+  if (typeof cmdIndex !== 'number' || typeof command === 'undefined') return new TypeError('cmdIndex must be number, but got undefined')
   currentEditIndex = cmdIndex
-  let cmdItem = originJsonData.commands[cmdIndex]
+  let cmdItem= originJsonData.commands[cmdIndex]
   let { action, data, menuIdx } = cmdItem
   console.log(item);
   console.log(cmdItem);
@@ -416,9 +421,16 @@ onUnmounted(() => editor.dispose());
 </script>
 
 <style scoped>
+.cwhite {
+  color: #fff;
+}
+.normal-btn:hover {
+  color:#77CD9E!important;
+}
 .bg-mg {
   background: #77CD9E;
   color: #fff;
+  outline: none;
 }
 
 .mgnt20 {
@@ -430,6 +442,9 @@ onUnmounted(() => editor.dispose());
   line-height: 20px;
   vertical-align: middle;
   font-size: 14px;
+}
+.mpx-btn {
+  background: #77CD9E;
 }
 
 .txt-center {
@@ -505,7 +520,7 @@ onUnmounted(() => editor.dispose());
   cursor: pointer
 }
 .cnt-info-normal {
-  max-width: 500px;
+  max-width: 21vw;
 }
 
 .cnt-info-normal-line {
