@@ -25,14 +25,7 @@ export const useCounterStore = defineStore({
   state: (): State => ({
     reportList: [],
     counter: 0,
-    systemInfo: {
-      brand: "devtools",
-      model: "iPhone X",
-      platform: "devtools",
-      screenHeight: 812,
-      screenWidth: 375,
-      system: "iOS 10.0.1",
-    }
+    systemInfo: {}
   }),
   getters: {
     doubleCount: (state) => state.counter * 2

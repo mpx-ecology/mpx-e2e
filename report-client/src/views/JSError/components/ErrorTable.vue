@@ -33,13 +33,11 @@ const imgStyle = computed(() => {
 })
 
 const smallImgStyle = computed(() => {
-  return `width:${store.systemInfo.screenWidth/5}px;height:${store.systemInfo.screenHeight/5}px`
+  return `width:${store.systemInfo.screenWidth!/5}px;height:${store.systemInfo.screenHeight!/5}px`
 })
 
 /** 列样式 */
 function tableCellClassName({ column, columnIndex }: { row: ErrorItem, column: TableColumnCtx<ErrorItem>, columnIndex: number }) {
-  // console.log(row);
-  // console.log(column, columnIndex)
   let className = ''
   columnIndex === 0 ? className = 'expand-column' : void 0
   column.label === 'Stack' ? className = 'stack' : void 0
