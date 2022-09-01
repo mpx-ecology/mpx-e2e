@@ -60,7 +60,7 @@ function tableCellClassName({ column, columnIndex }: { row: ErrorItem, column: T
               <pre class="stack" v-html="scope.row.stack"></pre>
             </div>
             <div class="right">
-              <img class="image" :style="imgStyle" :src="scope.row.src" />
+              <img class="image" :style="imgStyle" :src="scope.row.imgSrc" />
             </div>
           </div>
         </template>
