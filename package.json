@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run lint && ./by-esbuild.js",
     "lint": "eslint . --ext .ts",
+    "fix": "eslint --fix --ext .js,.mpx,.ts",
     "tsc": "tsc",
     "dev": "./by-esbuild.js -w -s",
     "server:dev": "node ./serverTest.js",
