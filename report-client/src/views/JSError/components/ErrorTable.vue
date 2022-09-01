@@ -81,7 +81,7 @@ function tableCellClassName({ column, columnIndex }: { row: ErrorItem, column: T
 
       <el-table-column label="Thumbnail" width="130">
         <template #default="scope">
-          <img :style="smallImgStyle" :src="scope.row.src" />
+          <img :style="smallImgStyle" :src="scope.row.imgSrc" />
         </template>
       </el-table-column>
 
