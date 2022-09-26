@@ -1,5 +1,5 @@
 let fn = ({ connectFirst }) => {
-  let str = 'afterAll(async () => {';
+  let str = 'afterAll(async () => {clearInterval(timer);';
   if (connectFirst) {
     str += 'await miniProgram.disconnect();'
   } else {

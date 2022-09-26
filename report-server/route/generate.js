@@ -25,18 +25,7 @@ router.get('/loadCase', async (ctx, next) => {
 		}
 
 		// 去掉 test.config.json 文件
-		tasks = tasks.filter(i => !/^(test\.config)/g.test(i));
-
-		// let files = tasks.map((i) => {
-		// 	let p = path.join(recordsDir, i);
-		// 	return {
-		// 		minitestJson: require(p),
-		// 		o: i, // original name of json file
-		// 		we: i.replace('.json', ''), // filename  without '.json' extension name
-		// 		p, // absolute path of json file
-		// 		n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js' // target spec file full name
-		// 	}
-		// });
+		tasks = tasks.filter(i => !/^(test\.config)|(testResult)/g.test(i));
 
 		const thePreviewItem = tasks[0]
 		const previewTaskPath = path.join(recordsDir, thePreviewItem);
@@ -115,6 +104,16 @@ router.post('/saveSpecAndJson', async (ctx, next) => {
 	await next();
 })
 
-router.get('/load')
+router.get('/some', async (ctx, next) => {
+	ctx.body = {
+		errno: 100,
+		errMsg: '0K',
+		data: {
+			ok: 1,
+			arr: [10, 12, 14]
+		}
+	};
+	await next();
+})
 
 module.exports = router

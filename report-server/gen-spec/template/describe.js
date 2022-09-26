@@ -48,6 +48,14 @@ let fn = (renderData) => {
   str += `let page, element, expectResult, actualResult, apiResponse, textContent, elementWidth, elementHeight;
     page = await miniProgram.currentPage();`;
 
+  str += `timer = setInterval( async () => {
+        console.log(new Date().toLocaleTimeString());
+        if (!miniProgram) return 
+        page = await (miniProgram ? miniProgram.currentPage() : void 0)
+        console.log('当前页面路径：', page?.path);
+        console.log('当前元素：', await element.wxml());
+    }, 3000);`;
+
   cmds.forEach((item, index) => {
     str += `
      //【${recordAPIs.length + 1 + index}】操作：${item.command && operationType[item.command] && operationType[item.command](item)}
@@ -65,7 +73,22 @@ let fn = (renderData) => {
 
     str += `page = await miniProgram.currentPage();`;
 
-    if (['tap', 'longpress', 'touchstart', 'touchmove','touchend', 'input'].includes(item.command)) {
+
+    if (item.targetCandidates) {
+      item.targetCandidates.forEach(i => {
+        str+= `
+        // getEle by xpath
+        element = await page.xpath('${ i }')
+        `
+      })
+    } else if (item.target) {
+      str += `
+      // getEle by xpath
+      element = await page.xpath('${ item.target }');
+      `
+    }
+
+    if (['tap', 'longpress', 'touchstart', 'touchmove','touchend', 'updated'].includes(item.command)) {
       str += ` if (element) {
       // 触发 ${ item.tagName ? item.tagName + '>' + item.text + '的' + item.command : item.command } 事件
       `;
@@ -77,6 +100,11 @@ let fn = (renderData) => {
       str += `} else {
           console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
         }`
+    } else if (item.command === 'input') {
+      str += `
+      // 向表单内输入 ${item.value}
+      await element.input('${item.value}');
+      `
     } else if (item.command === 'trigger') {
       str += `
       // trigger 元素 ${item.data[0].value} 事件
@@ -209,7 +237,9 @@ let fn = (renderData) => {
       `
     }
 
-  })
+  });
+
+  str += 'clearInterval(timer);'
 
   str += `
   });});`;
