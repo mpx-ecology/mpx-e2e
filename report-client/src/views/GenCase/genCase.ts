@@ -2,26 +2,26 @@ import opType from './opType'
 
 import type { opTypes } from './opType'
 
-interface cmdItem {
-	command: opTypes,
-	tagName?: string,
-	target: string,
-	extraData: string,
-	text: string
-	// expectContent: string,
-	// expectTextLength: string,
-	// expectRegExp: string,
-	// expectApiName: string,
-	// expectRouter: string,
-	// waitTime: string,
-	// responseContentPath: string,
-	// expectElementHeight: string,
-	// expectElementWidth: string
-}
+// interface cmdItem {
+// 	command: opTypes,
+// 	tagName?: string,
+// 	target: string,
+// 	extraData: string,
+// 	text: string
+// 	// expectContent: string,
+// 	// expectTextLength: string,
+// 	// expectRegExp: string,
+// 	// expectApiName: string,
+// 	// expectRouter: string,
+// 	// waitTime: string,
+// 	// responseContentPath: string,
+// 	// expectElementHeight: string,
+// 	// expectElementWidth: string
+// }
 
 export function cmdToLabel (cmds:Record<any, any>[]) {
 	if (!cmds) return []
-	return cmds.map((i, idx) => {
+	return cmds.map((i) => {
 		const { command } = i;
 		const res = {
 			type: 'operate',

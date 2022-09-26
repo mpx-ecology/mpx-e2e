@@ -73,8 +73,8 @@ const state = computed(() => {
           }
         }
         const wrapStyle = {
-          width: `${store.systemInfo.screenWidth / 2}px`,
-          height: `${store.systemInfo.screenHeight / 2}px`
+          width: `${store.systemInfo.screenWidth! / 2}px`,
+          height: `${store.systemInfo.screenHeight! / 2}px`
         }
         mapList[img.type] = mapList[img.type] + 1
         return {

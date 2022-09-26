@@ -1,14 +1,33 @@
 <script setup lang='ts'>
+import { computed } from '@vue/reactivity';
 import { useCounterStore } from '../../../stores/counter'
 const store = useCounterStore()
+
+const showInfo = computed(() => {
+  const { 
+    brand,
+    model,
+    platform,
+    screenHeight,
+    screenWidth,
+    system } = store.systemInfo
+  return {
+    brand,
+    model,
+    platform,
+    screenHeight,
+    screenWidth,
+    system
+  }
+})
 
 </script>
 
 <template>
   <div class="info">
-    <div class="info-item" v-for="[key, value] of Object.entries(store.systemInfo)" :key="key">
-      <span class="label">{{key}}:</span>
-      <span class="message">{{value}}</span>
+    <div class="info-item" v-for="[key, value] of Object.entries(showInfo)" :key="key">
+      <span class="label">{{ key }}:</span>
+      <span class="message">{{ value }}</span>
     </div>
   </div>
 </template>

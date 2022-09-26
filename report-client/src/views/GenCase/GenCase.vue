@@ -148,7 +148,6 @@ import {cmdToLabel, getCmds, getMockedApisWithoutDuplicate} from '@/views/GenCas
 import _ from 'lodash'
 import {
   menus,
-  ACTION_SCREENSHOT_ADDED,
   ACTION_GET_DOM,
   formCfg
 } from './menu'

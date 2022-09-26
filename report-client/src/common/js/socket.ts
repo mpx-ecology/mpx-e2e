@@ -3,7 +3,7 @@ function initSocket (): void {
   ws.onopen = function () {
     console.log('客户端连接成功')
   }
-  ws.onmessage = function (e) {
+  ws.onmessage = function () {
     // console.log(JSON.parse(e.data))
   }
   ws.onclose = function () {
