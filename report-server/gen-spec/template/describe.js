@@ -48,14 +48,6 @@ let fn = (renderData) => {
   str += `let page, element, expectResult, actualResult, apiResponse, textContent, elementWidth, elementHeight;
     page = await miniProgram.currentPage();`;
 
-  str += `timer = setInterval( async () => {
-        console.log(new Date().toLocaleTimeString());
-        if (!miniProgram) return 
-        page = await (miniProgram ? miniProgram.currentPage() : void 0)
-        console.log('当前页面路径：', page?.path);
-        console.log('当前元素：', await element.wxml());
-    }, 3000);`;
-
   cmds.forEach((item, index) => {
     str += `
      //【${recordAPIs.length + 1 + index}】操作：${item.command && operationType[item.command] && operationType[item.command](item)}
@@ -238,8 +230,6 @@ let fn = (renderData) => {
     }
 
   });
-
-  str += 'clearInterval(timer);'
 
   str += `
   });});`;
