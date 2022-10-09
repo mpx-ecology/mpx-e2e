@@ -50,14 +50,15 @@ class ScreenShot {
     this.systemInfo.windowWidth = systemInfo.windowWidth
     this.systemInfo.windowHeight = systemInfo.windowHeight
   }
+  async sleep(time) {
+    return new Promise(resolve => setTimeout(resolve, time))
+  }
   async tap (params) {
     // 是否启动点击事件自动截图，默认是不开启的，开启之后所有点击事件都会自动截图
     if (this.miniProgram && this.config.tapSave) {
       await this.save(params)
-      this.timeout && clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        this.save({ type: 'timeout' })
-      }, 300)
+      await this.sleep(300)
+      await this.save({ type: 'timeout' })
     }
   }
   async save (params) {
