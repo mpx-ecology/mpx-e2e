@@ -1,4 +1,4 @@
-export interface e2eRcInterface {
+declare interface e2eRcInterface {
 	projectPath: string,
 	sequence: string[],
 	reportsDir: string,
@@ -9,6 +9,6 @@ export interface e2eRcInterface {
 }
 
 
-export interface minitestCmdInterface {
+declare interface minitestCmdInterface {
 	command: string
 }

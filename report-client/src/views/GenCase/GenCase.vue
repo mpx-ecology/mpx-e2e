@@ -20,7 +20,8 @@
         <p class="lh20 file-item"
            @click="updateCurrentJsonFileNameAndPreview(item, index)"
            :class="currentHighlightIdx === index ? 'file-item-hl' : ''"
-           v-for="(item, index) in list" :key="index">
+           v-for="(item, index) in list" 
+           :key="index">
           <el-icon class="vtln">
             <Document/>
           </el-icon>

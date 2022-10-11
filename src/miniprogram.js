@@ -18,10 +18,15 @@ module.exports = class EMiniProgram {
         let pages = await pageStack.call(options)
         pages = pages.length && pages.map((item) => new EPage(item))
         return pages
-      }
+      };
       const refactorFns = [
-        'navigateTo', 'redirectTo', 'navigateBack',
-        'reLaunch', 'switchTab', 'currentPage']
+        'navigateTo',
+        'redirectTo',
+        'navigateBack',
+        'reLaunch',
+        'switchTab',
+        'currentPage'
+      ];
       refactorFns.forEach(item => {
         const fn = miniProgram[item]
         miniProgram[item] = async (url) => {

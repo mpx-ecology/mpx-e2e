@@ -9,4 +9,5 @@ dll/
 .eslintcache
 static-dir
 report-client/
+report-server/cache/
 

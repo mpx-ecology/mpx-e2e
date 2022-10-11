@@ -16,9 +16,12 @@ let fn = ({ connectFirst, needRealMachine, jestTimeout, wsEndpoint }) => {
       });`
   }
 
-  if (needRealMachine) {
-    str += `await miniProgram.remote();`
-  }
+
+    str += `
+    if (e2eRc.needRealMachine) {
+    await miniProgram.remote();
+     }
+    `
 
   str += `},
   ${jestTimeout});`

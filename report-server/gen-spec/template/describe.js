@@ -65,7 +65,22 @@ let fn = (renderData) => {
 
     str += `page = await miniProgram.currentPage();`;
 
-    if (['tap', 'longpress', 'touchstart', 'touchmove','touchend', 'input'].includes(item.command)) {
+
+    if (item.targetCandidates) {
+      item.targetCandidates.forEach(i => {
+        str+= `
+        // getEle by xpath
+        element = await page.xpath('${ i }')
+        `
+      })
+    } else if (item.target) {
+      str += `
+      // getEle by xpath
+      element = await page.xpath('${ item.target }');
+      `
+    }
+
+    if (['tap', 'longpress', 'touchstart', 'touchmove','touchend', 'updated'].includes(item.command)) {
       str += ` if (element) {
       // 触发 ${ item.tagName ? item.tagName + '>' + item.text + '的' + item.command : item.command } 事件
       `;
@@ -77,6 +92,11 @@ let fn = (renderData) => {
       str += `} else {
           console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
         }`
+    } else if (item.command === 'input') {
+      str += `
+      // 向表单内输入 ${item.value}
+      await element.input('${item.value}');
+      `
     } else if (item.command === 'trigger') {
       str += `
       // trigger 元素 ${item.data[0].value} 事件
@@ -209,7 +229,7 @@ let fn = (renderData) => {
       `
     }
 
-  })
+  });
 
   str += `
   });});`;
