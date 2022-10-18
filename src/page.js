@@ -58,15 +58,18 @@ module.exports = class EPage {
       if (element) {
         const oldTap = element.dispatchEvent
         element.dispatchEvent = async function (...args) {
-          let offset = { width: 0, height: 0 }
-          let size = { left: 0, top: 0 }
-          try {
-            offset = await element.offset()
-            size = await element.size()
-          } catch (error) {
-            // e
+          let fristArgs = args[0]
+          if (fristArgs && fristArgs.eventName === 'tap') {
+            let offset = { width: 0, height: 0 }
+            let size = { left: 0, top: 0 }
+            try {
+              offset = await element.offset()
+              size = await element.size()
+            } catch (error) {
+              // e
+            }
+            await screenshotJS.tap({ offset, size, type: 'tap', event: args[0] })
           }
-          await screenshotJS.tap({ offset, size, type: 'tap', event: args[0] })
           const res = await oldTap.call(this, ...args)
           return res
         }
