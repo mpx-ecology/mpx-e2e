@@ -12,6 +12,10 @@
     xfetch: mpx.xfetch
   })
 ```
+## 发布
+> 执行 npm run release
+执行命令之前，请确保 report-client 已经 build，并且产出已经在 report-server 目录下。
+由于 report-client 初始化比较耗时，发布过程中提供跳过选项，请自行判断是否需要 npm i
 
 ## API
 
