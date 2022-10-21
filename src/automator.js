@@ -1,6 +1,5 @@
 const automator = require('miniprogram-automator');
 const MiniProgram = require('./miniprogram');
-const E2eMock = require('./e2e-mock/mock');
 const screenshotJS = require('./screenshot')
 
 module.exports = class Automator {
@@ -20,6 +19,7 @@ module.exports = class Automator {
   }
   initMock(mockCfg) {
     if (mockCfg) {
+      const E2eMock = require('./e2e-mock/mock');
       this.mockCfg = mockCfg
       this.mockHelper = new E2eMock(mockCfg)
     }
