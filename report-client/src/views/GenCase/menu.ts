@@ -16,7 +16,7 @@ export const menus = [
 		action: ACTION_ELEMENT_OPERATION
 	},
 	{
-		title: '支持 WaitFor',
+		title: '新增 WaitFor',
 		action: ACTION_WAIT_FOR
 	},
 	{

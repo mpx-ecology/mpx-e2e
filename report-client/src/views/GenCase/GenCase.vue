@@ -20,7 +20,7 @@
         <p class="lh20 file-item"
            @click="updateCurrentJsonFileNameAndPreview(item, index)"
            :class="currentHighlightIdx === index ? 'file-item-hl' : ''"
-           v-for="(item, index) in list" 
+           v-for="(item, index) in list"
            :key="index">
           <el-icon class="vtln">
             <Document/>
@@ -99,7 +99,7 @@
       </div>
     </el-col>
   </el-row>
-  <el-dialog v-model="dialogFlag" :title="currentMenu.title + currentMenu.action">
+  <el-dialog v-model="dialogFlag" :title="currentMenu.title">
     <el-form :model="e2eExtendsForm[currentMenu.action]">
       <div>
         <el-form-item v-if="e2eExtendsForm[currentMenu.action].selectOptions"
