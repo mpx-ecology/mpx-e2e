@@ -25,7 +25,7 @@
           <el-icon class="vtln">
             <Document/>
           </el-icon>
-          <span class="mgnl10">{{ item }}</span>
+          <span class="mgnl10" :title="item">{{ item }}</span>
         </p>
       </div>
     </el-col>
@@ -457,6 +457,9 @@ onUnmounted(() => editor.dispose());
 
 .mgnl10 {
   margin-left: 5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .file-item {

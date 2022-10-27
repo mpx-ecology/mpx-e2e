@@ -35,7 +35,7 @@ class E2eServer {
 
     const app = new Koa();
     app.use(bodyParser({
-      jsonLimit: '5mb'
+      jsonLimit: '15mb'
     }));
     // eslint-disable-next-line no-undef
     app.use(koaStatic(path.resolve(__dirname, './public')));

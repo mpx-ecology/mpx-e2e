@@ -57,9 +57,10 @@ module.exports = class EPage {
       const element = await newXpath.call(this, ...args)
       if (element) {
         const oldTap = element.dispatchEvent
-        element.dispatchEvent = async function (...args) {
-          let fristArgs = args[0]
-          if (fristArgs && fristArgs.eventName === 'tap') {
+        element.dispatchEvent = async function (...params) {
+          const fristArgs = params[0] || {}
+          const eventName = ['tap', 'input'].includes(fristArgs.eventName)
+          if (eventName && args[0] !== element.cacheXpath) {
             let offset = { width: 0, height: 0 }
             let size = { left: 0, top: 0 }
             try {
@@ -68,9 +69,10 @@ module.exports = class EPage {
             } catch (error) {
               // e
             }
-            await screenshotJS.tap({ offset, size, type: 'tap', event: args[0] })
+            await screenshotJS.tap({ offset, size, type: 'tap', event: fristArgs })
           }
-          const res = await oldTap.call(this, ...args)
+          element.cacheXpath = args[0]
+          const res = await oldTap.call(this, ...params)
           return res
         }
       }
