@@ -260,7 +260,7 @@ module.exports = class EMiniProgram {
 
       // console.log(`mockInterceptor ====>>>>>`, responseInterceptors);
       let functionStr = `const { xfetch, mixin } = getApp().getMpx() || getApp()
-      
+        wx.__mpx_e2e__ = true
         // const proxyCfg = getApp().setProxy;
         function abilityCheck() {
           return typeof mixin === 'function' && xfetch
