@@ -70,8 +70,8 @@ module.exports = class EPage {
               // e
             }
             await screenshotJS.tap({ offset, size, type: 'tap', event: fristArgs })
+            element.cacheXpath = args[0]
           }
-          element.cacheXpath = args[0]
           const res = await oldTap.call(this, ...params)
           return res
         }
