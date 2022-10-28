@@ -1,6 +1,6 @@
 {
   "name": "@mpxjs/e2e",
-  "version": "0.0.12-69",
+  "version": "0.0.12-70",
   "description": "",
   "main": "src/index.js",
   "types": "src/index.ts",
