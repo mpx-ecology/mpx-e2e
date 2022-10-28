@@ -4,6 +4,8 @@ import { useCounterStore } from '../../stores/counter'
 
 import type { ErrorItem } from "src/common/js/apiTypes";
 
+import { ElEmpty } from 'element-plus'
+
 import ErrorTable from './components/ErrorTable.vue';
 import InfoCard from './components/InfoCard.vue'
 
@@ -32,7 +34,10 @@ const tableData = computed(() => {
 
 <template>
   <InfoCard />
-  <template v-for="(item, index) in tableData" :key="index">
-    <ErrorTable :list="item.lists" :file="item.file" />
+  <template v-if="tableData.length">
+    <template v-for="(item, idx) in tableData" :key="idx">
+      <ErrorTable :list="item.lists" :file="item.file" />
+    </template>
   </template>
+  <el-empty v-else description="No Error" />
 </template>
