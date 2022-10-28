@@ -93,9 +93,10 @@ let fn = (renderData) => {
           console.error('element cannot get by ${ item.target || item.clazz || item.compName  || item.selector }')
         }`
     } else if (item.command === 'input') {
+      const currentValue = JSON.stringify(item.value);
       str += `
       // 向表单内输入 ${item.value}
-      await element.input('${item.value}');
+      await element.input(${currentValue});
       `
     } else if (item.command === 'trigger') {
       str += `
