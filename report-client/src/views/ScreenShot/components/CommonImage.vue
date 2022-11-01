@@ -30,7 +30,7 @@ const devPath = isDEV ? 'http://localhost:8886' : location.origin
 
 const checkList = ref(['timeout', 'tap', 'user', 'route', 'request'])
 
-const color = ref('#409EFF')
+const color = ref('#77CD9E')
 
 const state = computed(() => {
   const result: ImgList = []
@@ -149,7 +149,7 @@ const isEmpty = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .scrollbar-flex-content {
   display: flex;
 }
@@ -220,7 +220,26 @@ const isEmpty = computed(() => {
   margin: 0 12px;
 }
 
-.checkbox:deep(.el-checkbox__label){
+:deep(.el-checkbox__label){
   font-size: 16px;
+}
+
+:deep(.el-checkbox__input.is-checked){
+  color: #77CD9E;
+  .el-checkbox__inner{
+    background-color: #77CD9E;
+    border-color: #77CD9E;
+  }
+  &+.el-checkbox__label {
+    color: #77CD9E;
+  }
+}
+:deep(.el-checkbox__input) {
+  .el-checkbox__inner:hover{
+      border-color: #77CD9E;
+  }
+  .el-checkbox__label:hover{
+    color: #77CD9E;
+  }
 }
 </style>

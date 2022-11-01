@@ -1,17 +1,31 @@
 <template>
-  <el-row :gutter="20" v-loading="loadingFlag">
-    <!-- 1.JSON导入 -->
-    <el-col :span="3">
+  <el-row :gutter="10" v-loading="loadingFlag">
+    <!-- 1.1 JSON导入 展开态-->
+    <el-col :span="colOneSpan" v-if="drawerIsOpen">
       <div>
         <el-tooltip class="box-item" effect="dark" content="将IDE录制回放的json进行导入, 例 minitest-1.json"
           placement="right-start">
-          <el-button type="success" class="mpx-btn" @click="loadMinitest">
+          <el-button type="primary" @click="loadMinitest">
             JSON 导入
             <el-icon>
               <QuestionFilled />
             </el-icon>
           </el-button>
         </el-tooltip>
+        <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
+          placement="right-start">
+          <el-button type="success" @click="saveSpec">
+            保存
+            <el-icon>
+              <QuestionFilled />
+            </el-icon>
+          </el-button>
+        </el-tooltip>
+        <el-button @click="openOrClose">
+          <el-icon>
+            <ArrowLeft />
+          </el-icon>
+        </el-button>
       </div>
       <!-- JSON文件列表 -->
       <div class="mgnt20">
@@ -24,6 +38,26 @@
         </p>
       </div>
     </el-col>
+    <!-- 1.2 JSON导入 收起态-->
+    <el-col :span="colOneSpan" v-else>
+      <div class="arrow-btn-area">
+        <el-button style="width:50%;margin-right: 6px;" @click="openOrClose">
+          <el-icon>
+            <ArrowRight />
+          </el-icon>
+        </el-button>
+      </div>
+      <!-- JSON文件列表 -->
+      <div class="mgnt20">
+        <p class="lh20 file-item" @click="updateCurrentJsonFileNameAndPreview(item, index)"
+          :class="currentHighlightIdx === index ? 'file-item-hl' : ''" v-for="(item, index) in list" :key="index"
+          style="text-align: center;padding-left: 0;">
+          <el-icon class="vtln">
+            <Document />
+          </el-icon>
+        </p>
+      </div>
+    </el-col>
     <!-- 2.操作项列表 -->
     <el-col :span="8">
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
@@ -31,8 +65,7 @@
         <div v-for="(item, index) in cmdToLabels" :key="index" class="card-cnt">
           <div class="card-cnt-left">
             <div class="card-cnt-menu">
-
-              <el-dropdown @command="handleMenuCommand">
+              <el-dropdown @command="handleMenuCommand" placement="bottom-start">
                 <el-button class="bg-mg">
                   <el-icon>
                     <CirclePlus />
@@ -46,7 +79,6 @@
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
-
               【{{ index + 1 }}】
             </div>
             <div class="card-cnt-info" @click="goEditorLine(index + 1)">
@@ -74,10 +106,10 @@
       </div>
     </el-col>
     <!-- 3.Monaco编辑器 -->
-    <el-col :span="13">
+    <el-col :span="colThreeSpan">
       <!--      <h3 class="txt-center">{{currentSpecFileName}}</h3>-->
       <div id="container" class="code-limit"></div>
-      <div class="save-btn-wrapper">
+      <!-- <div class="save-btn-wrapper">
         <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
           placement="right-start">
           <el-button type="success" class="bg-mg" @click="saveSpec">
@@ -87,7 +119,7 @@
             </el-icon>
           </el-button>
         </el-tooltip>
-      </div>
+      </div> -->
     </el-col>
   </el-row>
 
@@ -320,6 +352,15 @@ const dialogCBUpdate = async () => {
   updateLoading(false)
 }
 
+let drawerIsOpen = ref(true)
+const colOneSpan = computed(() => drawerIsOpen.value ? 3 : 1)
+const colThreeSpan = computed(() => drawerIsOpen.value ? 13 : 15)
+
+const openOrClose = () => {
+  drawerIsOpen.value = !drawerIsOpen.value
+  console.log(233)
+}
+
 
 if (import.meta.env.DEV) {
   onBeforeMount(getAndPreview);
@@ -350,7 +391,15 @@ onUnmounted(() => editor.dispose());
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+button {
+  padding: 5px;
+}
+
+.arrow-btn-area {
+  text-align: center;
+}
+
 .normal-btn:hover {
   color: #77CD9E !important;
 }
@@ -392,22 +441,24 @@ onUnmounted(() => editor.dispose());
 }
 
 .file-item {
-  /*padding-left: 20px;*/
   cursor: pointer;
   height: 35px;
   line-height: 35px;
-  text-align: center;
   color: rgb(96, 98, 102);
   font-weight: 500;
+  margin: 2px 6px 2px 0;
+  padding-left: 10px;
+  border-radius: 4px;
 }
 
 .file-item-hl,
 .file-item:hover {
   background: #77CD9E;
+  color: #fff;
 }
 
 .code-limit {
-  height: 790px;
+  height: 800px;
   overflow: scroll;
 }
 
@@ -422,7 +473,7 @@ onUnmounted(() => editor.dispose());
   box-sizing: border-box;
   border: 1px solid #999999;
   height: 50px;
-  margin-top: 5px;
+  margin-bottom: 5px;
   border-radius: 4px;
   padding: 5px;
   display: flex;
@@ -455,7 +506,7 @@ onUnmounted(() => editor.dispose());
 }
 
 .cnt-info-normal {
-  max-width: 21vw;
+  max-width: 26vw;
 }
 
 .cnt-info-normal-line {
