@@ -6,7 +6,7 @@ export const config = [
     path: '/home',
     name: 'home',
     component: HomeView,
-    title: '报告'
+    title: '概览'
   },
   {
     path: '/screenShot',
