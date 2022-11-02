@@ -12,20 +12,22 @@
             </el-icon>
           </el-button>
         </el-tooltip>
-        <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
-          placement="right-start">
-          <el-button type="success" @click="saveSpec">
-            保存
+        <template v-if="currentSpecFileName">
+          <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
+            placement="right-start">
+            <el-button type="success" @click="saveSpec">
+              保存
+              <el-icon>
+                <QuestionFilled />
+              </el-icon>
+            </el-button>
+          </el-tooltip>
+          <el-button @click="openOrClose">
             <el-icon>
-              <QuestionFilled />
+              <ArrowLeft />
             </el-icon>
           </el-button>
-        </el-tooltip>
-        <el-button @click="openOrClose">
-          <el-icon>
-            <ArrowLeft />
-          </el-icon>
-        </el-button>
+        </template>
       </div>
       <!-- JSON文件列表 -->
       <div class="mgnt20">
