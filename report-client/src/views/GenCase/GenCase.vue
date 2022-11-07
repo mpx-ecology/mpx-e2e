@@ -2,10 +2,10 @@
   <el-row :gutter="10" v-loading="loadingFlag">
     <!-- 1.1 JSON导入 展开态-->
     <el-col :span="colOneSpan" v-if="drawerIsOpen">
-      <div>
+      <div class="button-area">
         <el-tooltip class="box-item" effect="dark" content="将IDE录制回放的json进行导入, 例 minitest-1.json"
           placement="right-start">
-          <el-button type="primary" @click="loadMinitest">
+          <el-button class="import-btn" type="primary" @click="loadMinitest">
             JSON 导入
             <el-icon>
               <QuestionFilled />
@@ -15,14 +15,14 @@
         <template v-if="currentSpecFileName">
           <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
             placement="right-start">
-            <el-button type="success" @click="saveSpec">
+            <el-button class="save-btn" type="success" @click="saveSpec">
               保存
               <el-icon>
                 <QuestionFilled />
               </el-icon>
             </el-button>
           </el-tooltip>
-          <el-button @click="openOrClose">
+          <el-button class="arrow-btn" @click="openOrClose">
             <el-icon>
               <ArrowLeft />
             </el-icon>
@@ -31,7 +31,7 @@
       </div>
       <!-- JSON文件列表 -->
       <div class="mgnt20">
-        <p class="lh20 file-item" @click="updateCurrentJsonFileNameAndPreview(item, index)"
+        <p class="lh20 file-item ellipsis" @click="updateCurrentJsonFileNameAndPreview(item, index)"
           :class="currentHighlightIdx === index ? 'file-item-hl' : ''" v-for="(item, index) in list" :key="index">
           <el-icon class="vtln">
             <Document />
@@ -60,9 +60,10 @@
         </p>
       </div>
     </el-col>
+
     <!-- 2.操作项列表 -->
     <el-col :span="8">
-      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
+      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" image-size="250"></el-empty>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels" :key="index" class="card-cnt">
           <div class="card-cnt-left">
@@ -107,21 +108,11 @@
         </div>
       </div>
     </el-col>
+
     <!-- 3.Monaco编辑器 -->
     <el-col :span="colThreeSpan">
       <!--      <h3 class="txt-center">{{currentSpecFileName}}</h3>-->
       <div id="container" class="code-limit"></div>
-      <!-- <div class="save-btn-wrapper">
-        <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
-          placement="right-start">
-          <el-button type="success" class="bg-mg" @click="saveSpec">
-            保存
-            <el-icon>
-              <QuestionFilled />
-            </el-icon>
-          </el-button>
-        </el-tooltip>
-      </div> -->
     </el-col>
   </el-row>
 
@@ -303,7 +294,6 @@ const saveSpec = async () => {
     specFileName: currentSpecFileName.value
   })
   if (res?.errno === 0) {
-    updateLoading(false)
     ElMessage({
       message: currentSpecFileName.value + '保存成功',
       type: 'success',
@@ -311,6 +301,7 @@ const saveSpec = async () => {
   } else {
     ElMessage.error(currentSpecFileName.value + '保存失败！' + res.errmsg)
   }
+  updateLoading(false)
 }
 
 const editItem = (item: TYPE_SEMANTIC_ITEM) => {
@@ -398,12 +389,17 @@ button {
   padding: 5px;
 }
 
-.arrow-btn-area {
-  text-align: center;
+.button-area {
+  display: flex;
+
+  .import-btn,
+  .save-btn {
+    flex: none;
+  }
 }
 
-.normal-btn:hover {
-  color: #77CD9E !important;
+.arrow-btn-area {
+  text-align: center;
 }
 
 .bg-mg {
@@ -421,14 +417,6 @@ button {
   line-height: 20px;
   vertical-align: middle;
   font-size: 14px;
-}
-
-.mpx-btn {
-  background: #77CD9E;
-}
-
-.txt-center {
-  text-align: center;
 }
 
 .vtln {
@@ -462,13 +450,6 @@ button {
 .code-limit {
   height: 800px;
   overflow: scroll;
-}
-
-.save-btn-wrapper {
-  margin-top: 10px;
-  height: 40px;
-  display: flex;
-  box-sizing: border-box;
 }
 
 .card-cnt {
@@ -517,6 +498,12 @@ button {
 
 .cnt-info-normal-line p {
   margin-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
