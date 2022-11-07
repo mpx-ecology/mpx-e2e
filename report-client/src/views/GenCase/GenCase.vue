@@ -63,7 +63,7 @@
 
     <!-- 2.操作项列表 -->
     <el-col :span="8">
-      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" image-size="250"></el-empty>
+      <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" :image-size="250"></el-empty>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels" :key="index" class="card-cnt">
           <div class="card-cnt-left">
