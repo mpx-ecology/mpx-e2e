@@ -1,30 +1,30 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '@/views/HomeView/HomeView.vue'
+import GenCaseView from '@/views/GenCase/GenCase.vue'
 
 export const config = [
   {
+    path: '/gencase',
+    name: 'gencase',
+    component: GenCaseView,
+    title: '用例管理'
+  },
+  {
     path: '/home',
     name: 'home',
-    component: HomeView,
-    title: '概览'
+    component: () => import('../views/HomeView/HomeView.vue'),
+    title: '测试报告'
   },
   {
     path: '/screenShot',
     name: 'screenShot',
     component: () => import('../views/ScreenShot/ScreenShot.vue'),
-    title: '截图'
-  },
-  {
-    path: '/gencase',
-    name: 'gencase',
-    component: () => import('../views/GenCase/GenCase.vue'),
-    title: '工作台'
+    title: '页面快照'
   },
   {
     path: '/JSError',
     name: 'JSError',
     component: () => import('../views/JSError/JSError.vue'),
-    title: 'JS报错'
+    title: '错误日志'
   }
 ]
 const router = createRouter({

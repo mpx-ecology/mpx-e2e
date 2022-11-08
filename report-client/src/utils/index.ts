@@ -37,3 +37,7 @@ export function timestampToTime(timestamp:number) {
   return Y + M + D + h + m + s;
 }
 
+
+export const clearData = (target: any, keys:any[], init:any):void => {
+  keys.forEach(i => (target[i] = init))
+}

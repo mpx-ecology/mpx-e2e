@@ -2,8 +2,8 @@ const prettier = require('prettier');
 const fsOrigin = require('fs');
 const path = require('path');
 const tpl = require('./template');
-const fs = fsOrigin.promises;
-const fsExtra = require('fs-extra');
+// const fs = fsOrigin.promises;
+// const fsExtra = require('fs-extra');
 const opType = require('../const/op-type');
 /**
  *
@@ -12,11 +12,49 @@ const opType = require('../const/op-type');
  * @param write <boolean> should write file or not
  * @returns {Promise<*[]>}
  */
-let i = 0;
 
-function getMockRules (minitestJson) {
+function getMockRules (minitestJson, excludeRules) {
   if (!minitestJson || !Array.isArray(minitestJson.commands)) throw new TypeError('json.commands must be an Array');
-  return minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
+  let cc = 0;
+  let rcc = 0
+
+  let rules;
+  if (excludeRules) {
+    rules = []
+    let { type, apiName, fieldName, fieldNewValue } = excludeRules
+    // for loop other than forEach causing length is mutable!!!!
+    // DO NOT cache commands.length
+    for (let i = 0; i < minitestJson.commands.length; i++) {
+      let c = minitestJson.commands[i];
+      let r = c.rule;
+      if (c.command !== 'mock' || !Array.isArray(r?.filterList)) continue;
+      cc++;
+      switch (type) {
+        case 'rmApiRes':
+          let aimed = r.filterList.some(itm => new RegExp(apiName, 'img').test(itm.propRegString))
+          aimed ? ++rcc && minitestJson.commands.splice(i, 1) && i-- : rules.push(r)
+          break;
+        case 'replaceApiFields':
+          if (r.filterList.some(itm => new RegExp(apiName, 'img').test(itm.propRegString))) {
+            const reg = new RegExp(`"(${fieldName})":(?:"([^"]+)"|([^,]+))`, 'img');
+            if (r.returnConfig.manual.succ) {
+              r.returnConfig.manual.succ.resStr = r.returnConfig.manual.succ.resStr.replace(reg, (w, $1, $2, $3) => $2
+                ? `"${$1}":"${fieldNewValue}"`
+                : $3
+                  ? `"${$1}":${fieldNewValue}`
+                  : w
+              );
+            }
+          }
+          rules.push(r)
+          break
+      }
+    }
+    console.log(`mock 总数：${cc}, 删除总数 ${rcc}，剩余总数 ${rules.length}`);
+  } else {
+    rules = minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
+  }
+  return rules;
 }
 
 function getCmds (minitestJson, excludeRules = []) {
@@ -109,13 +147,14 @@ async function genSpecString (minitestJson, renderCfg) {
     connectFirst,
     descName, // spec.js
     itName,
+    updateMock,
     e2ercjestTimeout = 30000000
   } = renderCfg;
 
   // 去重获知被 MOCK 的 api 名称及出现顺序
   let recordAPIs = getMockedApisWithoutDuplicate(minitestJson);
 
-  let mockRules = getMockRules(minitestJson);
+  let mockRules = getMockRules(minitestJson, updateMock);
 
   let cmds = getCmds(minitestJson);
 
@@ -154,49 +193,17 @@ async function genSpecString (minitestJson, renderCfg) {
   }
 }
 
-async function generateSpec ({ file, e2erc }) {
-  // const {
-  //   recordsDir,
-  //   testSuitsDir,
-  //   jsonCaseCpDir,
-  //   file
-  // } = e2erc;
-
-  // if (!testSuitsDir) throw new Error('.e2erc.js.testSuitsDir which means spec file directory is not defined! please configure it !');
-
-  // let files = tasks.map((i) => {
-  //   return {
-  //     o: i, // original name of json file
-  //     we: i.replace('.json', ''), // filename  without '.json' extension name
-  //     p: path.join(recordsDir, i), // absolute path of json file
-  //     n: path.resolve(process.cwd(), `${testSuitsDir}`, i.replace(/\.json/, '')) + '.spec.js' // target spec file full name
-  //   }
-  // });
-  //
+async function generateSpec ({ file, e2erc, updateMock }) {
   // 结果集
   let result = {};
-  //
-  // if (!files.length) throw new Error(recordsDir + '目录下没有找到 json 文件！请前往模拟器录制 case： 工具 -> 自动化测试 -> 录制');
-  // for (let f of files) {
-  //   result[f.o] = {};
-  //   // 文件冲突检查 & 复制文件
-  //   // 复制 minitest/*.json 到 e2erc.jsonCaseCpDir
-  //   if (jsonCaseCpDir && write) await fsExtra.copy(f.p, `${jsonCaseCpDir}/${f.o}`);
-  //
-  //   let minitestJson = require(f.p);
-  //
-  //
-  // }
 
   let res = await genSpecString(file.minitestJson, {
     descName: file.we,
     itName: file.we,
+    updateMock,
     ...e2erc,
   })
 
-  // if (write) {
-  //   await fs.writeFile(f.n, res.renderStr);
-  // }
   let renderStr = res.renderStr;
   result.spec = renderStr;
   result.lineNums = calcLineNums(renderStr);

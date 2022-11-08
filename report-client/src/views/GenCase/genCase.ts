@@ -33,7 +33,6 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 			text: i.text,
 			byPlatform: i.byPlatform
 		}
-		console.log(command);
 		const fun= opType[command as opTypes];
 		res.label = fun(i as any);
 		return res

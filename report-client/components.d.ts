@@ -8,6 +8,12 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     DetailModal: typeof import('./src/components/DetailModal.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElForm: typeof import('element-plus/es')['ElForm']
+    ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElInput: typeof import('element-plus/es')['ElInput']
+    ElOption: typeof import('element-plus/es')['ElOption']
+    ElSelect: typeof import('element-plus/es')['ElSelect']
     MenuList: typeof import('./src/components/MenuList.vue')['default']
     MpxEditor: typeof import('./src/components/Mpx-Editor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

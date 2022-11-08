@@ -9,10 +9,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@types/axios": "^0.14.0",
     "ansi-to-html": "^0.7.2",
     "axios": "^0.27.2",
+    "copy-to-clipboard": "^3.3.2",
     "echarts": "^5.3.3",
     "element-plus": "^2.2.4",
     "escape-html": "^1.0.3",

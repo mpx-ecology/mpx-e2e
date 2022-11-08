@@ -63,6 +63,30 @@
     <!-- 2.操作项列表 -->
     <el-col :span="8">
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧"></el-empty>
+      <el-row v-if="list.length > 0" class="mb-4 pding-btm-10">
+        <el-tooltip class="box-item"
+                    effect="dark"
+                    content="操作录制 Mock 数据"
+                    placement="right-start">
+          <el-button
+              type
+              size="large"
+              :icon="Edit"
+              @click="openToolsDlg('mock')"
+              round>MOCK</el-button>
+        </el-tooltip>
+        <el-tooltip class="box-item"
+                    effect="dark"
+                    content="向 beforeAll/afterAll 插入代码"
+                    placement="right-start">
+          <el-button
+              type
+              size="large"
+              @click="openToolsDlg('code')"
+              :icon="Plus"
+              round>Code</el-button>
+        </el-tooltip>
+      </el-row>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels" :key="index" class="card-cnt">
           <div class="card-cnt-left">
@@ -109,24 +133,21 @@
     </el-col>
     <!-- 3.Monaco编辑器 -->
     <el-col :span="colThreeSpan">
-      <!--      <h3 class="txt-center">{{currentSpecFileName}}</h3>-->
       <div id="container" class="code-limit"></div>
-      <!-- <div class="save-btn-wrapper">
-        <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
-          placement="right-start">
-          <el-button type="success" class="bg-mg" @click="saveSpec">
-            保存
-            <el-icon>
-              <QuestionFilled />
-            </el-icon>
-          </el-button>
-        </el-tooltip>
-      </div> -->
     </el-col>
   </el-row>
 
-  <operation-dialog v-model="dialogFlag" :currentMenu="currentMenu" :e2eExtendsForm="e2eExtendsForm"
-    :isCreate="isCreate" @addToCmds="addToCmdsCB" :dialogFlag="dialogFlag" @delFromCmds="delFromCmdsCB" />
+  <operation-dialog v-model="dialogFlag"
+                    :currentMenu="currentMenu"
+                    :e2eExtendsForm="e2eExtendsForm"
+                    :isCreate="isCreate"
+                    @addToCmds="addToCmdsCB"
+                    :dialogFlag="dialogFlag"
+                    @delFromCmds="delFromCmdsCB" />
+  <toolsDlg ref="toolsDlgRef"
+            @bubbleFormData="receiveToolsDlgData"
+  />
+
 </template>
 
 <script setup lang="ts">
@@ -153,6 +174,9 @@ import {
   ElMessage
 } from 'element-plus';
 
+import { Edit, Plus } from '@element-plus/icons-vue'
+import copy from 'copy-to-clipboard'
+
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -162,6 +186,7 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 // 组件
 import operationDialog from './operationDialog.vue';
+import toolsDlg from './toolsDlg.vue';
 
 import type {
   LOAD_CASE_RESPONSE,
@@ -169,7 +194,7 @@ import type {
   TYPE_ORIGIN_JSON,
   TYPE_SEMANTIC_ITEM,
   TYPE_MENU
-} from '../../types/genCaseType'
+} from '@/types/genCaseType'
 
 let editor: monaco.editor.IStandaloneCodeEditor;
 self.MonacoEnvironment = {
@@ -191,6 +216,7 @@ self.MonacoEnvironment = {
 }
 
 let currentHighlightIdx = ref<number>(0)
+const toolsDlgRef = ref<InstanceType<typeof toolsDlg> | null>(null)
 const code = ref<string>('')
 const list = ref<string[]>([])
 const loadingFlag = ref<boolean>(false)
@@ -304,10 +330,14 @@ const saveSpec = async () => {
   })
   if (res?.errno === 0) {
     updateLoading(false)
+    let cpTxt = /^[^.]+/g.exec(currentSpecFileName.value)
+    if (cpTxt && cpTxt[0]) copy(cpTxt[0])
+
     ElMessage({
-      message: currentSpecFileName.value + '保存成功',
-      type: 'success',
+      message: currentSpecFileName.value + '保存完成，文件名已写入剪贴板',
+      type: 'success'
     })
+
   } else {
     ElMessage.error(currentSpecFileName.value + '保存失败！' + res.errmsg)
   }
@@ -320,8 +350,8 @@ const editItem = (item: TYPE_SEMANTIC_ITEM) => {
   currentEditIndex = cmdIndex
   let cmdItem = originJsonData.commands[cmdIndex]
   let { action, data, menuIdx } = cmdItem
-  console.log(item);
-  console.log(cmdItem);
+  // console.log(item);
+  // console.log(cmdItem);
   // 更新弹窗内容
   Object.assign(currentMenu, {
     cmdIndex,
@@ -347,12 +377,25 @@ const delFromCmdsCB = async () => {
   originJsonData.commands.splice(currentEditIndex, 1)
   dialogCBUpdate()
 }
-const dialogCBUpdate = async () => {
+const dialogCBUpdate = async (extraData = {}) => {
   updateLoading()
-  const res = await previewAfterExtended({ jsonName: currentJsonFileName.value, originJsonData })
+  const res = await previewAfterExtended({ jsonName: currentJsonFileName.value, originJsonData, ...extraData })
   updateCurrentPreview(res as LOAD_CASE_RESPONSE, 0)
   updateLoading(false)
 }
+
+const receiveToolsDlgData = async (data:any) => {
+  let { mockOpType, apiName, fieldName, fieldNewValue, positionType, codeStr } = data.data
+  switch (data.type) {
+    case 'mock':
+      dialogCBUpdate({ updateMock: { type: mockOpType, apiName, fieldName, fieldNewValue } })
+      break
+    case 'code':
+      break
+  }
+}
+
+const openToolsDlg = (type: string) => toolsDlgRef.value.showToolsDlg(type);
 
 let drawerIsOpen = ref(true)
 const colOneSpan = computed(() => drawerIsOpen.value ? 3 : 1)
@@ -362,7 +405,6 @@ const openOrClose = () => {
   drawerIsOpen.value = !drawerIsOpen.value
   console.log(233)
 }
-
 
 if (import.meta.env.DEV) {
   onBeforeMount(getAndPreview);
@@ -385,7 +427,7 @@ onMounted(() => {
     fontSize: 16, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
     overviewRulerBorder: false, // 不要滚动条的边框
-    foldingMaximumRegions: 100000,
+    foldingMaximumRegions: 200000,
   })
 });
 
@@ -394,6 +436,9 @@ onUnmounted(() => editor.dispose());
 </script>
 
 <style scoped lang="scss">
+.pding-btm-10 {
+  padding-bottom: 10px;
+}
 button {
   padding: 5px;
 }
