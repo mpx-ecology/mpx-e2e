@@ -334,4 +334,11 @@ module.exports = class EMiniProgram {
       await this.miniProgram.evaluate(new Function(functionStr))
       log(chalk.blue.bold('初始化结束'))
     }
+    sleep (time) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, time)
+      })
+    }
 }
