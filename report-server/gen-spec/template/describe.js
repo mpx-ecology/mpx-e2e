@@ -4,7 +4,7 @@ let afterAll = require('./afterAll');
 const operationType = require('../../const/op-type');
 
 let fn = (renderData) => {
-  let { itName, descName, recordAPIs, cmds, defaultWaitFor, previewMode } = renderData;
+  let { itName, descName, recordAPIs, cmds, defaultWaitFor, previewMode, insertCode } = renderData;
   let str = `describe('${ descName }', () => {
   function getValueByPath (object, prop) {
     prop = prop || '';
@@ -41,6 +41,8 @@ let fn = (renderData) => {
       //【${index + 1}】mock 微信原生 API：${api}
       const ${ruleKey} = ${ previewMode ? '[`...mockDataIgnoredInPreviewMode...`]' : JSON.stringify(renderData[ruleKey]) };`
       str += `await miniProgram.mockWxMethod('${api}', mockFunc, '${api}', ${ruleKey});`
+
+      str += insertCode?.type === 'afterMockWxMethod' ? `${insertCode.codeStr}` : ''
     })
   }
 

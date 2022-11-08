@@ -64,15 +64,16 @@ router.get('/loadCase', async (ctx, next) => {
 router.post('/editAndPreviewCase', async (ctx, next) => {
 	let e2erc = getE2erc();
 	// 不传递 tasks 默认
-	const { originJsonData: minitestJson, jsonName, updateMock } = ctx.request.body;
+	const { originJsonData: minitestJson, jsonName, updateMock, insertCode } = ctx.request.body;
 	const file = genFileMeta(e2erc, jsonName, minitestJson);
-	let result = await generateSpec({ e2erc, file, updateMock });
+	let result = await generateSpec({ e2erc, file, updateMock, insertCode });
 	ctx.body = {
 		errno: 0,
 		errmsg: 'ok',
 		e2erc,
 		preview:result.spec,
 		lineNums: result.lineNums,
+		extraOpsResult: result.extraOpsResult,
 		minitestJson
 	}
 	await next()

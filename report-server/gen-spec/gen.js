@@ -15,10 +15,13 @@ const opType = require('../const/op-type');
 
 function getMockRules (minitestJson, excludeRules) {
   if (!minitestJson || !Array.isArray(minitestJson.commands)) throw new TypeError('json.commands must be an Array');
-  let cc = 0;
-  let rcc = 0
+  let totalMockCount = 0;
+  let removedTotalMockCount = 0;
+  let replacedApis = 0;
+  let replacedFields = 0;
 
   let rules;
+  let extraOpsResult;
   if (excludeRules) {
     rules = []
     let { type, apiName, fieldName, fieldNewValue } = excludeRules
@@ -28,33 +31,44 @@ function getMockRules (minitestJson, excludeRules) {
       let c = minitestJson.commands[i];
       let r = c.rule;
       if (c.command !== 'mock' || !Array.isArray(r?.filterList)) continue;
-      cc++;
+      totalMockCount++;
       switch (type) {
         case 'rmApiRes':
           let aimed = r.filterList.some(itm => new RegExp(apiName, 'img').test(itm.propRegString))
-          aimed ? ++rcc && minitestJson.commands.splice(i, 1) && i-- : rules.push(r)
+          aimed ? ++removedTotalMockCount && minitestJson.commands.splice(i, 1) && i-- : rules.push(r)
           break;
         case 'replaceApiFields':
           if (r.filterList.some(itm => new RegExp(apiName, 'img').test(itm.propRegString))) {
+            replacedApis++;
             const reg = new RegExp(`"(${fieldName})":(?:"([^"]+)"|([^,]+))`, 'img');
             if (r.returnConfig.manual.succ) {
-              r.returnConfig.manual.succ.resStr = r.returnConfig.manual.succ.resStr.replace(reg, (w, $1, $2, $3) => $2
-                ? `"${$1}":"${fieldNewValue}"`
-                : $3
-                  ? `"${$1}":${fieldNewValue}`
-                  : w
-              );
+              r.returnConfig.manual.succ.resStr = r.returnConfig.manual.succ.resStr.replace(reg, (w, $1, $2, $3) => {
+                replacedFields++;
+                return $2
+                  ? `"${$1}":"${fieldNewValue}"`
+                  : $3
+                    ? `"${$1}":${fieldNewValue}`
+                    : w
+              });
             }
           }
           rules.push(r)
           break
       }
     }
-    console.log(`mock 总数：${cc}, 删除总数 ${rcc}，剩余总数 ${rules.length}`);
+    extraOpsResult = {
+      type,
+      totalMockCount,
+      removedTotalMockCount,
+      replacedApis,
+      replacedFields,
+      leftCount: rules.length
+    }
+    console.log(`mock 总数：${totalMockCount}, 删除总数 ${removedTotalMockCount}，剩余总数 ${rules.length}`);
   } else {
     rules = minitestJson.commands.filter((i) => i.command === 'mock').map((i) => i.rule);
   }
-  return rules;
+  return { rules, extraOpsResult: extraOpsResult ? extraOpsResult : null };
 }
 
 function getCmds (minitestJson, excludeRules = []) {
@@ -148,13 +162,14 @@ async function genSpecString (minitestJson, renderCfg) {
     descName, // spec.js
     itName,
     updateMock,
+    insertCode,
     e2ercjestTimeout = 30000000
   } = renderCfg;
 
   // 去重获知被 MOCK 的 api 名称及出现顺序
   let recordAPIs = getMockedApisWithoutDuplicate(minitestJson);
 
-  let mockRules = getMockRules(minitestJson, updateMock);
+  let { rules: mockRules, extraOpsResult } = getMockRules(minitestJson, updateMock);
 
   let cmds = getCmds(minitestJson);
 
@@ -173,6 +188,7 @@ async function genSpecString (minitestJson, renderCfg) {
     defaultWaitFor, // 默认 waitFor 等待时长
     wsEndpoint, // wsEndPoint
     cmds,
+    insertCode,
     previewMode: false, // previewMode 暂时关闭，编辑器可以承受
     connectFirst, // automator 优先使用 connect 而非 launch
   };
@@ -189,11 +205,12 @@ async function genSpecString (minitestJson, renderCfg) {
   return {
     renderStr,
     recordAPIs,
-    cmds
+    cmds,
+    extraOpsResult
   }
 }
 
-async function generateSpec ({ file, e2erc, updateMock }) {
+async function generateSpec ({ file, e2erc, updateMock, insertCode }) {
   // 结果集
   let result = {};
 
@@ -201,12 +218,14 @@ async function generateSpec ({ file, e2erc, updateMock }) {
     descName: file.we,
     itName: file.we,
     updateMock,
+    insertCode,
     ...e2erc,
   })
 
   let renderStr = res.renderStr;
   result.spec = renderStr;
   result.lineNums = calcLineNums(renderStr);
+  result.extraOpsResult = res.extraOpsResult;
   return result
 }
 

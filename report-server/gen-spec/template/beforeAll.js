@@ -1,4 +1,4 @@
-let fn = ({ connectFirst, needRealMachine, jestTimeout, wsEndpoint }) => {
+let fn = ({ connectFirst, needRealMachine, jestTimeout, wsEndpoint, insertCode }) => {
   let str = 'beforeAll(async () => {'
   if (connectFirst) {
     str += ` try {
@@ -22,6 +22,7 @@ let fn = ({ connectFirst, needRealMachine, jestTimeout, wsEndpoint }) => {
     await miniProgram.remote();
      }
     `
+  str += insertCode?.type === 'beforeAll' ? `${insertCode.codeStr}` : ''
 
   str += `},
   ${jestTimeout});`

@@ -24,6 +24,7 @@
         <el-select v-model="codeForm.positionType" placeholder="Please select a zone">
           <el-option label="beforeAll" value="beforeAll" />
           <el-option label="afterAll" value="afterAll" />
+          <el-option label="mock 微信方法后" value="afterMockWxMethod" />
         </el-select>
       </el-form-item>
       <el-form-item label="代码：" :label-width="formLabelWidth">
@@ -52,7 +53,7 @@ const dialogFormVisible = ref<boolean>(false)
 const currentForm = ref<string>('mock')
 const titlesCollection = reactive<Record<string, string>>({
   mock: '修改录制的 Mock 数据',
-  code: '扩展 beforeAll/afterAll'
+  code: '向指定位置插入代码'
 })
 
 interface mockFormType {
@@ -72,7 +73,7 @@ const mockForm = reactive<mockFormType>({
 })
 
 const codeForm = reactive({
-  positionType: 1,
+  positionType: 'afterMockWxMethod',
   codeStr: ''
 })
 
@@ -89,7 +90,7 @@ const showToolsDlg = (formType: 'mock' | 'code', isShow = true) => {
 const clearMockForm = () => {
   clearData(mockForm, ['mockOpType'], 'rmApiRes')
   clearData(mockForm, ['apiName', 'fieldName', 'fieldNewValue'], '')
-  clearData(codeForm, ['positionType'], 'beforeAll')
+  clearData(codeForm, ['positionType'], 'afterMockWxMethod')
   clearData(codeForm, ['codeStr'], '')
 }
 
