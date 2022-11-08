@@ -33,7 +33,7 @@ export const menus = [
 	}
 ]
 
-export const formCfg:Record<any, any> = {
+export const formCfg = {
 	[ACTION_GET_DOM]: {
 		selectOptions: [
 			{
@@ -48,13 +48,13 @@ export const formCfg:Record<any, any> = {
 		selectedValue: 'getDOMIndependently',
 		inputOptions: {
 			getDOMIndependently: [
-				{ value: '', label: '类名：' },
-				{ value: '', label: '组件名：' }
+				{ value: '', label: '类名：', placeholder: '' },
+				{ value: '', label: '组件名：', placeholder: '' }
 			],
 			getDOMList: [
-				{ value: '', label: '类名：' },
-				{ value: '', label: '组件名：' },
-				{ value: '0', label: '目标元素索引：' }
+				{ value: '', label: '类名：', placeholder: '' },
+				{ value: '', label: '组件名：', placeholder: '' },
+				{ value: '0', label: '目标元素索引：', placeholder: '' }
 			]
 		}
 	},
@@ -91,16 +91,16 @@ export const formCfg:Record<any, any> = {
 		],
 		selectedValue: 'tap',
 		inputOptions: {
-			tap: [ { value: '', label: '参数：', placeholder: 'tap 事件对象' }],
-			longpress: [ { value: '', label: '参数：', placeholder: 'longpress 事件对象' }],
-			touchstart: [ { value: '', label: '参数：', placeholder: 'touchstart 事件对象' }],
-			touchmove: [ { value: '', label: '参数：', placeholder: 'touchmove 事件对象' }],
-			touchend: [ { value: '', label: '参数：', placeholder: 'touchend 事件对象' }],
+			tap: [{ value: '', label: '参数：', placeholder: 'tap 事件对象' }],
+			longpress: [{ value: '', label: '参数：', placeholder: 'longpress 事件对象' }],
+			touchstart: [{ value: '', label: '参数：', placeholder: 'touchstart 事件对象' }],
+			touchmove: [{ value: '', label: '参数：', placeholder: 'touchmove 事件对象' }],
+			touchend: [{ value: '', label: '参数：', placeholder: 'touchend 事件对象' }],
 			trigger: [
 				{ value: '', label: '事件名：', placeholder: 'element.trigger(type: string, detail?: Object): Promise<void>' },
 				{ value: '', label: '事件参数：', placeholder: 'element.trigger(type: string, detail?: Object): Promise<void>' }
 			],
-			input: [ { value: '', label: '输入值：', placeholder: 'element.input(value: string): Promise<void>' }]
+			input: [{ value: '', label: '输入值：', placeholder: 'element.input(value: string): Promise<void>' }]
 		}
 	},
 	[ACTION_WAIT_FOR]: {
@@ -123,19 +123,19 @@ export const formCfg:Record<any, any> = {
 			waitForSomeTime: [
 				{
 					value: 10000,
-					label: '时长：'
+					label: '时长：', placeholder: ''
 				}
 			],
 			waitForExactRouter: [
 				{
 					value: '',
-					label: '页面 path：'
+					label: '页面 path：', placeholder: ''
 				}
 			],
 			waitForApiResponse: [
 				{
 					value: '',
-					label: '接口 path：'
+					label: '接口 path：', placeholder: ''
 				}
 			]
 		}
@@ -169,25 +169,25 @@ export const formCfg:Record<any, any> = {
 			operateRouterRelaunch: [
 				{
 					value: '',
-					label: 'ReLaunch Url:'
+					label: 'ReLaunch Url:', placeholder: ''
 				}
 			],
 			operateRouterNavigateTo: [
 				{
 					value: '',
-					label: 'NavigateTo Url:'
+					label: 'NavigateTo Url:', placeholder: ''
 				}
 			],
 			operateRouterRedirectTo: [
 				{
 					value: '',
-					label: 'RedirectTo Url:'
+					label: 'RedirectTo Url:', placeholder: ''
 				}
 			],
 			operateRouterSwitchTab: [
 				{
 					value: '',
-					label: 'SwitchTab Url:'
+					label: 'SwitchTab Url:', placeholder: ''
 				}
 			],
 		}
@@ -228,23 +228,23 @@ export const formCfg:Record<any, any> = {
 			assertTextContent: [
 				{
 					value: '',
-					label: '预期文案：'
+					label: '预期文案：', placeholder: ''
 				}
 			],
 			assertTextLength: [
 				{
 					value: '',
-					label: '预期文案长度：',
+					label: '预期文案长度：', placeholder: ''
 				}
 			],
 			assertTextByRegExp: [
 				{
 					value: '',
-					label: '正则元字符：'
+					label: '正则元字符：', placeholder: ''
 				},
 				{
 					value: '',
-					label: '正则修饰符：'
+					label: '正则修饰符：', placeholder: ''
 				}
 			],
 			assertElementWidth: [
@@ -255,7 +255,7 @@ export const formCfg:Record<any, any> = {
 				},
 				{
 					value: '',
-					label: '预期宽度：'
+					label: '预期宽度：', placeholder: ''
 				}
 			],
 			assertElementHeight: [
@@ -266,7 +266,7 @@ export const formCfg:Record<any, any> = {
 				},
 				{
 					value: '',
-					label: '预期高度：'
+					label: '预期高度：', placeholder: ''
 				}
 			],
 			assertElementExistence: [],
@@ -278,11 +278,11 @@ export const formCfg:Record<any, any> = {
 				},
 				{
 					value: '',
-					label: '比较操作符：'
+					label: '比较操作符：', placeholder: ''
 				},
 				{
 					value: '',
-					label: '返回值预期：'
+					label: '返回值预期：', placeholder: ''
 				}
 			]
 		}
@@ -293,11 +293,11 @@ export const formCfg:Record<any, any> = {
 			screenshotFileSave: [
 				{
 					value: '',
-					label: '文件名：'
+					label: '文件名：', placeholder: ''
 				},
 				{
 					value: '',
-					label: '保存路径：'
+					label: '保存路径：', placeholder: ''
 				}
 			]
 		}

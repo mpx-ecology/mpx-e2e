@@ -30,7 +30,7 @@ const devPath = isDEV ? 'http://localhost:8886' : location.origin
 
 const checkList = ref(['timeout', 'tap', 'user', 'route', 'request'])
 
-const color = ref('#409EFF')
+const color = ref('#77CD9E')
 
 const state = computed(() => {
   const result: ImgList = []
@@ -114,7 +114,7 @@ const isEmpty = computed(() => {
   <div>
     <div class="header">
       <el-checkbox-group v-model="checkList">
-        <el-checkbox v-for="(item, key) in state.filterMapList" :key="key" :label="key">{{item}}</el-checkbox>
+        <el-checkbox class="checkbox" v-for="(item, key) in state.filterMapList" :key="key" :label="key">{{item}}</el-checkbox>
       </el-checkbox-group>
       <div>
         <span class="rect-demo" :style="{background: color}"></span>
@@ -127,11 +127,8 @@ const isEmpty = computed(() => {
         <div class="scrollbar-flex-content">
           <div v-for="(img, idx) in item.list" :key="idx">
             <div class="container" :style="img.wrapStyle">
-              <div class="nav">
-                <!-- <img class="arrow" src="https://gift-static.hongyibo.com.cn/static/kfpub/3307/跳转深色@3x.png" alt="arrow"> -->
-              </div>
               <div class="inner">
-                <el-image lazy :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
+                <el-image loading="lazy" :src="img.src" fit="contain" :preview-src-list="item.preview" :initial-index="idx" />
                 <div
                   v-if="img.imgStyle.width"
                   :style="img.imgStyle"
@@ -152,7 +149,7 @@ const isEmpty = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .scrollbar-flex-content {
   display: flex;
 }
@@ -220,21 +217,29 @@ const isEmpty = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 0 12px;
 }
 
-.border-color {
-  color: #909399;
-  margin-right: 12px;
+:deep(.el-checkbox__label){
+  font-size: 16px;
 }
 
-.arrow {
-  width: 10px;
-  height: 10px;
-  transform: rotateZ(180deg);
+:deep(.el-checkbox__input.is-checked){
+  color: #77CD9E;
+  .el-checkbox__inner{
+    background-color: #77CD9E;
+    border-color: #77CD9E;
+  }
+  &+.el-checkbox__label {
+    color: #77CD9E;
+  }
 }
-
-.nav {
-  font-size: 0;
-  padding: 0 6px;
+:deep(.el-checkbox__input) {
+  .el-checkbox__inner:hover{
+      border-color: #77CD9E;
+  }
+  .el-checkbox__label:hover{
+    color: #77CD9E;
+  }
 }
 </style>

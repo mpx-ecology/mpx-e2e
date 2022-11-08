@@ -32,7 +32,7 @@ type Props = {
   list: number[],
   file: string[]
 }
-// 使用 <script setup>
+
 const props = defineProps<Props>()
 const main = ref(null)
 let myChart: echarts.ECharts
@@ -41,13 +41,11 @@ watch(props, () => {
   if (props.file.length || props.list.length) {
     myChart && myChart.setOption({
         xAxis: {
-        type: 'category',
         data: props.file
       },
       series: [
         {
-          data: props.list,
-          type: 'bar'
+          data: props.list
         }
       ]
     });
@@ -76,7 +74,9 @@ onMounted(() => {
       data: props.file
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
+      name: 'expect',
+      minInterval: 1
     },
     series: [
       {

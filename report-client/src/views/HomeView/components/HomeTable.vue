@@ -72,9 +72,7 @@ function tableRowClassName({ row }: { row: parent | children }) {
 }
 
 /** 列样式 */
-function tabelCellClassName({ row, column, columnIndex }: { row: parent | children, column: TableColumnCtx<parent | children>, columnIndex: number }) {
-  // console.log(row);
-  // console.log(column, columnIndex)
+function tableCellClassName({ row, column, columnIndex }: { row: parent | children, column: TableColumnCtx<parent | children>, columnIndex: number }) {
   let classes = []
   switch (column.label) {
     case 'File':
@@ -101,15 +99,15 @@ function tabelCellClassName({ row, column, columnIndex }: { row: parent | childr
 let detailData = reactive({ header: '', message: '' })
 let showDetail = ref(false)
 function handleAction(row: parent | children) {
-  detailData.header = (row as children).fullName || (row as parent).file,
-    detailData.message = row.failureMessage || 'No Data'
+  detailData.header = (row as children).fullName || (row as parent).file
+  detailData.message = row.failureMessage || 'No Data'
   showDetail.value = true
 }
 </script>
 
 <template>
   <el-table :data="tableData" style="width: 100%; margin-bottom: 20px" row-key="file" border default-expand-all
-    :row-class-name="tableRowClassName" class="el-table" :cell-class-name="tabelCellClassName">
+    :row-class-name="tableRowClassName" class="el-table" :cell-class-name="tableCellClassName">
     <el-table-column label="File">
       <template #default="scope">
         <el-icon v-if="scope.row.children">
@@ -170,7 +168,7 @@ function handleAction(row: parent | children) {
 </template>
 
 <style lang="scss" scoped>
-/** 行样式 */ 
+/** 行样式 */
 :deep(.warning-row),
 :deep(.warning-row-child) {
   background: #be2e2c;
@@ -186,10 +184,12 @@ function handleAction(row: parent | children) {
     }
   }
 }
+
 // 子级行
 :deep(.warning-row-child) {
   background: #f3413d;
 }
+
 // 正常行hover
 :deep(.el-table__body) {
   tr:hover>td.el-table__cell {

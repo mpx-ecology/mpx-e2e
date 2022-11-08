@@ -41,4 +41,9 @@ export interface TYPE_ORIGIN_JSON {
 	commands: any[]
 }
 
-export type MENU_TYPE = ACTION_GET_DOM | ACTION_SCREENSHOT_ADDED | ACTION_ASSERTION_ADDED | ACTION_WAIT_FOR | ACTION_ROUTER_OPERATED
+export interface TYPE_MENU {
+	cmdIndex: number;
+	menuIdx: number;
+	action: ACTION_GET_DOM;
+	title: string;
+}
