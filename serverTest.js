@@ -12,7 +12,7 @@ program
 
 program.url && console.log(`即将自动打开：${program.url}`);
 
-let { port = 8886, url , debug = true, open } = program;
+let { port = 8886, url , debug = true, open = true } = program;
 
 const path = require('path');
 const pkgPath = path.resolve(__dirname, './report-server/server')
