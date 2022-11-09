@@ -4,6 +4,7 @@ const opGenerator: Record<any, any> = {
 	touchstart: (s:any) => `触发 touchstart 事件`,
 	longpress: () => `触发 longpress 事件`,
 	touchend: (s:any) => `触发 touchend 事件`,
+	touchcancel: () => `触发 touchcancel 事件`,
 	input: (s:any) => `触发 input 事件`,
 	updated: () => `触发 updated 事件`,
 	trigger: (s:any) => `trigger 元素事件`,
