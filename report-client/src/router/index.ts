@@ -27,7 +27,7 @@ export const config = [
     component: () => import('../views/JSError/JSError.vue'),
     title: '错误日志'
   },
-  { path: '/', redirect: '/home' }
+  { path: '/', redirect: '/gencase' }
 ]
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
