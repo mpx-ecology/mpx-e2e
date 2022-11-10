@@ -44,13 +44,22 @@ fi
 
 echo "正在发包npm..."
 npm version $type -m '[release] '$type': @%s' && npm publish --registry=https://registry.npmjs.org/ --access=public
-echo [ $? -eq 0 ]
-then
-  PACKAGE_VERSION=$(cat package.json \
-        | grep version \
-        | head -1 \
-        | awk -F: '{ print $2 }' \
-        | sed 's/[",]//g')
+# echo [ $? -eq 0 ]
+# then
+#   PACKAGE_VERSION=$(cat package.json \
+#         | grep version \
+#         | head -1 \
+#         | awk -F: '{ print $2 }' \
+#         | sed 's/[",]//g')
 
-  git push origin $BRANCH:$BRANCH
+#   git push origin $BRANCH:$BRANCH
+# fi
+STAT=$?
+if [ $STAT == 0 ]
+then
+  echo 'success: 发包成功！请手动提交你的代码'
+else
+  echo 'error: 发包失败！请重新执行：npm publish --registry=https://registry.npmjs.org/ --access=public'
 fi
+
+echo '执行完成'
