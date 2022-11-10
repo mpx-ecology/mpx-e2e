@@ -8,9 +8,9 @@ const router = useRouter()
 
 const path = computed(() => {
   const route = useRoute()
-  if (route.path === '/') {
-    router.replace('/gencase')
-  }
+  // if (route.path === '/') {
+  //   router.replace('/gencase')
+  // }
   return route.path
 })
 
