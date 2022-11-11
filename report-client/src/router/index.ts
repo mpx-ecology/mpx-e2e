@@ -10,8 +10,8 @@ export const config = [
     title: '用例管理'
   },
   {
-    path: '/home',
-    name: 'home',
+    path: '/overview',
+    name: 'overview',
     component: HomeView,
     title: '测试报告'
   },
