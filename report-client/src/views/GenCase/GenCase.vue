@@ -2,19 +2,17 @@
   <el-row :gutter="10" v-loading="loadingFlag">
     <!-- 1.1 JSON导入 展开态-->
     <el-col :span="colOneSpan" v-if="drawerIsOpen">
-      <div class="button-area">
-        <el-tooltip class="box-item" effect="dark" content="将IDE录制回放的json进行导入, 例 minitest-1.json"
-          placement="right-start">
+      <div style="margin-bottom:10px">
+        <el-tooltip effect="dark" content="将IDE录制回放的json进行导入, 例 minitest-1.json" placement="right-start">
           <el-button class="import-btn" type="primary" @click="loadMinitest">
-            JSON 导入
+            导入
             <el-icon>
               <QuestionFilled />
             </el-icon>
           </el-button>
         </el-tooltip>
         <template v-if="currentSpecFileName">
-          <el-tooltip class="box-item" effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'"
-            placement="right-start">
+          <el-tooltip effect="dark" :content="'将' + currentSpecFileName + '保存到 case 目录'" placement="right-start">
             <el-button class="save-btn" type="success" @click="saveSpec">
               保存
               <el-icon>
@@ -22,15 +20,10 @@
               </el-icon>
             </el-button>
           </el-tooltip>
-          <el-button class="arrow-btn" @click="openOrClose">
-            <el-icon>
-              <ArrowLeft />
-            </el-icon>
-          </el-button>
         </template>
       </div>
       <!-- JSON文件列表 -->
-      <div class="mgnt20">
+      <div class="file-list">
         <p class="lh20 file-item ellipsis" @click="updateCurrentJsonFileNameAndPreview(item, index)"
           :class="currentHighlightIdx === index ? 'file-item-hl' : ''" v-for="(item, index) in list" :key="index">
           <el-icon class="vtln">
@@ -39,53 +32,46 @@
           <span class="mgnl10" :title="item">{{ item }}</span>
         </p>
       </div>
+      <!-- 底部展开&收起按钮区域 -->
+      <el-button class="arrow-btn" @click="openOrClose" style="color:#008c8c">
+        <el-icon>
+          <TurnOff />
+        </el-icon>
+      </el-button>
     </el-col>
     <!-- 1.2 JSON导入 收起态-->
     <el-col :span="colOneSpan" v-else>
-      <div class="arrow-btn-area">
-        <el-button style="width:50%;margin-right: 6px;" @click="openOrClose">
-          <el-icon>
-            <ArrowRight />
-          </el-icon>
-        </el-button>
-      </div>
       <!-- JSON文件列表 -->
-      <div class="mgnt20">
+      <div class="file-list stow">
         <p class="lh20 file-item" @click="updateCurrentJsonFileNameAndPreview(item, index)"
           :class="currentHighlightIdx === index ? 'file-item-hl' : ''" v-for="(item, index) in list" :key="index"
           style="text-align: center;padding-left: 0;">
-          <el-icon class="vtln">
-            <Document />
-          </el-icon>
+          <el-tooltip effect="dark" :content="item" placement="right">
+            <el-icon class="vtln">
+              <Document />
+            </el-icon>
+          </el-tooltip>
         </p>
       </div>
+      <!-- 底部展开&收起按钮区域 -->
+      <el-button class="arrow-btn" @click="openOrClose" style="color:#bbb">
+        <el-icon>
+          <Open />
+        </el-icon>
+      </el-button>
     </el-col>
 
     <!-- 2.操作项列表 -->
     <el-col :span="8">
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" :image-size="250"></el-empty>
-      <el-row v-if="list.length > 0" class="mb-4 pding-btm-10">
-        <el-tooltip class="box-item"
-                    effect="dark"
-                    content="操作录制 Mock 数据"
-                    placement="right-start">
-          <el-button
-              size="large"
-              :icon="Edit"
-              @click="openToolsDlg('mock')"
-              round>MOCK</el-button>
+      <div v-else class="mb-4 pding-btm-10">
+        <el-tooltip effect="dark" content="操作录制 Mock 数据" placement="right-start">
+          <el-button class="bold" :icon="Edit" @click="openToolsDlg('mock')" round>Modify</el-button>
         </el-tooltip>
-        <el-tooltip class="box-item"
-                    effect="dark"
-                    content="向 beforeAll/afterAll 插入代码"
-                    placement="right-start">
-          <el-button
-              size="large"
-              @click="openToolsDlg('code')"
-              :icon="Plus"
-              round>Code</el-button>
+        <el-tooltip effect="dark" content="向 beforeAll/afterAll 插入代码" placement="right-start">
+          <el-button class="bold" :icon="Plus" @click="openToolsDlg('code')" round>Insert Code</el-button>
         </el-tooltip>
-      </el-row>
+      </div>
       <div class="grid-content ep-bg-purple">
         <div v-for="(item, index) in cmdToLabels" :key="index" class="card-cnt">
           <div class="card-cnt-left">
@@ -137,16 +123,9 @@
     </el-col>
   </el-row>
 
-  <operation-dialog v-model="dialogFlag"
-                    :currentMenu="currentMenu"
-                    :e2eExtendsForm="e2eExtendsForm"
-                    :isCreate="isCreate"
-                    @addToCmds="addToCmdsCB"
-                    :dialogFlag="dialogFlag"
-                    @delFromCmds="delFromCmdsCB" />
-  <toolsDlg ref="toolsDlgRef"
-            @bubbleFormData="receiveToolsDlgData"
-  />
+  <operation-dialog v-model="dialogFlag" :currentMenu="currentMenu" :e2eExtendsForm="e2eExtendsForm"
+    :isCreate="isCreate" @addToCmds="addToCmdsCB" :dialogFlag="dialogFlag" @delFromCmds="delFromCmdsCB" />
+  <toolsDlg ref="toolsDlgRef" @bubbleFormData="receiveToolsDlgData" />
 
 </template>
 
@@ -384,7 +363,7 @@ const dialogCBUpdate = async (extraData = {}) => {
   return res
 }
 
-const receiveToolsDlgData = async (data:any) => {
+const receiveToolsDlgData = async (data: any) => {
   let { mockOpType, apiName, fieldName, fieldNewValue, positionType, codeStr } = data.data
   let res
   switch (data.type) {
@@ -398,13 +377,13 @@ const receiveToolsDlgData = async (data:any) => {
   if (res?.extraOpsResult) {
     let { type, removedTotalMockCount, totalMockCount, replacedApis, replacedFields, leftCount } = res.extraOpsResult
     ElMessage.success(type === 'rmApiRes'
-        ? `mock 接口总数${totalMockCount}，删除总数 ${removedTotalMockCount}，剩余总数 ${leftCount}`
-        : `mock 接口总数${totalMockCount}，替换接口总数 ${replacedApis}，替换字段总数 ${replacedFields}`
+      ? `mock 接口总数${totalMockCount}，删除总数 ${removedTotalMockCount}，剩余总数 ${leftCount}`
+      : `mock 接口总数${totalMockCount}，替换接口总数 ${replacedApis}，替换字段总数 ${replacedFields}`
     )
   }
 }
 
-const openToolsDlg = (type: 'mock'|'code') => toolsDlgRef.value?.showToolsDlg(type);
+const openToolsDlg = (type: 'mock' | 'code') => toolsDlgRef.value?.showToolsDlg(type);
 
 let drawerIsOpen = ref(true)
 const colOneSpan = computed(() => drawerIsOpen.value ? 3 : 1)
@@ -448,17 +427,14 @@ onUnmounted(() => editor.dispose());
 .pding-btm-10 {
   padding-bottom: 10px;
 }
+
 button {
-  padding: 5px;
+  padding: 10px;
 }
 
-.button-area {
-  display: flex;
-
-  .import-btn,
-  .save-btn {
-    flex: none;
-  }
+.arrow-btn {
+  border: none;
+  font-size: 26px;
 }
 
 .arrow-btn-area {
@@ -471,8 +447,14 @@ button {
   outline: none;
 }
 
-.mgnt20 {
-  margin-top: 10px;
+.file-list {
+  margin-bottom: 10px;
+  height: calc(100% - 42px - 40px);
+  border-bottom: 1px solid #ddd;
+
+  &.stow {
+    height: calc(100% - 42px);
+  }
 }
 
 .lh20 {
@@ -543,7 +525,7 @@ button {
 }
 
 .grid-content {
-  max-height: 800px;
+  max-height: 765px;
   overflow: scroll;
 }
 
@@ -582,5 +564,11 @@ button {
 
 .cnt-info-normal-line .info-right {
   width: 290px;
+}
+
+:deep(.el-button) {
+  &.bold span {
+    font-weight: bold;
+  }
 }
 </style>

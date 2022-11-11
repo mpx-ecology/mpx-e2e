@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import GenCaseView from '@/views/GenCase/GenCase.vue'
+import HomeView from '../views/HomeView/HomeView.vue'
 
 export const config = [
   {
@@ -9,9 +10,9 @@ export const config = [
     title: '用例管理'
   },
   {
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/HomeView/HomeView.vue'),
+    path: '/overview',
+    name: 'overview',
+    component: HomeView,
     title: '测试报告'
   },
   {
@@ -25,7 +26,8 @@ export const config = [
     name: 'JSError',
     component: () => import('../views/JSError/JSError.vue'),
     title: '错误日志'
-  }
+  },
+  { path: '/', redirect: '/gencase' }
 ]
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),

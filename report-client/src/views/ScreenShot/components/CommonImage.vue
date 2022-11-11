@@ -184,8 +184,10 @@ const isEmpty = computed(() => {
   margin: 0 12px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.11);
+  background: url("https://gift-static.hongyibo.com.cn/static/kfpub/3547/smallappheader.png") no-repeat top center;
+  background-size: 100% auto;
 }
 
 .inner {
