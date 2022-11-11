@@ -6,7 +6,8 @@ const defaultConfig = {
   timeoutSave: 3000, // 定时截图
   tapSave: true, // 点击事件自动截图
   routeUpdateSave: true, // 路由更新自动截图
-  watchResponse: [] // 接口请求自动截图
+  watchResponse: [], // 接口请求自动截图
+  routeTime: 300
 }
 
 class ScreenShot {
@@ -84,7 +85,7 @@ class ScreenShot {
       // Do something... 
       setTimeout(() => {
         this.save({ type: 'route' })
-      }, 300)
+      }, this.config.routeTime)
     })
     await this.miniProgram.evaluate(() => {
       // eslint-disable-next-line no-undef
