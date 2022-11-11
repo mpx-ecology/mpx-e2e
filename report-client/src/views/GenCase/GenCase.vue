@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="10" v-loading="loadingFlag">
     <!-- 1.1 JSON导入 展开态-->
-    <el-col :span="colOneSpan" v-if="drawerIsOpen">
+    <el-col class="col" :span="colOneSpan" v-if="drawerIsOpen">
       <div style="margin-bottom:10px">
         <el-tooltip effect="dark" content="将IDE录制回放的json进行导入, 例 minitest-1.json" placement="right-start">
           <el-button class="import-btn" type="primary" @click="loadMinitest">
@@ -40,7 +40,7 @@
       </el-button>
     </el-col>
     <!-- 1.2 JSON导入 收起态-->
-    <el-col :span="colOneSpan" v-else>
+    <el-col class="col" :span="colOneSpan" v-else>
       <!-- JSON文件列表 -->
       <div class="file-list stow">
         <p class="lh20 file-item" @click="updateCurrentJsonFileNameAndPreview(item, index)"
@@ -62,7 +62,7 @@
     </el-col>
 
     <!-- 2.操作项列表 -->
-    <el-col :span="8">
+    <el-col class="col" :span="8">
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" :image-size="250"></el-empty>
       <div v-else class="mb-4 pding-btm-10">
         <el-tooltip effect="dark" content="操作录制 Mock 数据" placement="right-start">
@@ -118,7 +118,7 @@
     </el-col>
 
     <!-- 3.Monaco编辑器 -->
-    <el-col :span="colThreeSpan">
+    <el-col class="col" :span="colThreeSpan">
       <div id="container" class="code-limit"></div>
     </el-col>
   </el-row>
@@ -424,6 +424,9 @@ onUnmounted(() => editor.dispose());
 </script>
 
 <style scoped lang="scss">
+.col {
+  height: calc(100vh - 60px - 120px);
+}
 .pding-btm-10 {
   padding-bottom: 10px;
 }
@@ -493,7 +496,7 @@ button {
 }
 
 .code-limit {
-  height: 800px;
+  height: 100%;
   overflow: scroll;
 }
 
@@ -525,7 +528,7 @@ button {
 }
 
 .grid-content {
-  max-height: 765px;
+  height: calc(100% - 42px);
   overflow: scroll;
 }
 
