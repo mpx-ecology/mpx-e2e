@@ -10,13 +10,19 @@
         </el-select>
       </el-form-item>
       <el-form-item label="指定接口：" :label-width="formLabelWidth">
-        <el-input v-model="mockForm.apiName" autocomplete="true" />
+        <el-input v-model="mockForm.apiName"
+                  placeholder="包扩协议、域名的完整接口，例如 https://name.orgin.com/api/path"
+                  autocomplete="true" />
       </el-form-item>
       <el-form-item v-if="mockForm.mockOpType === 'replaceApiFields'" label="指定字段：" :label-width="formLabelWidth">
-        <el-input v-model="mockForm.fieldName" autocomplete="true" />
+        <el-input v-model="mockForm.fieldName"
+                  placeholder="所有同名都会被替换，注意该接口下是否存在多个同名字段"
+                  autocomplete="true" />
       </el-form-item>
       <el-form-item v-if="mockForm.mockOpType === 'replaceApiFields'" label="字段新值：" :label-width="formLabelWidth">
-        <el-input v-model="mockForm.fieldNewValue" autocomplete="true" />
+        <el-input v-model="mockForm.fieldNewValue"
+                  placeholder='注意区分数字和字符串类型，比如 500 和 "500"'
+                  autocomplete="true" />
       </el-form-item>
     </el-form>
     <el-form v-if="currentForm === 'code'" :model="codeForm">
@@ -31,6 +37,7 @@
         <el-input :rows="4"
                   type="textarea"
                   v-model="codeForm.codeStr"
+                  placeholder="请输入代码字符串，模拟器实例变量名：automator，小程序实例变量名：  miniProgram"
                   autocomplete="true" />
       </el-form-item>
     </el-form>
@@ -62,8 +69,6 @@ interface mockFormType {
   fieldName: string,
   fieldNewValue: string
 }
-
-type keysOfMockForm = 'fieldName' | 'fieldNewValue'
 
 const mockForm = reactive<mockFormType>({
   mockOpType: 'rmApiRes',

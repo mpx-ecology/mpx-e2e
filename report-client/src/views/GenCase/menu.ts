@@ -48,13 +48,13 @@ export const formCfg = {
 		selectedValue: 'getDOMIndependently',
 		inputOptions: {
 			getDOMIndependently: [
-				{ value: '', label: '类名：', placeholder: '' },
-				{ value: '', label: '组件名：', placeholder: '' }
+				{ value: '', label: '类名：', placeholder: '元素类名，不是选择器' },
+				{ value: '', label: '组件名：', placeholder: '元素最近的自定义组件的 is 属性，如：<some-comp is="组件名" />' }
 			],
 			getDOMList: [
-				{ value: '', label: '类名：', placeholder: '' },
-				{ value: '', label: '组件名：', placeholder: '' },
-				{ value: '0', label: '目标元素索引：', placeholder: '' }
+				{ value: '', label: '类名：', placeholder: '元素类名，不是选择器！' },
+				{ value: '', label: '组件名：', placeholder: '元素最近的自定义组件的 is 属性，如：<some-comp is="组件名" />' },
+				{ value: '0', label: '目标元素索引：', placeholder: '目标元素在集合中的索引位置' }
 			]
 		}
 	},
@@ -123,19 +123,22 @@ export const formCfg = {
 			waitForSomeTime: [
 				{
 					value: 10000,
-					label: '时长：', placeholder: ''
+					label: '时长：',
+					placeholder: '等待时长'
 				}
 			],
 			waitForExactRouter: [
 				{
 					value: '',
-					label: '页面 path：', placeholder: ''
+					label: '页面 path：',
+					placeholder: '请输入页面的路由：homepage/pages/index'
 				}
 			],
 			waitForApiResponse: [
 				{
 					value: '',
-					label: '接口 path：', placeholder: ''
+					label: '接口 path：',
+					placeholder: '请输入接口名：/some/api/name'
 				}
 			]
 		}
@@ -169,25 +172,29 @@ export const formCfg = {
 			operateRouterRelaunch: [
 				{
 					value: '',
-					label: 'ReLaunch Url:', placeholder: ''
+					label: 'ReLaunch Url:',
+					placeholder: '请输入 ReLaunch 的页面路径'
 				}
 			],
 			operateRouterNavigateTo: [
 				{
 					value: '',
-					label: 'NavigateTo Url:', placeholder: ''
+					label: 'NavigateTo Url:',
+					placeholder: '请输入 NavigateTo 的页面路径'
 				}
 			],
 			operateRouterRedirectTo: [
 				{
 					value: '',
-					label: 'RedirectTo Url:', placeholder: ''
+					label: 'RedirectTo Url:',
+					placeholder: '请输入 RedirectTo 的页面路径'
 				}
 			],
 			operateRouterSwitchTab: [
 				{
 					value: '',
-					label: 'SwitchTab Url:', placeholder: ''
+					label: 'SwitchTab Url:',
+					placeholder: '请输入 SwitchTab 的页面路径'
 				}
 			],
 		}
@@ -228,41 +235,46 @@ export const formCfg = {
 			assertTextContent: [
 				{
 					value: '',
-					label: '预期文案：', placeholder: ''
+					label: '预期文案：',
+					placeholder: '请输入预期文案'
 				}
 			],
 			assertTextLength: [
 				{
 					value: '',
-					label: '预期文案长度：', placeholder: ''
+					label: '预期文案长度：',
+					placeholder: '请输入预期文案长度'
 				}
 			],
 			assertTextByRegExp: [
 				{
 					value: '',
-					label: '正则元字符：', placeholder: ''
+					label: '正则元字符：',
+					placeholder: '请输入正则元字符'
 				},
 				{
 					value: '',
-					label: '正则修饰符：', placeholder: ''
+					label: '正则修饰符：',
+					placeholder: '请输入正则修饰符'
 				}
 			],
 			assertElementWidth: [
 				{
 					value: '',
 					label: '操作符：',
-					placeholder: '===, >=, <='
+					placeholder: '请输入比较操作符，如===, >=, <='
 				},
 				{
 					value: '',
-					label: '预期宽度：', placeholder: ''
+					label: '预期宽度：',
+					placeholder: '请输入预期宽度'
 				}
 			],
 			assertElementHeight: [
 				{
 					value: '',
 					label: '操作符：',
-					placeholder: '===, >=, <='
+					placeholder: '请输入比较操作符，如===, >=, <='
 				},
 				{
 					value: '',
@@ -274,15 +286,17 @@ export const formCfg = {
 				{
 					value: '',
 					label: '取值表达式：',
-					placeholder: '{ options: { data: 返回值 }, url: 请求接口 }, options.data.xxx'
+					placeholder: '数据格式：{ options: { data: 返回值 }, url: 请求接口 }, options.data.xxx'
 				},
 				{
 					value: '',
-					label: '比较操作符：', placeholder: ''
+					label: '比较操作符：',
+					placeholder: '请输入比较操作符，如===, >=, <='
 				},
 				{
 					value: '',
-					label: '返回值预期：', placeholder: ''
+					label: '预期返回值：',
+					placeholder: '请输入预期返回值'
 				}
 			]
 		}
@@ -293,11 +307,13 @@ export const formCfg = {
 			screenshotFileSave: [
 				{
 					value: '',
-					label: '文件名：', placeholder: ''
+					label: '文件名：',
+					placeholder: '请输入截图文件名'
 				},
 				{
 					value: '',
-					label: '保存路径：', placeholder: ''
+					label: '保存路径：',
+					placeholder: '请输入截图保存路径'
 				}
 			]
 		}

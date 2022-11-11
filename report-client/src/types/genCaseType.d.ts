@@ -1,4 +1,4 @@
-import {ACTION_GET_DOM, ACTION_SCREENSHOT_ADDED, ACTION_ASSERTION_ADDED, ACTION_WAIT_FOR, ACTION_ROUTER_OPERATED } from "@/views/GenCase/menu";
+import { ACTION_GET_DOM } from '@/views/GenCase/menu';
 
 export interface API_RESPONSE {
 	errno: number;

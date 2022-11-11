@@ -34,7 +34,7 @@ export function cmdToLabel (cmds:Record<any, any>[]) {
 			byPlatform: i.byPlatform
 		}
 		const fun= opType[command as opTypes];
-		res.label = fun(i as any);
+		res.label = typeof fun === 'function' ? fun(i as any) : command;
 		return res
 	})
 }

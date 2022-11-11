@@ -4,6 +4,7 @@ const opGenerator = {
   touchstart: (s) => `触发 touchstart 事件`,
   longpress: (s) => `触发 longpress 事件`,
   touchend: (s) => `触发 touchend 事件`,
+  touchcancel: () => `触发 touchcancel 事件`,
   input: (s) => `触发 input 事件`,
   trigger: (s) => `trigger 元素事件`,
   updated: (s) => `触发 updated 事件`,
