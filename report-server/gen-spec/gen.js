@@ -135,6 +135,9 @@ function cmdToLabel (cmds) {
         break;
       case 'operateRouterSwitchTab':
         res.label = fun();
+        break;
+      default:
+        res.label = command;
     }
     return res
   })

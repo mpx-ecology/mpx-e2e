@@ -153,7 +153,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { getJsonFiles, previewAfterExtended, saveSpecFileAndJSON } from '@/api/workshop'
-import { cmdToLabel, getCmds, getMockedApisWithoutDuplicate } from './genCase';
+import { cmdToLabel, getCmds, getMockedApisWithoutDuplicate } from './genCase.ts';
 import _ from 'lodash'
 import {
   menus,
