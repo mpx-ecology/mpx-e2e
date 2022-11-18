@@ -13,6 +13,13 @@
   })
 ```
 
+## USAGE
+
+### Install
+```js
+  pnpm add -D @mpxjs/e2e
+```
+
 ## API
 
 ## 1. Automator
