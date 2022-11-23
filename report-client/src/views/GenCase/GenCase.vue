@@ -66,7 +66,7 @@
       <el-empty v-if="list.length <= 0" description="空空如也，快导入你的 json 吧" :image-size="250"></el-empty>
       <div v-else class="mb-4 pding-btm-10">
         <el-tooltip effect="dark" content="操作录制 Mock 数据" placement="right-start">
-          <el-button class="bold" :icon="Edit" @click="openToolsDlg('mock')" round>Modify</el-button>
+          <el-button class="bold" :icon="Edit" @click="openToolsDlg('mock')" round>Filter Response</el-button>
         </el-tooltip>
         <el-tooltip effect="dark" content="向 beforeAll/afterAll 插入代码" placement="right-start">
           <el-button class="bold" :icon="Plus" @click="openToolsDlg('code')" round>Insert Code</el-button>
