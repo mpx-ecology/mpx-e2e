@@ -54,7 +54,7 @@ esbuild.build({
   // entryPoints: ['./src/index.ts'],
   entryPoints: {
     'e2ex': './src/index.ts',
-    'plugin-report': './report-server/server.ts'
+    'plugin-report': './report-server/server.js'
   },
   platform: 'node',
   target: 'es2020',

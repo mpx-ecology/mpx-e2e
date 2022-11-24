@@ -1,60 +1,92 @@
+export type ImgType = 'error' | 'tap' | 'timeout' | 'user' | 'route'| 'request'
+
+export interface EventData {
+  clientX: number,
+  clientY: number,
+  pageX: number,
+  pageY: number,
+  radiusX: number,
+  radiusY: number,
+  screenX: number,
+  screenY: number,
+}
+
+export interface ImgItem {
+  path: string,
+  src: string,
+  time: number,
+  page: string,
+  type: ImgType
+  size?: {
+    width: number,
+    height: number,
+  },
+  offset?: {
+    left: number,
+    top: number
+  },
+  systemInfo?: {
+    windowWidth: number,
+    windowHeight: number
+  },
+  event?: {
+    eventName: string,
+    eventData: {
+      detail?: Record<string, unknown>,
+      changedTouches?: EventData[]
+    }
+  }
+ }
+
+ export interface ErrorItem {
+   message: string,
+   stack: string,
+   page: string,
+   src: string,
+   file?: string
+ }
+
+ export interface PerfStats {
+  end: number,
+  runtime: number,
+  slow: boolean,
+  start: number
+ }
+
+ export interface TestResults {
+  ancestorTitles: string[],
+  duration: number,
+  failureDetails: string[],
+  failureMessages: string[],
+  fullName: string,
+  invocations: number,
+  location: string,
+  status: string,
+  title: string
+ }
+ 
  export type Report = {
-  "leaks": false,
-  "numFailingTests": 0,
-  "numPassingTests": 1,
-  "numPendingTests": 0,
-  "numTodoTests": 0,
-  "openHandles": [],
-  "perfStats": {
-    "end": 1655801731931,
-    "runtime": 15786,
-    "slow": true,
-    "start": 1655801716145
-  },
-  "skipped": false,
-  "snapshot": {
-    "added": 0,
-    "fileDeleted": false,
-    "matched": 0,
-    "unchecked": 0,
-    "uncheckedKeys": [],
-    "unmatched": 0,
-    "updated": 0
-  },
-  "testFilePath": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/components/list.spec.js",
-  "testResults": [
-    {
-      "ancestorTitles": [
-        "index"
-      ],
-      "duration": 85,
-      "failureDetails": [],
-      "failureMessages": [],
-      "fullName": "index desc",
-      "invocations": 1,
-      "location": null,
-      "numPassingAsserts": 0,
-      "status": "passed",
-      "title": "desc"
-    }
-  ],
-  "imgList": [
-    {
-      "path": "test/e2e/screenshot/list1.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list1.png"
-    },
-    {
-      "path": "test/e2e/screenshot/list2.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list2.png"
-    },
-    {
-      "path": "test/e2e/screenshot/liste3.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/liste3.png"
-    },
-    {
-      "path": "test/e2e/screenshot/list4.png",
-      "src": "/Users/didi/workspace/2022/mpxtemplatedeme2eo/test/e2e/screenshot/list4.png"
-    }
-  ],
-  "failureMessage": null
+  leaks: boolean,
+  numFailingTests: number,
+  numPassingTests: number,
+  numPendingTests: number,
+  numTodoTests: number,
+  openHandles: [],
+  perfStats: PerfStats,
+  skipped: number,
+  testFilePath: string,
+  testResults: TestResults[],
+  imgList: ImgItem[],
+  errorList: ErrorItem[]
+  failureMessage: null,
+  expectCount: number
+}
+
+export type SystemInfo = {
+  brand?: string,
+  model?: string,
+  platform?: string,
+  screenHeight?: number,
+  screenWidth?: number,
+  system?: string,
 }

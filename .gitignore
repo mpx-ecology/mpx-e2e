@@ -13,3 +13,5 @@ report-client/dist/
 lib/plugin-report.js
 lib/e2ex.js
 lib/testResult.json
+report-server/cache/
+src/cache
