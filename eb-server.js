@@ -5,7 +5,7 @@ let esbuild = require('esbuild');
 esbuild.build({
   entryPoints: ['./src/e2e-mock/mock.ts'],
   platform: 'node',
-  target: 'es6',
+  target: 'es2020',
   bundle: true,
   outfile: './lib/e2e-mock-server.js',
   // watch: true,
